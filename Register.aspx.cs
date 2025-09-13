@@ -1,36 +1,48 @@
 ﻿using System;
-using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.Net;
+using System.Net.Mail;
 
 namespace vaultx
 {
     public partial class Register : System.Web.UI.Page
     {
-        protected void Page_Load(object sender, EventArgs e) { }
+        protected void Page_Load(object sender, EventArgs e)
+        {
+        }
 
         protected void btnRegister_Click(object sender, EventArgs e)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(txtPassword.Text))
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "NoPassword", "alert('Password cannot be empty!');", true);
+                    return;
+                }
+
                 string connStr = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
+
+                Random rnd = new Random();
+                string otp = rnd.Next(100000, 999999).ToString();
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
-                    string query = @"INSERT INTO dbo.register 
-                                     (UFirstName, ULastName, UEmail, UPhoneNumber, UNID, UDOB, CreatedAt)
-                                     VALUES (@FName, @LName, @Email, @Phone, @NID, @DOB, GETDATE())";
+                    string query = @"INSERT INTO dbo.Registration
+                                     (UFirstName, ULastName, UEmail, UPhoneNumber, UPassword, UNID, UDOB, UOTP, IsVerified, CreatedAt)
+                                     VALUES (@FName, @LName, @Email, @Phone, @Password, @NID, @DOB, @OTP, 0, GETDATE())";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.Add("@FName", SqlDbType.NVarChar, 50).Value = txtFirstName.Text.Trim();
-                        cmd.Parameters.Add("@LName", SqlDbType.NVarChar, 50).Value = txtLastName.Text.Trim();
-                        cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = txtEmail.Text.Trim();
-                        cmd.Parameters.Add("@Phone", SqlDbType.NVarChar, 20).Value = txtPhone.Text.Trim();
-                        cmd.Parameters.Add("@NID", SqlDbType.NVarChar, 20).Value = txtNID.Text.Trim();
-                        cmd.Parameters.Add("@DOB", SqlDbType.Date).Value = string.IsNullOrEmpty(txtDOB.Text.Trim())
-                                                                       ? (object)DBNull.Value
-                                                                       : DateTime.Parse(txtDOB.Text.Trim());
+                        cmd.Parameters.AddWithValue("@FName", txtFirstName.Text.Trim());
+                        cmd.Parameters.AddWithValue("@LName", txtLastName.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim());
+                        cmd.Parameters.AddWithValue("@Password", txtPassword.Text.Trim());
+                        cmd.Parameters.AddWithValue("@NID", txtNID.Text.Trim());
+                        cmd.Parameters.AddWithValue("@DOB", string.IsNullOrEmpty(txtDOB.Text.Trim()) ? (object)DBNull.Value : DateTime.Parse(txtDOB.Text.Trim()));
+                        cmd.Parameters.AddWithValue("@OTP", otp);
 
                         conn.Open();
                         cmd.ExecuteNonQuery();
@@ -38,55 +50,106 @@ namespace vaultx
                     }
                 }
 
-                // JS for spinner → tick → redirect
-                string script = @"
-                    document.body.innerHTML = `
-                        <div style='height:100vh; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:Poppins, sans-serif; background:#f5f5f5;'>
-                            <h1 style='font-size:3rem; background:linear-gradient(90deg, #4ECDC4, #55EFC4, #A7FFE4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:20px;'>Registration Successful!</h1>
-                            <div class='spinner'></div>
-                            <div class='tick' style='display:none;'>&#10004;</div>
-                        </div>
-                    `;
-                    var style = document.createElement('style');
-                    style.innerHTML = `
-                        .spinner {
-                            border: 8px solid #f3f3f3;
-                            border-top: 8px solid #1E90FF;
-                            border-radius: 50%;
-                            width: 80px;
-                            height: 80px;
-                            animation: spin 1.5s linear infinite;
-                            margin-bottom: 20px;
-                        }
-                        .tick {
-                            font-size: 5rem;
-                            color: #1E90FF;
-                            animation: pop 0.5s ease forwards;
-                        }
-                        @keyframes spin {
-                            0% { transform: rotate(0deg); }
-                            100% { transform: rotate(360deg); }
-                        }
-                        @keyframes pop {
-                            0% { transform: scale(0); opacity:0; }
-                            100% { transform: scale(1); opacity:1; }
-                        }
-                    `;
-                    document.head.appendChild(style);
+                hfEmail.Value = txtEmail.Text.Trim();
 
-                    setTimeout(function() {
-                        document.querySelector('.spinner').style.display = 'none';
-                        document.querySelector('.tick').style.display = 'block';
-                    }, 1500);
+                SendOtpEmail(hfEmail.Value, otp);
 
-                    setTimeout(function() { window.location.href='Login.aspx'; }, 3000);
-                ";
-
-                ClientScript.RegisterStartupScript(this.GetType(), "SuccessScript", script, true);
+                string script = @"document.getElementById('regForm').style.display='none';
+                                  document.getElementById('otpForm').style.display='block';
+                                  var timeLeft = 60;
+                                  var timerElem = document.getElementById('timer');
+                                  var timer = setInterval(function(){
+                                      if(timeLeft <= 0){ clearInterval(timer); timerElem.innerHTML='OTP expired. Please try again.'; } 
+                                      else{ timerElem.innerHTML='Time remaining: ' + timeLeft + 's'; }
+                                      timeLeft -= 1;
+                                  }, 1000);";
+                ClientScript.RegisterStartupScript(this.GetType(), "ShowOtpForm", script, true);
             }
             catch (Exception ex)
             {
                 Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
+            }
+        }
+
+        private void SendOtpEmail(string toEmail, string otp)
+        {
+            try
+            {
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress("yourmail@example.com");
+                mail.To.Add(toEmail);
+                mail.Subject = "Your VaultX OTP";
+                mail.Body = $"Your OTP is: {otp}";
+
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs");
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("OTP Email failed: " + ex.Message);
+            }
+        }
+
+        protected void btnVerifyOtp_Click(object sender, EventArgs e)
+        {
+            string enteredOtp = hfEnteredOtp.Value;
+            string connStr = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT TOP 1 UOTP FROM dbo.Registration WHERE UEmail=@Email ORDER BY CreatedAt DESC";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Email", hfEmail.Value);
+
+                conn.Open();
+                string otpFromDb = (string)cmd.ExecuteScalar();
+                conn.Close();
+
+                if (enteredOtp == otpFromDb)
+                {
+                    conn.Open();
+                    string updateQuery = @"
+                        WITH Latest AS (
+                            SELECT TOP 1 *
+                            FROM dbo.Registration
+                            WHERE UEmail = @Email
+                            ORDER BY CreatedAt DESC
+                        )
+                        UPDATE Latest
+                        SET IsVerified = 1";
+
+                    SqlCommand update = new SqlCommand(updateQuery, conn);
+                    update.Parameters.AddWithValue("@Email", hfEmail.Value);
+                    update.ExecuteNonQuery();
+                    conn.Close();
+
+                    string successScript = @"
+                       document.body.innerHTML = `
+    <div style=""height:100vh; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:Poppins, sans-serif; background:#f5f5f5;"">
+        <h1 style=""font-size:3rem; background: linear-gradient(90deg,#4ECDC4,#55EFC4,#A7FFE4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:20px;"">Registration Verified!</h1>
+        <div class=""spinner""></div>
+        <video src=""assets/tick.mp4"" autoplay loop muted class=""tick"" style=""display:none; border-radius:50%; width:300px; height:300px;""></video>
+    </div>
+`;
+
+setTimeout(function() {
+    document.querySelector('.spinner').style.display = 'none';
+    document.querySelector('.tick').style.display = 'block';
+}, 1500);
+
+setTimeout(function() {
+    window.location.href = 'Login.aspx';
+}, 3000);
+
+                    ";
+                    ClientScript.RegisterStartupScript(this.GetType(), "SuccessOtp", successScript, true);
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "WrongOtp", "document.getElementById('otpMsg').innerText='Invalid OTP!';", true);
+                }
             }
         }
     }
