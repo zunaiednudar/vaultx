@@ -22,7 +22,7 @@
             <!-- Placeholder cards will be added in code-behind if less than 3 accounts -->
             <!-- Single placeholder (visible only if needed, added in code-behind) -->
             <asp:PlaceHolder ID="phAddAccount" runat="server" Visible="false">
-                <div class="account-card add-card">
+                <div class="account-card add-card" onclick="openModal();">
                     +
                 </div>
             </asp:PlaceHolder>
@@ -47,4 +47,35 @@
             </asp:Repeater>
         </div>
     </section>
+
+    <!-- Account Creation Modal -->
+    <asp:Panel ID="pnlAccountModal" runat="server" CssClass="modal" Style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Create New Account</h2>
+            <asp:Label ID="lblModalMessage" runat="server" ForeColor="Red"></asp:Label>
+            <asp:DropDownList ID="ddlAccountType" runat="server">
+                <asp:ListItem Text="Select Account Type" Value="" />
+                <asp:ListItem Text="Current" Value="Current" />
+                <asp:ListItem Text="Savings" Value="Savings" />
+                <asp:ListItem Text="Fixed Deposit" Value="Fixed Deposit" />
+            </asp:DropDownList>
+            <br />
+            <br />
+            <asp:Button ID="btnCreateAccount" runat="server" Text="Create Account" OnClick="btnCreateAccount_Click" />
+        </div>
+    </asp:Panel>
+
+<!--JavaScript-->
+<script type="text/javascript">
+    window.onload = function () {
+        window.openModal = function () {
+            document.getElementById('<%= pnlAccountModal.ClientID %>').style.display = 'flex';
+        };
+
+        window.closeModal = function () {
+            document.getElementById('<%= pnlAccountModal.ClientID %>').style.display = 'none';
+        };
+    };
+</script>
 </asp:Content>
