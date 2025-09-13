@@ -2,7 +2,7 @@
 
 :root {
     /* Font Styles */
-    --font-stack: 'Poppins', 'Josefin Sans', Helvetica, sans-serif;
+    --font-stack: 'Josefin Sans', Helvetica, sans-serif;
     --font-sz-lg: 2.2rem;
     --font-sz-md: 1.8rem;
     --font-sz-sm: 1.4rem;
@@ -38,6 +38,7 @@
 * {
     padding: 0;
     margin: 0;
+    font-family: var(--font-stack), serif;
 }
 
     *::placeholder {
@@ -64,3 +65,7 @@
     *::-webkit-scrollbar-button {
         background-color: var(--color-bg-primary);
     }
+
+.site-container {
+    padding: 50px;
+}
