@@ -16,7 +16,7 @@
 .logo-container {
     text-align: center;
     margin-bottom: 10px;
-    margin-top:5px;
+    margin-top: 5px;
 }
 
 .logo {
@@ -67,7 +67,6 @@
     justify-content: left;
 }
 
-
 .right-panel {
     flex: 1;
     overflow: hidden;
@@ -97,7 +96,6 @@ h2 {
     -webkit-text-fill-color: transparent;
     font-weight: 700;
 }
-
 
 hr {
     border: 0;
@@ -163,24 +161,96 @@ hr {
 }
 
 .validator-text {
-    font-size: 0.75rem; 
+    font-size: 0.75rem;
     color: red !important;
 }
 
+/* OTP input styling */
+.otp-box {
+    width: 40px;
+    height: 50px;
+    text-align: center;
+    font-size: 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
 
-
-@media (max-width: 900px) {
-    .page-flex {
-        flex-direction: column;
+    .otp-box:focus {
+        border-color: #4ECDC4;
+        outline: none;
     }
 
-    .right-panel {
-        clip-path: none;
-        height: 250px;
+
+
+/* Medium devices */
+@media screen and (max-width: 992px) {
+    .page-flex {
+        flex-direction: column;
+        height: auto;
     }
 
     .left-panel {
-        border-radius: 0;
         padding: 30px;
+    }
+
+    .right-panel {
+        height: 250px;
+        clip-path: none;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    .form-container {
+        padding: 30px 20px;
+    }
+
+    .otp-box {
+        width: 35px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+
+    .right-panel {
+        display: none;
+    }
+}
+
+/* Small devices */
+@media screen and (max-width: 576px) {
+    .page-flex {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left-panel {
+        padding: 20px;
+    }
+
+    .form-container {
+        width: 100%;
+        padding: 20px 15px;
+    }
+
+    .otp-box {
+        width: 30px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .login-link span, .login-link a {
+        display: block;
+        text-align: center;
+        margin-top: 5px;
+    }
+
+    .right-panel {
+        display: none; 
     }
 }

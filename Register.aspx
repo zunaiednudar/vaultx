@@ -10,10 +10,7 @@
     <link rel="stylesheet" href="styles/global.css" type="text/css" />
     <link rel="stylesheet" href="styles/Register.css?v=<%= DateTime.Now.Ticks %>" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <style>
-        .otp-box { width: 40px; height: 50px; text-align:center; font-size:1.5rem; border:1px solid #ccc; border-radius:8px; }
-        .otp-box:focus { border-color:#4ECDC4; outline:none; }
-    </style>
+ 
 </head>
 <body>
     <form id="form1" runat="server">
