@@ -37,9 +37,20 @@
       <span class="bar bar2"></span>
       <span class="bar bar3"></span>
   </button>
+            <!--<p>This is header</p>-->
         </header>
 
-        
+        <!--Navigation Section-->
+        <!--The popup sidebar should replace this part-->
+        <nav class="site-nav">
+            <ul class="site-nav-ul">
+                <li class="site-nav-ul-li <%# Page.Title == "Home" ? "active" : "" %>"><a href="Home.aspx">Home</a></li>
+                <li class="site-nav-ul-li <%# Page.Title == "Dashboard" ? "active" : "" %>"><a href="Dashboard.aspx">Dashboard</a></li>
+            </ul>
+        </nav>
+
+        <!--Main Section-->
+        <!--This is where each page will inject its unique main content-->
         <main class="site-container">
 
             <asp:ContentPlaceHolder ID="SiteMainContent" runat="server">
@@ -51,6 +62,7 @@
 
         <!--Footer Section-->
         <footer>
+            <!--<p>This is footer</p>-->
             <!--<p>This is footer</p>-->
         </footer>
 

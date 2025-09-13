@@ -71,18 +71,17 @@
     <Content Include="FAQ.aspx" />
     <Content Include="ForgetPassword.aspx" />
     <Content Include="FundTransfer.aspx" />
+    <Content Include="Dashboard.aspx" />
     <Content Include="Home.aspx" />
     <Content Include="Profile.aspx" />
     <Content Include="scripts\home.js" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
-<<<<<<< HEAD
     <Content Include="styles\fundtransfer.css" />
-=======
     <Content Include="scripts\sidebar.js" />
->>>>>>> 166ce00 (Sidebar added with different options)
     <Content Include="scripts\terms.js" />
     <Content Include="styles\faq.css" />
+    <Content Include="styles\dashboard.css" />
     <Content Include="styles\global.css" />
     <Content Include="styles\home.css" />
     <Content Include="styles\profile.css" />
@@ -116,6 +115,13 @@
     </Compile>
     <Compile Include="FundTransfer.aspx.designer.cs">
       <DependentUpon>FundTransfer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Dashboard.aspx.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Dashboard.aspx.designer.cs">
+      <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
