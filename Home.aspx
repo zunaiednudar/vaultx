@@ -1,15 +1,15 @@
 ﻿<%@ Page Title="Home" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Home.aspx.cs" Inherits="vaultx.Home" %>
 
 <asp:Content ID="HomeHead" ContentPlaceHolderID="SiteHead" runat="server">
-    <!-- Fixed path: styles/home.css (plural) instead of style/home.css -->
     <link rel="stylesheet" href="styles/home.css" />
+    <script src="scripts/home.js" defer></script>
     <meta name="description" content="VaultX Bank — secure, smart, and modern banking for everyone." />
 </asp:Content>
 
 <asp:Content ID="HomeMainContent" ContentPlaceHolderID="SiteMainContent" runat="server">
     <!-- HERO SECTION -->
     <section class="hero" role="banner" aria-label="Bank hero section">
-        <img src="assets/images/hero.jpg" alt="Modern bank building with city skyline" class="hero__image" />
+        <img src="images/hero.jpg" alt="Modern bank building with city skyline" class="hero__image" />
         <div class="hero__overlay" aria-hidden="true"></div>
         <div class="hero__content">
             <h1 class="hero__title" aria-label="VaultX Bank">VaultX Bank</h1>
@@ -40,7 +40,7 @@
                 <!-- Card 1 -->
                 <article class="card" role="listitem">
                     <div class="card__image-wrap">
-                        <img src="assets/images/feature1.jpg" alt="Mobile phone showing banking app" class="card__image" />
+                        <img src="images/feature1.jpg" alt="Mobile phone showing banking app" class="card__image" />
                     </div>
                     <div class="card__body">
                         <h3 class="card__title">Instant Mobile Banking</h3>
@@ -51,7 +51,7 @@
                 <!-- Card 2 -->
                 <article class="card" role="listitem">
                     <div class="card__image-wrap">
-                        <img src="assets/images/feature2.jpg" alt="Shield icon representing security" class="card__image" />
+                        <img src="images/feature2.jpg" alt="Shield icon representing security" class="card__image" />
                     </div>
                     <div class="card__body">
                         <h3 class="card__title">Bank-Grade Security</h3>
@@ -62,7 +62,7 @@
                 <!-- Card 3 -->
                 <article class="card" role="listitem">
                     <div class="card__image-wrap">
-                        <img src="assets/images/feature3.jpg" alt="Hand holding a savings jar" class="card__image" />
+                        <img src="images/feature3.jpg" alt="Hand holding a savings jar" class="card__image" />
                     </div>
                     <div class="card__body">
                         <h3 class="card__title">High-Yield Savings</h3>
@@ -73,7 +73,7 @@
                 <!-- Card 4 -->
                 <article class="card" role="listitem">
                     <div class="card__image-wrap">
-                        <img src="assets/images/feature4.jpg" alt="Credit card on a table" class="card__image" />
+                        <img src="images/feature4.jpg" alt="Credit card on a table" class="card__image" />
                     </div>
                     <div class="card__body">
                         <h3 class="card__title">Smart Cards</h3>
@@ -84,7 +84,7 @@
                 <!-- Card 5 -->
                 <article class="card" role="listitem">
                     <div class="card__image-wrap">
-                        <img src="assets/images/feature5.jpg" alt="Laptop with investment charts" class="card__image" />
+                        <img src="images/feature5.jpg" alt="Laptop with investment charts" class="card__image" />
                     </div>
                     <div class="card__body">
                         <h3 class="card__title">Investing Made Easy</h3>
@@ -95,7 +95,7 @@
                 <!-- Card 6 -->
                 <article class="card" role="listitem">
                     <div class="card__image-wrap">
-                        <img src="assets/images/feature6.jpg" alt="Customer support headset icon" class="card__image" />
+                        <img src="images/feature6.jpg" alt="Customer support headset icon" class="card__image" />
                     </div>
                     <div class="card__body">
                         <h3 class="card__title">24/7 Human Support</h3>
