@@ -30,7 +30,7 @@
 
                
                 <div class="form-container" id="regForm">
-                    <div class="logo-container" style="position:fixed; top:10px; left:50%; transform:translateX(-360%); z-index:10; background:white; padding:5px; border-radius:10px;">
+                    <div class="logo-container">
                         <img src="assets/logo.png" alt="VaultX Logo" class="logo" style="width:200px; height:40px; object-fit:cover;" />
                     </div>
 

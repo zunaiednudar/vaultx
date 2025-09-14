@@ -56,7 +56,7 @@ namespace vaultx
 
                 string script = @"document.getElementById('regForm').style.display='none';
                                   document.getElementById('otpForm').style.display='block';
-                                  var timeLeft = 60;
+                                  var timeLeft = 90;
                                   var timerElem = document.getElementById('timer');
                                   var timer = setInterval(function(){
                                       if(timeLeft <= 0){ clearInterval(timer); timerElem.innerHTML='OTP expired. Please try again.'; } 
@@ -126,22 +126,73 @@ namespace vaultx
                     conn.Close();
 
                     string successScript = @"
-                       document.body.innerHTML = `
+                document.body.innerHTML = `
     <div style=""height:100vh; display:flex; justify-content:center; align-items:center; flex-direction:column; font-family:Poppins, sans-serif; background:#f5f5f5;"">
-        <h1 style=""font-size:3rem; background: linear-gradient(90deg,#4ECDC4,#55EFC4,#A7FFE4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:20px;"">Registration Verified!</h1>
+          
         <div class=""spinner""></div>
-        <video src=""assets/tick.mp4"" autoplay loop muted class=""tick"" style=""display:none; border-radius:50%; width:300px; height:300px;""></video>
+<div class=""result"" style=""text-align:center;"">
+<h1>Registration <br> Verified!</h1>
+      
+       
     </div>
+</div>
 `;
+
+var style = document.createElement(""style"");
+style.innerHTML = `
+    .spinner {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #4ECDC4;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+
+.result h1 {
+        font-size: 2.5rem;
+        background: linear-gradient(90deg, #4ECDC4, #55EFC4, #A7FFE4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+ 
+
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(10px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+.result {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+   
+    @keyframes pop {
+        0% { transform: scale(0.3); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+`;
+document.head.appendChild(style);
+
 
 setTimeout(function() {
     document.querySelector('.spinner').style.display = 'none';
-    document.querySelector('.tick').style.display = 'block';
+
+    document.querySelector('.result').style.display = 'flex';
 }, 1500);
 
 setTimeout(function() {
     window.location.href = 'Login.aspx';
 }, 3000);
+
 
                     ";
                     ClientScript.RegisterStartupScript(this.GetType(), "SuccessOtp", successScript, true);

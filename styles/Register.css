@@ -17,6 +17,16 @@
     text-align: center;
     margin-bottom: 10px;
     margin-top: 5px;
+
+
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-360%);
+    z-index: 10;
+    background: white;
+    padding: 5px;
+    border-radius: 10px;
 }
 
 .logo {
@@ -192,10 +202,18 @@ hr {
     .left-panel {
         padding: 30px;
     }
+    .logo-container {
+        text-align: center;
+        margin: 0 auto 15px auto;
+        transform: none;
+        background: none; 
+        position:static;
+        padding: 0;
+    }
 
-    .right-panel {
-        height: 250px;
-        clip-path: none;
+    .logo {
+        width: 200px;
+        height: auto;
     }
 
     h2 {
@@ -227,6 +245,19 @@ hr {
     .left-panel {
         padding: 20px;
     }
+    .logo-container {
+        text-align: center;
+        margin: 0 auto 10px auto;
+        transform: none;
+        position:static;
+    }
+
+    .logo {
+        width: 180px;
+        height: auto;
+    }
+
+   
 
     .form-container {
         width: 100%;
