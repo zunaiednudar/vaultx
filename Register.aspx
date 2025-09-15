@@ -31,7 +31,7 @@
                
                 <div class="form-container" id="regForm">
                     <div class="logo-container">
-                        <img src="assets/logo.png" alt="VaultX Logo" class="logo" style="width:200px; height:40px; object-fit:cover;" />
+                        <img src="images/logo.png" alt="VaultX Logo" class="logo" style="width:200px; height:40px; object-fit:cover;" />
                     </div>
 
                     <h2>Registration</h2>
@@ -121,11 +121,12 @@
             </div>
 
             <div class="right-panel">
-                <img src="assets/reg_img2.jpg" alt="VaultX Banner" />
+                <img src="images/reg_img2.jpg" alt="VaultX Banner" />
             </div>
         </div>
 
         <script>
+
             function moveNext(current, index)
             {
                 if(current.value.length === 1 && index < 6) document.getElementById('otp' + (index+1)).focus();
@@ -137,7 +138,6 @@
                 document.getElementById('<%= hfEnteredOtp.ClientID %>').value = otp;
                 __doPostBack('<%= btnVerifyOtp.UniqueID %>', '');
             }
-
         </script>
     </form>
 </body>

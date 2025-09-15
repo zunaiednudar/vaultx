@@ -17,8 +17,6 @@
     text-align: center;
     margin-bottom: 10px;
     margin-top: 5px;
-
-
     position: fixed;
     top: 10px;
     left: 50%;
@@ -51,6 +49,9 @@
     overflow: hidden;
 }
 
+
+
+
 @keyframes moveBG {
     0% {
         transform: translate(0, 0);
@@ -62,6 +63,45 @@
 
     100% {
         transform: translate(0, 0);
+    }
+}
+.welcome-msg
+{
+    font-family: var(--font-stack);
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing:7px;
+    
+}
+
+    .welcome-msg span {
+        display: block;
+        font-size: 4rem;
+        font-weight: 800;
+        margin-top: 5px;
+        background: linear-gradient(270deg, #FF6B6B, #FFD93D);
+        background-size: 600% 600%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientShift 6s ease infinite;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+    }
+
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
     }
 }
 
@@ -77,6 +117,15 @@
     justify-content: left;
 }
 
+.form-container-lg {
+    width: 100%;
+    max-width: 500px;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 .right-panel {
     flex: 1;
     overflow: hidden;
@@ -84,6 +133,32 @@
     background-color: #fff;
     clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
 }
+
+.left-panel-lg {
+    width: 60%;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+
+    .left-panel-lg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+.right-panel-login {
+    width: 40%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+
 
     .right-panel img {
         width: 100%;
@@ -95,6 +170,12 @@
         .right-panel img:hover {
             transform: scale(1.05);
         }
+
+
+
+
+
+
 
 h2 {
     text-align: center;
@@ -202,12 +283,13 @@ hr {
     .left-panel {
         padding: 30px;
     }
+
     .logo-container {
         text-align: center;
         margin: 0 auto 15px auto;
         transform: none;
-        background: none; 
-        position:static;
+        background: none;
+        position: static;
         padding: 0;
     }
 
@@ -245,11 +327,12 @@ hr {
     .left-panel {
         padding: 20px;
     }
+
     .logo-container {
         text-align: center;
         margin: 0 auto 10px auto;
         transform: none;
-        position:static;
+        position: static;
     }
 
     .logo {
@@ -257,7 +340,7 @@ hr {
         height: auto;
     }
 
-   
+
 
     .form-container {
         width: 100%;
@@ -282,6 +365,6 @@ hr {
     }
 
     .right-panel {
-        display: none; 
+        display: none;
     }
 }
