@@ -30,7 +30,7 @@
     <form id="form1" runat="server">
         <!-- Header Section -->
         <header>
-            <!--<p>This is header</p>-->
+
         </header>
 
         <!--Navigation Section-->
@@ -51,7 +51,7 @@
 
         <!--Footer Section-->
         <footer>
-            <!--<p>This is footer</p>-->
+
         </footer>
     </form>
 </body>
