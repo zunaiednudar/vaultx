@@ -90,6 +90,30 @@
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
     }
 
+.welcome-msg-pass {
+    font-family: var(--font-stack);
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    letter-spacing: 7px;
+}
+
+.welcome-msg-pass span {
+    display: block;
+    font-size: 4rem;
+    font-weight: 800;
+    margin-top: 5px;
+    background: linear-gradient(270deg, #FF6B6B, #FFD93D);
+    background-size: 600% 600%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 6s ease infinite;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+
 
 @keyframes gradientShift {
     0% {
@@ -119,7 +143,7 @@
 
 .form-container-lg {
     width: 100%;
-    max-width: 500px;
+    max-width: 512px;
     padding: 50px;
     display: flex;
     flex-direction: column;
@@ -246,6 +270,7 @@ hr {
 
 #ar {
     background: #4ECDC4;
+   
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 0.85rem;
@@ -313,8 +338,54 @@ hr {
     }
 
     .right-panel {
-        display: none;
+        order: -1;
+        width: 100%;
+        clip-path: none;
+        height: auto;
     }
+
+        .right-panel img {
+            height: auto;
+            object-fit: cover;
+        }
+
+
+
+
+    .left-panel-lg {
+        order: 1;
+        width: 100%;
+        height: auto;
+    }
+
+        .left-panel-lg img {
+            height: 100%;
+        }
+
+    .right-panel-login {
+        order: 2;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .form-container-lg {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    welcome-msg-pass{
+  
+    font-size: 3rem;
+   
+}
+    .welcome-msg-pass span {
+        
+        font-size: 3.5rem;
+       
+    }
+
+
+
+
 }
 
 /* Small devices */
@@ -340,7 +411,13 @@ hr {
         height: auto;
     }
 
+    welcome-msg-pass {
+        font-size: 2rem;
+    }
 
+    .welcome-msg-pass span {
+        font-size: 2.5rem;
+    }
 
     .form-container {
         width: 100%;
@@ -365,6 +442,25 @@ hr {
     }
 
     .right-panel {
-        display: none;
+        height: 150px; 
+    }
+
+        .right-panel img {
+            height: 150px;
+            object-fit:contain;
+        }
+
+
+    .left-panel-lg {
+        height: auto;
+    }
+
+    .form-container-lg {
+        max-width: 95%;
+        padding: 20px;
+    }
+
+    .right-panel-login {
+        padding: 15px;
     }
 }

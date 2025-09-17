@@ -56,7 +56,7 @@
 
                     <div style="display:flex;flex-direction:column;gap:5px">
                         <div class="form-group" style="text-align:center; margin-top:10px;">
-                            <a href="Register.aspx" style="color:#FF6B6B; font-weight:bold; text-decoration:none;">Forgot Password?</a>
+                            <a href="ForgetPassword.aspx" style="color:#FF6B6B; font-weight:bold; text-decoration:none;">Forgot Password?</a>
                         </div>
                         <div class="form-group" style="text-align:center; margin-top:10px;">
                             <span>Not registered? </span>

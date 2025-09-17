@@ -84,10 +84,10 @@ namespace vaultx
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string query = "SELECT UID FROM dbo.Registration WHERE UEmail=@Email AND UPassword=@Password AND IsVerified=1";
+                string query = "SELECT UID FROM dbo.Users WHERE Email=@Email AND Password=@Password";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@Email", email);
-                cmd.Parameters.AddWithValue("@Password", password); // Use hashed password in production
+                cmd.Parameters.AddWithValue("@Password", password); 
 
                 conn.Open();
                 object result = cmd.ExecuteScalar();
