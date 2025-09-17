@@ -69,11 +69,11 @@
   <ItemGroup>
     <Content Include="ForgetPassword.aspx" />
     <Content Include="Home.aspx" />
+    <Content Include="scripts\home.js" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
     <Content Include="styles\global.css" />
     <Content Include="styles\Register.css" />
-    <Content Include="styles\home.css" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +125,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="assets\" />
+    <Folder Include="images\" />
     <Folder Include="images\" />
     <Folder Include="scripts\" />
   </ItemGroup>
