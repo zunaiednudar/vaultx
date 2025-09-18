@@ -1,5 +1,4 @@
 ﻿#DashboardMainContent {
-    padding: 20px;
 }
 
 /* Accounts Section */
@@ -10,6 +9,7 @@
     .accounts-section h2 {
         font-size: var(--font-sz-lg);
         margin-bottom: 15px;
+        text-align: center;
         color: var(--color-font-primary);
     }
 
@@ -62,11 +62,18 @@
 
 
 /* Transactions Section */
-.transactions-section h2 {
-    font-size: var(--font-sz-lg);
-    margin-bottom: 10px;
-    color: var(--color-font-primary);
+.transactions-section {
+    padding: var(--padding);
+    border-radius: var(--radius);
+    background-color: var(--color-bg-quaternary);
 }
+
+    .transactions-section h2 {
+        font-size: var(--font-sz-lg);
+        margin-bottom: 10px;
+        text-align: center;
+        color: var(--color-font-primary);
+    }
 
 .transactions-list {
     padding-right: 5px;
@@ -92,19 +99,72 @@
         cursor: pointer;
     }
 
+/* Header */
+.transactions-list .transaction-item.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    background-color: var(--color-bg-quaternary);
+    padding: var(--padding);
+    border-radius: var(--radius);
+    gap: 10px;
+    font-size: var(--font-sz-sm);
+}
+
+    .transactions-list .transaction-item.header .txn-aid {
+        width: 10%;
+        flex-shrink: 0;
+    }
+
+    .transactions-list .transaction-item.header .txn-type {
+        width: 10%;
+        flex-shrink: 0;
+        text-align: center;
+    }
+
+    .transactions-list .transaction-item.header .txn-id {
+        width: 20%;
+        flex-shrink: 0;
+        text-align: center;
+    }
+
+    .transactions-list .transaction-item.header .txn-amount {
+        width: 10%;
+        flex-shrink: 0;
+        text-align: right;
+    }
+
+    .transactions-list .transaction-item.header .txn-reference {
+        flex: 1 1 auto;
+        text-align: left;
+        margin: 0 10px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .transactions-list .transaction-item.header .txn-date {
+        width: 10%;
+        flex-shrink: 0;
+        text-align: center;
+    }
+
+
+
 .txn-aid {
-    min-width: 5%;
+    min-width: 10%;
     flex-shrink: 0;
 }
 
 .txn-type {
-    min-width: 5%;
+    min-width: 10%;
     flex-shrink: 0;
     text-align: center;
 }
 
 .txn-id {
-    min-width: 15%;
+    min-width: 20%;
     flex-shrink: 0;
     text-align: center;
     overflow: hidden;
@@ -241,6 +301,115 @@
         transform: scale(1.03);
     }
 
+/* Responsive adjustments */
+@media screen and (max-width: 1280px) {
 
+    /* Accounts grid */
+    .accounts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+    }
 
+    .account-card {
+        font-size: calc(var(--font-sz-md) - 1px);
+        min-height: 90px;
+    }
 
+        .account-card.add-card {
+            font-size: 2.5rem;
+        }
+
+    /* Transactions section */
+    .transactions-section {
+        padding: 15px;
+    }
+
+    .transactions-list .transaction-item,
+    .transactions-list .transaction-item.header {
+        flex-wrap: nowrap;
+        gap: 5px;
+        padding: 8px;
+    }
+
+    /* Hide Amount and Reference on smaller screens */
+    .transaction-item .txn-amount,
+    .transaction-item .txn-reference,
+    .transaction-item.header .txn-amount,
+    .transaction-item.header .txn-reference {
+        display: none;
+    }
+
+    /* Keep Account No, Transaction Type, Transaction ID, Date evenly distributed */
+    .transaction-item .txn-aid,
+    .transaction-item.header .txn-aid,
+    .transaction-item .txn-type,
+    .transaction-item.header .txn-type,
+    .transaction-item .txn-id,
+    .transaction-item.header .txn-id,
+    .transaction-item .txn-date,
+    .transaction-item.header .txn-date {
+        width: 25%;
+        text-align: center;
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+}
+
+/* For screens smaller than 768px (mobile) */
+@media screen and (max-width: 768px) {
+
+    .accounts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+        gap: 10px;
+    }
+
+    .account-card {
+        font-size: var(--font-sz-sm);
+        min-height: 80px;
+    }
+
+        .account-card.add-card {
+            font-size: 1.8rem;
+        }
+
+    .transactions-section h2 {
+        font-size: var(--font-sz-sm);
+    }
+
+    /* Hide Amount and Reference on mobile if needed */
+    .transaction-item .txn-amount,
+    .transaction-item .txn-reference,
+    .transaction-item.header .txn-amount,
+    .transaction-item.header .txn-reference {
+        display: none;
+    }
+
+    /* Keep remaining columns distributed horizontally */
+    .transaction-item .txn-aid,
+    .transaction-item.header .txn-aid {
+        min-width: 25%;
+        text-align: start;
+        font-size: var(--font-sz-vsm);
+    }
+
+    .transaction-item .txn-type,
+    .transaction-item.header .txn-type {
+        min-width: 25%;
+        font-size: var(--font-sz-vsm);
+    }
+
+    .transaction-item .txn-id,
+    .transaction-item.header .txn-id {
+        flex: 1 1 auto;
+        font-size: var(--font-sz-vsm);
+    }
+
+    .transaction-item .txn-date,
+    .transaction-item.header .txn-date {
+        min-width: 25%;
+        font-size: var(--font-sz-vsm);
+    }
+}

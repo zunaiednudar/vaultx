@@ -6,23 +6,21 @@
     --font-sz-lg: 2.2rem;
     --font-sz-md: 1.8rem;
     --font-sz-sm: 1.4rem;
-
+    --font-sz-vsm: 0.5rem;
     /* Background Colors */
     --color-bg-primary: #FF6B6B;
     --color-bg-secondary: #4ECDC4;
     --color-bg-tertiary: #FFD93D;
-
+    --color-bg-quaternary: #F9F4E6;
     /* Font Colors */
     --color-font-primary: #1A1A1A;
     --color-font-secondary: #333333;
     --color-font-tertiary: #555555;
-
     /* Action Colors */
     --color-hover: #FF9F40;
     --color-focus: #845EC2;
     --color-active: #00C9A7;
     --color-disabled: rgba(0, 0, 0, 0.3);
-
     /* Default Properties */
     --radius: 10px;
     --margin: 10px;
@@ -71,5 +69,5 @@
 
 
 .site-container {
-    padding: 50px;
+    padding: 10px;
 }
