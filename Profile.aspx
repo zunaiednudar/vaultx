@@ -93,10 +93,11 @@
             </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Action Buttons 
         <div class="profile-actions">
             <asp:Button ID="btnEditProfile" runat="server" Text="Edit Profile" CssClass="btn btn-primary" />
             <asp:Button ID="btnChangePassword" runat="server" Text="Change Password" CssClass="btn btn-secondary" />
         </div>
+        -->
     </div>
 </asp:Content>
