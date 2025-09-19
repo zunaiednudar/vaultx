@@ -395,7 +395,11 @@
     /* Show amount, hide type */
     .transaction-item .txn-amount,
     .transaction-item.header .txn-amount {
-        display: block;
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: var(--font-sz-sm);
     }
 
     .transaction-item .txn-type,
@@ -411,13 +415,21 @@
     .transaction-item .txn-faid,
     .transaction-item.header .txn-faid,
     .transaction-item .txn-taid,
-    .transaction-item.header .txn-taid,
-    .transaction-item .txn-id,
-    .transaction-item.header .txn-id,
+    .transaction-item.header .txn-taid {
+        flex: 0 0 25%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: var(--font-sz-sm);
+    }
+
     .transaction-item .txn-date,
     .transaction-item.header .txn-date {
-        width: 25%;
-        text-align: center;
+        flex: 0 0 25%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        font-size: var(--font-sz-sm);
     }
 
     .modal-content {
@@ -448,9 +460,12 @@
     /* Show amount, hide type */
     .transaction-item .txn-amount,
     .transaction-item.header .txn-amount {
-        display: block;
-        min-width: 25%;
-        text-align: start;
+        /*        display: block;*/
+        /*        min-width: 25%;*/
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
         font-size: var(--font-sz-vsm);
     }
 
@@ -463,20 +478,19 @@
     .transaction-item.header .txn-faid,
     .transaction-item .txn-taid,
     .transaction-item.header .txn-taid {
-        min-width: 25%;
-        text-align: start;
-        font-size: var(--font-sz-vsm);
-    }
-
-    .transaction-item .txn-id,
-    .transaction-item.header .txn-id {
-        flex: 1 1 auto;
+        flex: 0 0 25%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
         font-size: var(--font-sz-vsm);
     }
 
     .transaction-item .txn-date,
     .transaction-item.header .txn-date {
-        min-width: 25%;
+        flex: 0 0 25%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
         font-size: var(--font-sz-vsm);
     }
 }

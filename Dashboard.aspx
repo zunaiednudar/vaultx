@@ -11,7 +11,7 @@
         <div class="accounts-grid">
             <asp:Repeater ID="rptAccounts" runat="server">
                 <ItemTemplate>
-                    <div class="account-card">
+                    <div class="account-card" onclick="openAccountDetails('<%# Eval("AccountNumber") %>')">
                         <h3><%# Eval("AccountNumber") %></h3>
                         <p>Balance: $<%# Eval("Balance") %></p>
                         <p>Type: <%# Eval("AccountType") %></p>
@@ -105,5 +105,9 @@
                 modal.classList.add('hide');
             };
         };
+
+        function openAccountDetails(accountNumber) {
+            window.location.href = '/AccountDetails.aspx?account=' + encodeURIComponent(accountNumber);
+        }
     </script>
 </asp:Content>
