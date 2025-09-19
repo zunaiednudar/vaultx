@@ -22,9 +22,12 @@
     --color-font-secondary: #333333;
     --color-font-tertiary: #555555;
     /* Action Colors */
-    --color-hover: #FF9F40;
+    --color-hover: hsl(210, 100%, 60%);
+    --color-focus: hsl(210, 100%, 50%);
+    --color-active: hsl(210, 100%, 40%);
+    /*    --color-hover: #FF9F40;
     --color-focus: #845EC2;
-    --color-active: #00C9A7;
+    --color-active: #00C9A7;*/
     --color-disabled: rgba(0, 0, 0, 0.3);
     /* Default Properties */
     --radius: 10px;

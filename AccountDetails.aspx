@@ -35,6 +35,27 @@
         </div>
     </section>
 
+    <!-- Middle Section: Nominee Details -->
+    <section class="nominee-section">
+        <h2>Nominee Details</h2>
+        <div class="nominee-info">
+            <div class="nominee-photo">
+                <asp:Image ID="imgNominee" runat="server" CssClass="nominee-img" />
+            </div>
+            <div class="nominee-data">
+                <div class="nominee-row">
+                    <strong>Name:</strong>
+                    <asp:Label ID="lblNomineeName" CssClass="value" runat="server" />
+                </div>
+                <div class="nominee-row">
+                    <strong>NID Number:</strong>
+                    <asp:Label ID="lblNomineeNID" CssClass="value" runat="server" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+
     <!-- Lower Section: Transactions -->
     <section class="transactions-section">
         <h2>Transactions</h2>

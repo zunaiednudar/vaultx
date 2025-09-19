@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using static vaultx.Dashboard;
 
 namespace vaultx
 {
@@ -24,6 +25,7 @@ namespace vaultx
                 {
                     LoadAccountInfo(accountNumber);
                     LoadTransactions(accountNumber);
+                    LoadNomineeDetails(accountNumber);
                 }
             }
         }
@@ -76,8 +78,8 @@ namespace vaultx
                         {
                             transactions.Add(new
                             {
-                                FromAccountNumber = (reader["FromAID"].ToString() == accountNumber) ? "Self" : reader["FromAID"].ToString(),
-                                ToAccountNumber = (reader["ToAID"].ToString() == accountNumber) ? "Self" : reader["ToAID"].ToString(),
+                                FromAccountNumber = reader["FromAID"].ToString(),
+                                ToAccountNumber = reader["ToAID"].ToString(),
                                 TransactionType = reader["FromAID"].ToString() == accountNumber.ToString() ? "Debit" : "Credit",
                                 Amount = Convert.ToDecimal(reader["Amount"]),
                                 Reference = reader["Reference"].ToString(),
@@ -142,5 +144,25 @@ namespace vaultx
             Response.Flush();
             Response.End();
         }
+
+        private void LoadNomineeDetails(string accountId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT NomineeName, NomineeNID, NomineeImage FROM Accounts WHERE AID = @AccountID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@AccountID", accountId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    lblNomineeName.Text = reader["NomineeName"].ToString();
+                    lblNomineeNID.Text = reader["NomineeNID"].ToString();
+                    imgNominee.ImageUrl = reader["NomineeImage"].ToString(); // stored path "~/images/nominees/..."
+                }
+            }
+        }
+
     }
 }

@@ -56,6 +56,70 @@
         transform: scale(1.03);
     }
 
+/* Nominee Details Section */
+.nominee-section {
+    margin-top: 30px;
+    padding: var(--padding);
+    border-radius: var(--radius);
+    background: var(--color-bg-quaternary);
+    box-shadow: var(--box-shadow);
+    animation: fadeUp 0.5s ease both;
+}
+
+.nominee-section > h2 {
+    font-size: var(--font-sz-lg);
+    margin-bottom: 15px;
+    text-align: center;
+    color: var(--color-font-primary);
+}
+
+.nominee-info {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.nominee-photo {
+    width: 100%;
+/*    flex: 0 0 120px;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nominee-img {
+    width: 300px;
+    height: 300px;
+    max-width: 100%;
+    max-height: 100%;
+/*    object-fit: cover;*/
+    border-radius: 8px;
+    border: 1px solid var(--color-bg-tertiary);
+    box-shadow: var(--box-shadow);
+}
+
+
+.nominee-data {
+    height: 100%;
+    width: 100%;
+}
+
+.nominee-row {
+    width: 100%;
+    margin-bottom: 10px;
+/*    font-size: var(--font-sz-sm);*/
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--color-font-primary);
+}
+
+
 /* Transactions Section */
 .transactions-section {
     padding: var(--padding);
@@ -274,6 +338,23 @@
     .account-info .btn-action {
         font-size: var(--font-sz-sm);
         padding: 6px 10px;
+    }
+
+    .nominee-info, .nominee-section > h2, .nominee-data {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .nominee-photo {
+        flex: 0 0 80px;
+    }
+
+    .nominee-img {
+        width: 80px;
+        height: 80px;
     }
 
     /* Transactions Section */

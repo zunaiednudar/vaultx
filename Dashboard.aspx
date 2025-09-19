@@ -82,8 +82,13 @@
 
             <!-- Nominee Image -->
             <asp:Label ID="lblNomineeImage" runat="server" Text="Nominee Image:" AssociatedControlID="fuNomineeImage"></asp:Label>
-            <asp:FileUpload ID="fuNomineeImage" runat="server" CssClass="file-upload-button" />
+            <asp:FileUpload ID="fuNomineeImage" runat="server" CssClass="file-upload-button" onchange="previewNomineeImage(this)" />
 
+            <!-- File name display -->
+            <asp:Label ID="lblFileName" runat="server" CssClass="file-name-label"></asp:Label>
+
+            <!-- Image preview -->
+            <asp:Image ID="imgPreview" runat="server" CssClass="img-preview" Style="max-width: 200px; display: none;" />
 
             <!-- Submit Button -->
             <asp:Button ID="btnCreateAccount" runat="server" Text="Create Account" OnClick="btnCreateAccount_Click" />
@@ -98,16 +103,30 @@
             window.openModal = function () {
                 modal.classList.remove('hide');
                 modal.classList.add('show');
+                document.body.style.overflow = 'hidden'; // prevent background scroll
             };
 
             window.closeModal = function () {
                 modal.classList.remove('show');
                 modal.classList.add('hide');
+                document.body.style.overflow = ''; // restore body scroll
             };
         };
 
         function openAccountDetails(accountNumber) {
             window.location.href = '/AccountDetails.aspx?account=' + encodeURIComponent(accountNumber);
         }
+
+        function previewNomineeImage(input) {
+            const file = input.files[0];
+            if (file) {
+                document.getElementById('<%= lblFileName.ClientID %>').innerText = file.name;
+
+                const imgPreview = document.getElementById('<%= imgPreview.ClientID %>');
+                imgPreview.src = URL.createObjectURL(file);
+                imgPreview.style.display = "block";
+            }
+        }
+
     </script>
 </asp:Content>
