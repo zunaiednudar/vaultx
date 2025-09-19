@@ -19,11 +19,9 @@
                 </ItemTemplate>
             </asp:Repeater>
 
-            <!-- Placeholder cards will be added in code-behind if less than 3 accounts -->
+            <!-- Placeholder card for adding new account -->
             <asp:PlaceHolder ID="phAddAccount" runat="server" Visible="false">
-                <div class="account-card add-card" onclick="openModal();">
-                    +
-                </div>
+                <div class="account-card add-card" onclick="openModal();">+</div>
             </asp:PlaceHolder>
         </div>
     </section>
@@ -37,7 +35,6 @@
                 <span class="txn-faid">From</span>
                 <span class="txn-taid">To</span>
                 <span class="txn-type">Transaction Type</span>
-                <!--<span class="txn-id">Transaction ID</span>-->
                 <span class="txn-amount">Amount</span>
                 <span class="txn-reference">Reference</span>
                 <span class="txn-date">Date</span>
@@ -69,38 +66,29 @@
 
             <!-- Account Type -->
             <asp:DropDownList ID="ddlAccountType" runat="server">
-                <asp:ListItem Text="Select Account Type" Value="" />
+                <asp:ListItem Text="Select Type" Value="" />
                 <asp:ListItem Text="Current" Value="Current" />
                 <asp:ListItem Text="Savings" Value="Savings" />
                 <asp:ListItem Text="Fixed Deposit" Value="Fixed Deposit" />
             </asp:DropDownList>
 
-            <br />
-            <br />
-
             <!-- Nominee Name -->
             <asp:Label ID="lblNomineeName" runat="server" Text="Nominee Name:" AssociatedControlID="txtNomineeName"></asp:Label>
             <asp:TextBox ID="txtNomineeName" runat="server" CssClass="modal-input" />
-
-            <br />
 
             <!-- Nominee NID -->
             <asp:Label ID="lblNomineeNID" runat="server" Text="Nominee NID:" AssociatedControlID="txtNomineeNID"></asp:Label>
             <asp:TextBox ID="txtNomineeNID" runat="server" CssClass="modal-input" />
 
-            <br />
-
             <!-- Nominee Image -->
             <asp:Label ID="lblNomineeImage" runat="server" Text="Nominee Image:" AssociatedControlID="fuNomineeImage"></asp:Label>
-            <asp:FileUpload ID="fuNomineeImage" runat="server" CssClass="modal-input" />
+            <asp:FileUpload ID="fuNomineeImage" runat="server" CssClass="file-upload-button" />
 
-            <br />
-            <br />
 
+            <!-- Submit Button -->
             <asp:Button ID="btnCreateAccount" runat="server" Text="Create Account" OnClick="btnCreateAccount_Click" />
         </div>
     </asp:Panel>
-
 
     <!-- JavaScript for modal animations -->
     <script type="text/javascript">
