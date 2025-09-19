@@ -35,9 +35,10 @@
         <div class="transactions-list">
             <!-- Header Row -->
             <div class="transaction-item header">
-                <span class="txn-aid">Account No</span>
+                <span class="txn-faid">From</span>
+                <span class="txn-taid">To</span>
                 <span class="txn-type">Transaction Type</span>
-                <span class="txn-id">Transaction ID</span>
+                <!--<span class="txn-id">Transaction ID</span>-->
                 <span class="txn-amount">Amount</span>
                 <span class="txn-reference">Reference</span>
                 <span class="txn-date">Date</span>
@@ -47,9 +48,9 @@
             <asp:Repeater ID="rptTransactions" runat="server">
                 <ItemTemplate>
                     <div class="transaction-item">
-                        <span class="txn-aid"><%# Eval("AccountNumber") %></span>
+                        <span class="txn-faid"><%# Eval("FromAccountNumber") %></span>
+                        <span class="txn-taid"><%# Eval("ToAccountNumber") %></span>
                         <span class="txn-type"><%# Eval("TransactionType") %></span>
-                        <span class="txn-id"><%# Eval("TransactionId") %></span>
                         <span class="txn-amount">$<%# Eval("Amount") %></span>
                         <span class="txn-reference"><%# Eval("Reference") %></span>
                         <span class="txn-date"><%# Eval("Date", "{0:MMM dd, yyyy}") %></span>
