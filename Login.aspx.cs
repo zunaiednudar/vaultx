@@ -27,8 +27,8 @@ namespace vaultx
                         if (int.TryParse(uidStr, out uid))
                         {
                             Session["Email"] = email;
-                            Session["UID"] = uid;
-                            //Response.Redirect("Dashboard.aspx");
+                            Session["UserId"] = uid;
+                            //Response.Redirect("Profile.aspx");
                             //Context.ApplicationInstance.CompleteRequest();
 
                         }
@@ -67,7 +67,7 @@ namespace vaultx
                 }
                 pnlLoginForm.Visible = false;
                 pnlSuccess.Visible = true;
-                ClientScript.RegisterStartupScript(this.GetType(), "Redirect", "setTimeout(function(){ window.location='Dashboard.aspx'; }, 2000);", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "Redirect", "setTimeout(function(){ window.location='Profile.aspx'; }, 2000);", true);
             }
             else
             {
