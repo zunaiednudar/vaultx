@@ -4,6 +4,8 @@
 /* Accounts Section */
 .accounts-section {
     margin-bottom: 30px;
+    opacity: 0;
+    animation: accountsFadeIn 1.5s ease forwards;
 }
 
     .accounts-section h2 {
@@ -33,13 +35,14 @@
     align-items: center;
     text-align: justify;
     font-size: var(--font-sz-md);
-    transition: transform 0.3s ease;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
     .account-card:hover {
-        transform: translateY(-5px);
+        transform: scale(1.02);
         background: var(--color-hover);
         cursor: pointer;
+        animation: cardGlow 0.8s ease-in-out infinite alternate;
     }
 
     .account-card.add-card {
@@ -56,10 +59,9 @@
 
         .account-card.add-card:hover {
             background: var(--color-bg-secondary);
-            transform: scale(1.05);
+            transform: scale(1.02);
             cursor: pointer;
         }
-
 
 /* Transactions Section */
 .transactions-section {
@@ -92,6 +94,7 @@
     transition: background 0.3s ease;
     gap: 10px;
     font-size: var(--font-sz-sm);
+    animation: fadeUp 0.5s ease both;
 }
 
     .transaction-item:hover {
@@ -112,7 +115,8 @@
     font-size: var(--font-sz-sm);
 }
 
-    .transactions-list .transaction-item.header .txn-faid, .transactions-list .transaction-item.header .txn-taid {
+    .transactions-list .transaction-item.header .txn-faid,
+    .transactions-list .transaction-item.header .txn-taid {
         width: 10%;
         flex-shrink: 0;
     }
@@ -149,8 +153,6 @@
         flex-shrink: 0;
         text-align: center;
     }
-
-
 
 .txn-faid, .txn-taid {
     min-width: 10%;
@@ -209,6 +211,13 @@
     box-sizing: border-box;
 }
 
+    .modal.show {
+        display: flex;
+    }
+
+    .modal.hide {
+        display: none;
+    }
 
 /* Modal Content */
 .modal-content {
@@ -303,8 +312,6 @@
 
 /* Responsive adjustments */
 @media screen and (max-width: 1280px) {
-
-    /* Accounts grid */
     .accounts-grid {
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
         gap: 15px;
@@ -319,7 +326,6 @@
             font-size: 2.5rem;
         }
 
-    /* Transactions section */
     .transactions-section {
         padding: 15px;
     }
@@ -331,7 +337,6 @@
         padding: 8px;
     }
 
-    /* Hide Amount and Reference on smaller screens */
     .transaction-item .txn-amount,
     .transaction-item .txn-reference,
     .transaction-item.header .txn-amount,
@@ -339,7 +344,6 @@
         display: none;
     }
 
-    /* Keep Account No, Transaction Type, Transaction ID, Date evenly distributed */
     .transaction-item .txn-faid,
     .transaction-item.header .txn-faid,
     .transaction-item .txn-taid,
@@ -360,9 +364,7 @@
     }
 }
 
-/* For screens smaller than 768px (mobile) */
 @media screen and (max-width: 768px) {
-
     .accounts-grid {
         grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
         gap: 10px;
@@ -381,7 +383,6 @@
         font-size: var(--font-sz-sm);
     }
 
-    /* Hide Amount and Reference on mobile if needed */
     .transaction-item .txn-amount,
     .transaction-item .txn-reference,
     .transaction-item.header .txn-amount,
@@ -389,7 +390,6 @@
         display: none;
     }
 
-    /* Keep remaining columns distributed horizontally */
     .transaction-item .txn-faid,
     .transaction-item.header .txn-faid,
     .transaction-item .txn-taid,
@@ -416,4 +416,74 @@
         min-width: 25%;
         font-size: var(--font-sz-vsm);
     }
+}
+
+/* ------------------- */
+/* Extra Animations 🎉 */
+/* ------------------- */
+@keyframes cardGlow {
+    0% {
+        box-shadow: 0 0 0px rgba(0, 255, 255, 0.4);
+    }
+
+    100% {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slow fade-in for accounts section */
+@keyframes accountsFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ------------------- */
+/* Modal Pop-up Animations */
+@keyframes modalFadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes modalFadeOutScale {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+}
+
+.modal.show .modal-content {
+    animation: modalFadeInScale 0.4s ease forwards;
+}
+
+.modal.hide .modal-content {
+    animation: modalFadeOutScale 0.3s ease forwards;
 }

@@ -20,7 +20,6 @@
             </asp:Repeater>
 
             <!-- Placeholder cards will be added in code-behind if less than 3 accounts -->
-            <!-- Single placeholder (visible only if needed, added in code-behind) -->
             <asp:PlaceHolder ID="phAddAccount" runat="server" Visible="false">
                 <div class="account-card add-card" onclick="openModal();">
                     +
@@ -61,32 +60,61 @@
     </section>
 
     <!-- Account Creation Modal -->
-    <asp:Panel ID="pnlAccountModal" runat="server" CssClass="modal" Style="display: none;">
+    <asp:Panel ID="pnlAccountModal" runat="server" CssClass="modal hide">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>Create New Account</h2>
+
             <asp:Label ID="lblModalMessage" runat="server" ForeColor="Red"></asp:Label>
+
+            <!-- Account Type -->
             <asp:DropDownList ID="ddlAccountType" runat="server">
                 <asp:ListItem Text="Select Account Type" Value="" />
                 <asp:ListItem Text="Current" Value="Current" />
                 <asp:ListItem Text="Savings" Value="Savings" />
                 <asp:ListItem Text="Fixed Deposit" Value="Fixed Deposit" />
             </asp:DropDownList>
+
             <br />
             <br />
+
+            <!-- Nominee Name -->
+            <asp:Label ID="lblNomineeName" runat="server" Text="Nominee Name:" AssociatedControlID="txtNomineeName"></asp:Label>
+            <asp:TextBox ID="txtNomineeName" runat="server" CssClass="modal-input" />
+
+            <br />
+
+            <!-- Nominee NID -->
+            <asp:Label ID="lblNomineeNID" runat="server" Text="Nominee NID:" AssociatedControlID="txtNomineeNID"></asp:Label>
+            <asp:TextBox ID="txtNomineeNID" runat="server" CssClass="modal-input" />
+
+            <br />
+
+            <!-- Nominee Image -->
+            <asp:Label ID="lblNomineeImage" runat="server" Text="Nominee Image:" AssociatedControlID="fuNomineeImage"></asp:Label>
+            <asp:FileUpload ID="fuNomineeImage" runat="server" CssClass="modal-input" />
+
+            <br />
+            <br />
+
             <asp:Button ID="btnCreateAccount" runat="server" Text="Create Account" OnClick="btnCreateAccount_Click" />
         </div>
     </asp:Panel>
 
-    <!--JavaScript-->
+
+    <!-- JavaScript for modal animations -->
     <script type="text/javascript">
         window.onload = function () {
-            window.openModal = function () {
-                document.getElementById('<%= pnlAccountModal.ClientID %>').style.display = 'flex';
-        };
+            const modal = document.getElementById('<%= pnlAccountModal.ClientID %>');
 
-        window.closeModal = function () {
-            document.getElementById('<%= pnlAccountModal.ClientID %>').style.display = 'none';
+            window.openModal = function () {
+                modal.classList.remove('hide');
+                modal.classList.add('show');
+            };
+
+            window.closeModal = function () {
+                modal.classList.remove('show');
+                modal.classList.add('hide');
             };
         };
     </script>

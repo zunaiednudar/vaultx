@@ -69,6 +69,60 @@ namespace vaultx
         protected global::System.Web.UI.WebControls.DropDownList ddlAccountType;
 
         /// <summary>
+        /// lblNomineeName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNomineeName;
+
+        /// <summary>
+        /// txtNomineeName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeName;
+
+        /// <summary>
+        /// lblNomineeNID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNomineeNID;
+
+        /// <summary>
+        /// txtNomineeNID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeNID;
+
+        /// <summary>
+        /// lblNomineeImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNomineeImage;
+
+        /// <summary>
+        /// fuNomineeImage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload fuNomineeImage;
+
+        /// <summary>
         /// btnCreateAccount control.
         /// </summary>
         /// <remarks>
