@@ -130,20 +130,15 @@
         text-align: center;
     }
 
-    .transactions-list .transaction-item.header .txn-id {
-        width: 20%;
-        flex-shrink: 0;
-        text-align: center;
-    }
-
     .transactions-list .transaction-item.header .txn-amount {
-        width: 10%;
+        flex: 1 1 auto;
+/*        width: 10%;*/
         flex-shrink: 0;
         text-align: right;
     }
 
     .transactions-list .transaction-item.header .txn-reference {
-        flex: 1 1 auto;
+        width: 30%;
         text-align: left;
         margin: 0 10px;
         overflow: hidden;
@@ -168,27 +163,22 @@
     text-align: center;
 }
 
-.txn-id {
-    min-width: 20%;
-    flex-shrink: 0;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .txn-amount {
-    min-width: 10%;
+    flex: 1 1 auto;
+    /*    min-width: 10%;*/
     flex-shrink: 0;
     font-weight: bold;
     text-align: right;
 }
 
 .txn-reference {
-    flex: 1 1 auto;
+    width: 30%;
     margin: 0 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    text-align: justify;
+    /*    white-space: nowrap;*/
+    /*    overflow-y: hidden;
+    overflow-x: scroll;*/
+/*    text-overflow: ellipsis;*/
 }
 
 .txn-date {
