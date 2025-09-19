@@ -43,7 +43,7 @@
             <div class="transaction-item header">
                 <span class="txn-faid">From</span>
                 <span class="txn-taid">To</span>
-                <span class="txn-type">Type</span>
+                <span class="txn-type">Transaction Type</span>
                 <span class="txn-amount">Amount</span>
                 <span class="txn-reference">Reference</span>
                 <span class="txn-date">Date</span>

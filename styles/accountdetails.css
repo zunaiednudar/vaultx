@@ -88,6 +88,7 @@
     gap: 10px;
     font-size: var(--font-sz-sm);
     animation: fadeUp 0.5s ease both;
+    transition: background 0.3s ease;
 }
 
     .transaction-item:hover {
@@ -97,18 +98,51 @@
 
 /* Header Row */
 .transactions-list .transaction-item.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     font-weight: bold;
     background-color: var(--color-bg-quaternary);
     padding: var(--padding);
     border-radius: var(--radius);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     gap: 10px;
     font-size: var(--font-sz-sm);
 }
 
-/* Transaction Columns */
+    .transactions-list .transaction-item.header .txn-faid,
+    .transactions-list .transaction-item.header .txn-taid {
+        width: 10%;
+        flex-shrink: 0;
+    }
+
+    .transactions-list .transaction-item.header .txn-type {
+        width: 10%;
+        flex-shrink: 0;
+        text-align: center;
+    }
+
+    .transactions-list .transaction-item.header .txn-amount {
+        flex: 1 1 auto;
+        /*        width: 10%;*/
+        flex-shrink: 0;
+        text-align: right;
+    }
+
+    .transactions-list .transaction-item.header .txn-reference {
+        width: 30%;
+        text-align: left;
+        margin: 0 10px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .transactions-list .transaction-item.header .txn-date {
+        width: 10%;
+        flex-shrink: 0;
+        text-align: center;
+    }
+
 .txn-faid, .txn-taid {
     min-width: 10%;
     flex-shrink: 0;
@@ -121,18 +155,21 @@
 }
 
 .txn-amount {
-    min-width: 10%;
+    flex: 1 1 auto;
+    /*    min-width: 10%;*/
     flex-shrink: 0;
     font-weight: bold;
     text-align: right;
 }
 
 .txn-reference {
-    flex: 1 1 auto;
+    width: 30%;
     margin: 0 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    text-align: justify;
+    /*    white-space: nowrap;*/
+    /*    overflow-y: hidden;
+    overflow-x: scroll;*/
+/*    text-overflow: ellipsis;*/
 }
 
 .txn-date {

@@ -76,8 +76,8 @@ namespace vaultx
                         {
                             transactions.Add(new
                             {
-                                FromAccountNumber = reader["FromAID"].ToString(),
-                                ToAccountNumber = reader["ToAID"].ToString(),
+                                FromAccountNumber = (reader["FromAID"].ToString() == accountNumber) ? "Self" : reader["FromAID"].ToString(),
+                                ToAccountNumber = (reader["ToAID"].ToString() == accountNumber) ? "Self" : reader["ToAID"].ToString(),
                                 TransactionType = reader["FromAID"].ToString() == accountNumber.ToString() ? "Debit" : "Credit",
                                 Amount = Convert.ToDecimal(reader["Amount"]),
                                 Reference = reader["Reference"].ToString(),
