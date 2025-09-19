@@ -118,7 +118,8 @@
     font-size: var(--font-sz-sm);
 }
 
-    .transactions-list .transaction-item.header .txn-faid, .transactions-list .transaction-item.header .txn-taid {
+    .transactions-list .transaction-item.header .txn-faid,
+    .transactions-list .transaction-item.header .txn-taid {
         width: 10%;
         flex-shrink: 0;
     }
@@ -275,7 +276,10 @@
 
 /* Input Fields */
 
-.modal-content input[type="text"], .modal-content input[type="number"], .modal-content input[type="password"], .modal-content select {
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content input[type="password"],
+.modal-content select {
     width: 100%;
     padding: 10px 12px;
     margin-bottom: 15px;
@@ -287,7 +291,10 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-    .modal-content input[type="text"]:focus, .modal-content input[type="number"]:focus, .modal-content input[type="password"]:focus, .modal-content select:focus {
+    .modal-content input[type="text"]:focus,
+    .modal-content input[type="number"]:focus,
+    .modal-content input[type="password"]:focus,
+    .modal-content select:focus {
         outline: none;
         border-color: var(--color-font-primary);
         box-shadow: 0 0 5px var(--color-font-primary);
@@ -295,7 +302,8 @@
 
 /* Buttons */
 
-.modal-content button, .modal-content input[type="submit"] {
+.modal-content button,
+.modal-content input[type="submit"] {
     width: 100%;
     background-color: var(--color-bg-tertiary);
     color: var(--color-font-primary);
@@ -307,14 +315,14 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-    .modal-content button:hover, .modal-content input[type="submit"]:hover {
+    .modal-content button:hover,
+    .modal-content input[type="submit"]:hover {
         background-color: var(--color-bg-secondary);
         transform: scale(1.03);
     }
 
-/* ------------------- */
 /* Nominee File Upload Button */
-/* ------------------- */
+
 .file-upload-button {
     width: 100%;
     padding: 10px 12px;
@@ -377,17 +385,37 @@
         padding: 15px;
     }
 
-    .transactions-list .transaction-item, .transactions-list .transaction-item.header {
+    .transactions-list .transaction-item,
+    .transactions-list .transaction-item.header {
         flex-wrap: nowrap;
         gap: 5px;
         padding: 8px;
     }
 
-    .transaction-item .txn-amount, .transaction-item .txn-reference, .transaction-item.header .txn-amount, .transaction-item.header .txn-reference {
+    /* Show amount, hide type */
+    .transaction-item .txn-amount,
+    .transaction-item.header .txn-amount {
+        display: block;
+    }
+
+    .transaction-item .txn-type,
+    .transaction-item.header .txn-type {
         display: none;
     }
 
-    .transaction-item .txn-faid, .transaction-item.header .txn-faid, .transaction-item .txn-taid, .transaction-item.header .txn-taid, .transaction-item .txn-type, .transaction-item.header .txn-type, .transaction-item .txn-id, .transaction-item.header .txn-id, .transaction-item .txn-date, .transaction-item.header .txn-date {
+    .transaction-item .txn-reference,
+    .transaction-item.header .txn-reference {
+        display: none;
+    }
+
+    .transaction-item .txn-faid,
+    .transaction-item.header .txn-faid,
+    .transaction-item .txn-taid,
+    .transaction-item.header .txn-taid,
+    .transaction-item .txn-id,
+    .transaction-item.header .txn-id,
+    .transaction-item .txn-date,
+    .transaction-item.header .txn-date {
         width: 25%;
         text-align: center;
     }
@@ -417,33 +445,43 @@
         font-size: var(--font-sz-sm);
     }
 
-    .transaction-item .txn-amount, .transaction-item .txn-reference, .transaction-item.header .txn-amount, .transaction-item.header .txn-reference {
-        display: none;
-    }
-
-    .transaction-item .txn-faid, .transaction-item.header .txn-faid, .transaction-item .txn-taid, .transaction-item.header .txn-taid {
+    /* Show amount, hide type */
+    .transaction-item .txn-amount,
+    .transaction-item.header .txn-amount {
+        display: block;
         min-width: 25%;
         text-align: start;
         font-size: var(--font-sz-vsm);
     }
 
-    .transaction-item .txn-type, .transaction-item.header .txn-type {
+    .transaction-item .txn-type,
+    .transaction-item.header .txn-type {
+        display: none;
+    }
+
+    .transaction-item .txn-faid,
+    .transaction-item.header .txn-faid,
+    .transaction-item .txn-taid,
+    .transaction-item.header .txn-taid {
         min-width: 25%;
+        text-align: start;
         font-size: var(--font-sz-vsm);
     }
 
-    .transaction-item .txn-id, .transaction-item.header .txn-id {
+    .transaction-item .txn-id,
+    .transaction-item.header .txn-id {
         flex: 1 1 auto;
         font-size: var(--font-sz-vsm);
     }
 
-    .transaction-item .txn-date, .transaction-item.header .txn-date {
+    .transaction-item .txn-date,
+    .transaction-item.header .txn-date {
         min-width: 25%;
         font-size: var(--font-sz-vsm);
     }
 }
 
-/* ------------------- */ /* Extra Animations 🎉 */ /* ------------------- */
+/* Extra Animations */
 
 @keyframes cardGlow {
     0% {
@@ -467,8 +505,6 @@
     }
 }
 
-/* Slow fade-in for accounts section */
-
 @keyframes accountsFadeIn {
     from {
         opacity: 0;
@@ -479,7 +515,7 @@
     }
 }
 
-/* ------------------- */ /* Modal Pop-up Animations */
+/* Modal Pop-up Animations */
 
 @keyframes modalFadeInScale {
     0% {
