@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AccountDetails.aspx" />
     <Content Include="ForgetPassword.aspx" />
     <Content Include="Dashboard.aspx" />
     <Content Include="Home.aspx" />
@@ -75,6 +76,7 @@
     <Content Include="scripts\home.js" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
+    <Content Include="styles\accountdetails.css" />
     <Content Include="styles\dashboard.css" />
     <Content Include="styles\global.css" />
     <Content Include="styles\home.css" />
@@ -83,6 +85,13 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountDetails.aspx.cs">
+      <DependentUpon>AccountDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AccountDetails.aspx.designer.cs">
+      <DependentUpon>AccountDetails.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ForgetPassword.aspx.cs">
       <DependentUpon>ForgetPassword.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
