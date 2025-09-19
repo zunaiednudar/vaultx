@@ -112,7 +112,7 @@
     font-size: var(--font-sz-sm);
 }
 
-    .transactions-list .transaction-item.header .txn-aid {
+    .transactions-list .transaction-item.header .txn-faid, .transactions-list .transaction-item.header .txn-taid {
         width: 10%;
         flex-shrink: 0;
     }
@@ -152,7 +152,7 @@
 
 
 
-.txn-aid {
+.txn-faid, .txn-taid {
     min-width: 10%;
     flex-shrink: 0;
 }
@@ -340,8 +340,10 @@
     }
 
     /* Keep Account No, Transaction Type, Transaction ID, Date evenly distributed */
-    .transaction-item .txn-aid,
-    .transaction-item.header .txn-aid,
+    .transaction-item .txn-faid,
+    .transaction-item.header .txn-faid,
+    .transaction-item .txn-taid,
+    .transaction-item.header .txn-taid,
     .transaction-item .txn-type,
     .transaction-item.header .txn-type,
     .transaction-item .txn-id,
@@ -388,8 +390,10 @@
     }
 
     /* Keep remaining columns distributed horizontally */
-    .transaction-item .txn-aid,
-    .transaction-item.header .txn-aid {
+    .transaction-item .txn-faid,
+    .transaction-item.header .txn-faid,
+    .transaction-item .txn-taid,
+    .transaction-item.header .txn-taid {
         min-width: 25%;
         text-align: start;
         font-size: var(--font-sz-vsm);

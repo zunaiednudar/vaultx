@@ -8,10 +8,15 @@
     --font-sz-sm: 1.4rem;
     --font-sz-vsm: 0.5rem;
     /* Background Colors */
-    --color-bg-primary: #FF6B6B;
+    --color-bg-primary: hsl(210, 100%, 100%);
+    /* Shades of Primary */
+    --color-bg-secondary: hsl(210, 100%, 70%); /* Lighter shade */
+    --color-bg-tertiary: hsl(210, 100%, 80%); /* Even lighter */
+    --color-bg-quaternary: hsl(210, 100%, 90%); /* Very light */
+    /*--color-bg-primary: #FF6B6B;
     --color-bg-secondary: #4ECDC4;
     --color-bg-tertiary: #FFD93D;
-    --color-bg-quaternary: #F9F4E6;
+    --color-bg-quaternary: #F9F4E6;*/
     /* Font Colors */
     --color-font-primary: #1A1A1A;
     --color-font-secondary: #333333;

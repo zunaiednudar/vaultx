@@ -31,10 +31,10 @@ namespace vaultx
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string query = @"
-                                SELECT AID, AType, ABalance, ACreatedAt
+                                SELECT AID, AccountType, Balance, CreatedAt
                                 FROM Accounts
                                 WHERE UID = @UID
-                                ORDER BY ACreatedAt ASC
+                                ORDER BY CreatedAt ASC
                                 ";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -50,8 +50,8 @@ namespace vaultx
                             accounts.Add(new
                             {
                                 AccountNumber = reader["AID"].ToString(),
-                                Balance = Convert.ToDecimal(reader["ABalance"]),
-                                AccountType = reader["AType"].ToString()
+                                Balance = Convert.ToDecimal(reader["Balance"]),
+                                AccountType = reader["AccountType"].ToString()
                             });
                         }
                     }
@@ -69,7 +69,7 @@ namespace vaultx
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string query = "SELECT AID, AType, ABalance, ACreatedAt FROM Accounts WHERE UID = @UID";
+                string query = "SELECT AID, AccountType, Balance, CreatedAt FROM Accounts WHERE UID = @UID";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -89,10 +89,10 @@ namespace vaultx
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string query = @"
-                                SELECT TOP 10 T.TID, T.AID, T.TrxID, T.TType, T.TAmount, T.TReference, T.TDate
-                                FROM Transactions T INNER JOIN Accounts A ON T.AID = A.AID
+                                SELECT TOP 10 T.TID, T.FromAID, T.ToAID, T.Amount, T.Reference, T.Date, A.AID, A.AccountType
+                                FROM Transactions T INNER JOIN Accounts A ON T.FromAID = A.AID OR T.ToAID = A.AID
                                 WHERE A.UID = @UID
-                                ORDER BY T.TDate DESC
+                                ORDER BY T.Date DESC
                                 ";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -107,12 +107,12 @@ namespace vaultx
                         {
                             transactions.Add(new
                             {
-                                AccountNumber = reader["AID"].ToString(),
-                                TransactionType = reader["TType"].ToString(),
-                                TransactionId = reader["TrxID"].ToString(),
-                                Amount = Convert.ToDecimal(reader["TAmount"]),
-                                Reference = reader["TReference"].ToString(),
-                                Date = Convert.ToDateTime(reader["TDate"])
+                                FromAccountNumber = (reader["FromAID"].ToString() == reader["AID"].ToString()) ? (reader["AccountType"].ToString() + "<br>Account") : reader["FromAID"].ToString(),
+                                ToAccountNumber = (reader["ToAID"].ToString() == reader["AID"].ToString()) ? (reader["AccountType"].ToString() + "<br>Account") : reader["ToAID"].ToString(),
+                                TransactionType = (reader["FromAID"].ToString() == reader["AID"].ToString()) ? "Debit" : "Credit",
+                                Amount = Convert.ToDecimal(reader["Amount"]),
+                                Reference = reader["Reference"].ToString(),
+                                Date = Convert.ToDateTime(reader["Date"])
                             });
                         }
                     }
@@ -175,15 +175,15 @@ namespace vaultx
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string query = @"
-                                INSERT INTO Accounts (AID, AType, ABalance, UID)
-                                VALUES (@AID, @AType, @ABalance, @UID)
+                                INSERT INTO Accounts (AID, AccountType, Balance, UID)
+                                VALUES (@AID, @AccountType, @Balance, @UID)
                                 ";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@AID", aid.ToString());
-                    command.Parameters.AddWithValue("@AType", type);
-                    command.Parameters.AddWithValue("@ABalance", 0.00m);
+                    command.Parameters.AddWithValue("@AccountType", type);
+                    command.Parameters.AddWithValue("@Balance", 0.00m);
                     command.Parameters.AddWithValue("@UID", uid);
                     connection.Open();
                     command.ExecuteNonQuery();
