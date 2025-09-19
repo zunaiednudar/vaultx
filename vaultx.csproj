@@ -72,9 +72,12 @@
     <Content Include="scripts\home.js" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
+    <Content Include="scripts\sidebar.js" />
     <Content Include="styles\global.css" />
     <Content Include="styles\Register.css" />
+    <Content Include="styles\sidebar.css" />
     <Content Include="Web.config" />
+    <Content Include="Sidebar.ascx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForgetPassword.aspx.cs">
@@ -113,6 +116,13 @@
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
     </Compile>
+    <Compile Include="Sidebar.ascx.cs">
+      <DependentUpon>Sidebar.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sidebar.ascx.designer.cs">
+      <DependentUpon>Sidebar.ascx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
@@ -127,8 +137,6 @@
   <ItemGroup>
     <Folder Include="assets\" />
     <Folder Include="images\" />
-    <Folder Include="images\" />
-    <Folder Include="scripts\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

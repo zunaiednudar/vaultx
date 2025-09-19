@@ -1,11 +1,13 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="vaultx.Site" %>
-
+<%@ Register Src="Sidebar.ascx" TagName="Sidebar" TagPrefix="uc" %>
 <!DOCTYPE html>
 
 <html>
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/global.css?v=<%= DateTime.Now.Ticks %>" />
+    <link rel="stylesheet" href="styles/sidebar.css?v=<%= DateTime.Now.Ticks %>" />
 
     <!--Google Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,6 +18,7 @@
 
     <!--Icons (Font Awesome)-->
     <script src="https://kit.fontawesome.com/115498d46a.js" crossorigin="anonymous"></script>
+    <script src="scripts/sidebar.js"></script>
 
     <!--CSS-->
     <link rel="stylesheet" href="styles/global.css" type="text/css" />
@@ -28,25 +31,33 @@
 </head>
 <body>
     <form id="form1" runat="server">
+
+  
+
         <!-- Header Section -->
         <header>
-            <!--<p>This is header</p>-->
+ 
+          <button type="button" class="hamburger" onclick="toggleSidebar(event)" aria-label="Toggle sidebar">
+      <span class="bar bar1"></span>
+      <span class="bar bar2"></span>
+      <span class="bar bar3"></span>
+  </button>
         </header>
 
         <!--Navigation Section-->
         <!--The popup sidebar should replace this part-->
-        <nav class="site-nav">
-            <ul class="site-nav-ul">
-                <li class="site-nav-ul-li <%# Page.Title == "Home" ? "active" : "" %>"><a href="Home.aspx">Home</a></li>
-                <li class="site-nav-ul-li <%# Page.Title == "Dashboard" ? "active" : "" %>"><a href="Dashboard.aspx">Dashboard</a></li>
-            </ul>
-        </nav>
+         <!-- Sidebar -->
+        <uc:Sidebar ID="Sidebar1" runat="server" />
 
         <!--Main Section-->
         <!--This is where each page will inject its unique main content-->
         <main class="site-container">
+
             <asp:ContentPlaceHolder ID="SiteMainContent" runat="server">
+
             </asp:ContentPlaceHolder>
+            
+ 
         </main>
 
         <!--Footer Section-->
