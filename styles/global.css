@@ -2,27 +2,30 @@
 
 :root {
     /* Font Styles */
-    --font-stack: 'Poppins', 'Josefin Sans', Helvetica, sans-serif;
+    --font-stack: 'Josefin Sans', Helvetica, sans-serif;
     --font-sz-lg: 2.2rem;
     --font-sz-md: 1.8rem;
     --font-sz-sm: 1.4rem;
-
+    --font-sz-vsm: 0.5rem;
     /* Background Colors */
-    --color-bg-primary: #FF6B6B;
+    --color-bg-primary: hsl(210, 100%, 100%);
+    /* Shades of Primary */
+    --color-bg-secondary: hsl(210, 100%, 70%); /* Lighter shade */
+    --color-bg-tertiary: hsl(210, 100%, 80%); /* Even lighter */
+    --color-bg-quaternary: hsl(210, 100%, 90%); /* Very light */
+    /*--color-bg-primary: #FF6B6B;
     --color-bg-secondary: #4ECDC4;
     --color-bg-tertiary: #FFD93D;
-
+    --color-bg-quaternary: #F9F4E6;*/
     /* Font Colors */
     --color-font-primary: #1A1A1A;
     --color-font-secondary: #333333;
     --color-font-tertiary: #555555;
-
     /* Action Colors */
     --color-hover: #FF9F40;
     --color-focus: #845EC2;
     --color-active: #00C9A7;
     --color-disabled: rgba(0, 0, 0, 0.3);
-
     /* Default Properties */
     --radius: 10px;
     --margin: 10px;
@@ -38,6 +41,7 @@
 * {
     padding: 0;
     margin: 0;
+    font-family: var(--font-stack), serif;
 }
 
     *::placeholder {
@@ -64,3 +68,7 @@
     *::-webkit-scrollbar-button {
         background-color: var(--color-bg-primary);
     }
+
+.site-container {
+    padding: 10px;
+}

@@ -1,0 +1,554 @@
+﻿#DashboardMainContent {
+}
+
+/* Accounts Section */
+
+.accounts-section {
+    margin-bottom: 30px;
+    opacity: 0;
+    animation: accountsFadeIn 1.5s ease forwards;
+}
+
+    .accounts-section h2 {
+        font-size: var(--font-sz-lg);
+        margin-bottom: 15px;
+        text-align: center;
+        color: var(--color-font-primary);
+    }
+
+.accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--margin);
+}
+
+.account-card {
+    min-height: 100px;
+    background: var(--color-bg-secondary);
+    padding: var(--padding);
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    color: var(--color-font-primary);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: justify;
+    font-size: var(--font-sz-md);
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+    .account-card:hover {
+        transform: scale(1.02);
+        background: var(--color-hover);
+        cursor: pointer;
+        animation: cardGlow 0.8s ease-in-out infinite alternate;
+    }
+
+    .account-card.add-card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: bold;
+        background: var(--color-bg-tertiary);
+        color: var(--color-font-primary);
+        border: 2px dashed var(--color-font-secondary);
+        transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+        .account-card.add-card:hover {
+            background: var(--color-bg-secondary);
+            transform: scale(1.02);
+            cursor: pointer;
+        }
+
+/* Transactions Section */
+
+.transactions-section {
+    padding: var(--padding);
+    border-radius: var(--radius);
+    background-color: var(--color-bg-quaternary);
+}
+
+    .transactions-section h2 {
+        font-size: var(--font-sz-lg);
+        margin-bottom: 10px;
+        text-align: center;
+        color: var(--color-font-primary);
+    }
+
+.transactions-list {
+    padding-right: 5px;
+    transition: all 0.3s ease;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--padding);
+    margin-bottom: 8px;
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    transition: background 0.3s ease;
+    gap: 10px;
+    font-size: var(--font-sz-sm);
+    animation: fadeUp 0.5s ease both;
+}
+
+    .transaction-item:hover {
+        background: var(--color-bg-secondary);
+        cursor: pointer;
+    }
+
+/* Header */
+
+.transactions-list .transaction-item.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    background-color: var(--color-bg-quaternary);
+    padding: var(--padding);
+    border-radius: var(--radius);
+    gap: 10px;
+    font-size: var(--font-sz-sm);
+}
+
+    .transactions-list .transaction-item.header .txn-faid,
+    .transactions-list .transaction-item.header .txn-taid {
+        width: 10%;
+        flex-shrink: 0;
+    }
+
+    .transactions-list .transaction-item.header .txn-type {
+        width: 10%;
+        flex-shrink: 0;
+        text-align: center;
+    }
+
+    .transactions-list .transaction-item.header .txn-amount {
+        flex: 1 1 auto;
+/*        width: 10%;*/
+        flex-shrink: 0;
+        text-align: right;
+    }
+
+    .transactions-list .transaction-item.header .txn-reference {
+        width: 30%;
+        text-align: left;
+        margin: 0 10px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .transactions-list .transaction-item.header .txn-date {
+        width: 10%;
+        flex-shrink: 0;
+        text-align: center;
+    }
+
+.txn-faid, .txn-taid {
+    min-width: 10%;
+    flex-shrink: 0;
+}
+
+.txn-type {
+    min-width: 10%;
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.txn-amount {
+    flex: 1 1 auto;
+    /*    min-width: 10%;*/
+    flex-shrink: 0;
+    font-weight: bold;
+    text-align: right;
+}
+
+.txn-reference {
+    width: 30%;
+    margin: 0 10px;
+    text-align: justify;
+    /*    white-space: nowrap;*/
+    /*    overflow-y: hidden;
+    overflow-x: scroll;*/
+/*    text-overflow: ellipsis;*/
+}
+
+.txn-date {
+    min-width: 10%;
+    flex-shrink: 0;
+    text-align: center;
+    color: var(--color-font-tertiary);
+}
+
+/* Modal Overlay */
+
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal.hide {
+        display: none;
+    }
+
+/* Modal Content */
+
+.modal-content {
+    background-color: var(--color-bg-primary);
+    padding: 25px;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+    width: 400px;
+    max-width: 90%;
+    position: relative;
+    transition: transform 0.3s ease;
+    color: var(--color-font-primary);
+}
+
+    .modal-content:hover {
+        transform: scale(1.02);
+    }
+
+/* Close Button */
+
+.close {
+    color: var(--color-font-secondary);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+    .close:hover {
+        color: var(--color-font-primary);
+    }
+
+/* Modal Headings */
+
+.modal-content h2 {
+    font-size: var(--font-sz-lg);
+    margin-bottom: 20px;
+    color: var(--color-font-primary);
+    text-align: center;
+}
+
+/* Labels */
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: var(--font-sz-sm);
+    color: var(--color-font-primary);
+}
+
+/* Input Fields */
+
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content input[type="password"],
+.modal-content select {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius);
+    background-color: var(--color-bg-primary);
+    color: var(--color-font-primary);
+    font-size: var(--font-sz-md);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .modal-content input[type="text"]:focus,
+    .modal-content input[type="number"]:focus,
+    .modal-content input[type="password"]:focus,
+    .modal-content select:focus {
+        outline: none;
+        border-color: var(--color-font-primary);
+        box-shadow: 0 0 5px var(--color-font-primary);
+    }
+
+/* Buttons */
+
+.modal-content button,
+.modal-content input[type="submit"] {
+    width: 100%;
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-font-primary);
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: var(--font-sz-md);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .modal-content button:hover,
+    .modal-content input[type="submit"]:hover {
+        background-color: var(--color-bg-secondary);
+        transform: scale(1.03);
+    }
+
+/* Nominee File Upload Button */
+
+.file-upload-button {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    font-size: var(--font-sz-md);
+    color: var(--color-font-primary);
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .file-upload-button:hover {
+        background-color: var(--color-bg-secondary);
+        transform: scale(1.03);
+    }
+
+    .file-upload-button::-webkit-file-upload-button {
+        visibility: hidden;
+    }
+
+    .file-upload-button::before {
+        content: "Choose File";
+        display: inline-block;
+        width: 100%;
+        padding: 10px 12px;
+        background-color: var(--color-bg-tertiary);
+        color: var(--color-font-primary);
+        border-radius: var(--radius);
+        text-align: center;
+        cursor: pointer;
+        font-size: var(--font-sz-md);
+    }
+
+    .file-upload-button:hover::before {
+        background-color: var(--color-bg-secondary);
+        transform: scale(1.03);
+    }
+
+/* Responsive adjustments */
+
+@media screen and (max-width: 1280px) {
+    .accounts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+    }
+
+    .account-card {
+        font-size: calc(var(--font-sz-md) - 1px);
+        min-height: 90px;
+    }
+
+        .account-card.add-card {
+            font-size: 2.5rem;
+        }
+
+    .transactions-section {
+        padding: 15px;
+    }
+
+    .transactions-list .transaction-item,
+    .transactions-list .transaction-item.header {
+        flex-wrap: nowrap;
+        gap: 5px;
+        padding: 8px;
+    }
+
+    /* Show amount, hide type */
+    .transaction-item .txn-amount,
+    .transaction-item.header .txn-amount {
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: var(--font-sz-sm);
+    }
+
+    .transaction-item .txn-type,
+    .transaction-item.header .txn-type {
+        display: none;
+    }
+
+    .transaction-item .txn-reference,
+    .transaction-item.header .txn-reference {
+        display: none;
+    }
+
+    .transaction-item .txn-faid,
+    .transaction-item.header .txn-faid,
+    .transaction-item .txn-taid,
+    .transaction-item.header .txn-taid {
+        flex: 0 0 25%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: var(--font-sz-sm);
+    }
+
+    .transaction-item .txn-date,
+    .transaction-item.header .txn-date {
+        flex: 0 0 25%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        font-size: var(--font-sz-sm);
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .accounts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+        gap: 10px;
+    }
+
+    .account-card {
+        font-size: var(--font-sz-sm);
+        min-height: 80px;
+    }
+
+        .account-card.add-card {
+            font-size: 1.8rem;
+        }
+
+    .transactions-section h2 {
+        font-size: var(--font-sz-sm);
+    }
+
+    /* Show amount, hide type */
+    .transaction-item .txn-amount,
+    .transaction-item.header .txn-amount {
+        /*        display: block;*/
+        /*        min-width: 25%;*/
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: var(--font-sz-vsm);
+    }
+
+    .transaction-item .txn-type,
+    .transaction-item.header .txn-type {
+        display: none;
+    }
+
+    .transaction-item .txn-faid,
+    .transaction-item.header .txn-faid,
+    .transaction-item .txn-taid,
+    .transaction-item.header .txn-taid {
+        flex: 0 0 25%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: var(--font-sz-vsm);
+    }
+
+    .transaction-item .txn-date,
+    .transaction-item.header .txn-date {
+        flex: 0 0 25%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        font-size: var(--font-sz-vsm);
+    }
+}
+
+/* Extra Animations */
+
+@keyframes cardGlow {
+    0% {
+        box-shadow: 0 0 0px rgba(0, 255, 255, 0.4);
+    }
+
+    100% {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes accountsFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Modal Pop-up Animations */
+
+@keyframes modalFadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes modalFadeOutScale {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+}
+
+.modal.show .modal-content {
+    animation: modalFadeInScale 0.4s ease forwards;
+}
+
+.modal.hide .modal-content {
+    animation: modalFadeOutScale 0.3s ease forwards;
+}
