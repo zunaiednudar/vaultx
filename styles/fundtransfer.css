@@ -1,0 +1,392 @@
+﻿/* Fund Transfer Styles */
+.fund-transfer-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 20px;
+    font-family: var(--font-stack);
+}
+
+/* Balance Section */
+.balance-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.balance-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 30px;
+    border-radius: 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .balance-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        pointer-events: none;
+    }
+
+    .balance-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+.available-balance {
+    background: linear-gradient(135deg, #4ECDC4 0%, #00C9A7 100%);
+}
+
+.balance-icon {
+    font-size: 3rem;
+    opacity: 0.8;
+}
+
+.balance-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.balance-amount {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Transfer Form Section */
+.transfer-form-section {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.transfer-form {
+    padding: 0;
+}
+
+.form-header {
+    background: linear-gradient(135deg, #FF6B6B, #FFD93D);
+    padding: 30px;
+    text-align: center;
+    color: white;
+}
+
+    .form-header h2 {
+        margin: 0 0 10px 0;
+        font-size: 2.2rem;
+        font-weight: 700;
+    }
+
+    .form-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+
+.form-body {
+    padding: 40px;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 25px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: var(--color-font-secondary);
+        font-size: 1rem;
+    }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: #4ECDC4;
+            width: 20px;
+        }
+
+.form-control {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e1e5e9;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    font-family: var(--font-stack);
+}
+
+    .form-control:focus {
+        border-color: #4ECDC4;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .form-control::placeholder {
+        color: #adb5bd;
+    }
+
+/* Checkbox Group */
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.checkbox-input {
+    margin-top: 2px;
+    transform: scale(1.2);
+}
+
+.checkbox-label {
+    margin-bottom: 0;
+    font-weight: normal;
+    line-height: 1.5;
+}
+
+    .checkbox-label a {
+        color: #4ECDC4;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .checkbox-label a:hover {
+            text-decoration: underline;
+        }
+
+/* Form Actions */
+.form-actions {
+    padding: 30px 40px;
+    background: #f8f9fa;
+    display: flex;
+    gap: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn {
+    flex: 1;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2);
+        transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+.btn-primary {
+    background: linear-gradient(135deg, #4ECDC4, #55EFC4);
+    color: white;
+    box-shadow: 0 5px 20px rgba(78, 205, 196, 0.3);
+}
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #55EFC4, #4ECDC4);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+    }
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    box-shadow: 0 5px 20px rgba(108, 117, 125, 0.3);
+}
+
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-3px);
+    }
+
+/* Result Panels */
+.result-panel {
+    text-align: center;
+    padding: 50px 40px;
+    border-radius: 20px;
+    margin-top: 20px;
+}
+
+    .result-panel.success {
+        background: linear-gradient(135deg, #00C9A7, #4ECDC4);
+        color: white;
+    }
+
+    .result-panel.error {
+        background: linear-gradient(135deg, #FF6B6B, #FF9F40);
+        color: white;
+    }
+
+.result-icon {
+    font-size: 5rem;
+    margin-bottom: 25px;
+    opacity: 0.9;
+}
+
+.result-panel h3 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.result-panel p {
+    margin-bottom: 30px;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.transfer-details {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 25px;
+    border-radius: 15px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+
+.detail-label {
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.detail-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Validator Text */
+.validator-text {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 8px;
+    display: block;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .fund-transfer-container {
+        padding: 20px 15px;
+    }
+
+    .balance-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .balance-card {
+        padding: 25px 20px;
+    }
+
+    .balance-amount {
+        font-size: 1.8rem;
+    }
+
+    .form-header {
+        padding: 25px 20px;
+    }
+
+        .form-header h2 {
+            font-size: 1.8rem;
+        }
+
+    .form-body {
+        padding: 30px 20px;
+    }
+
+    .form-actions {
+        padding: 25px 20px;
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .checkbox-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .result-panel {
+        padding: 40px 20px;
+    }
+
+    .result-icon {
+        font-size: 4rem;
+    }
+
+    .transfer-details {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .balance-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .balance-amount {
+        font-size: 1.5rem;
+    }
+
+    .form-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .result-panel h3 {
+        font-size: 1.5rem;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
