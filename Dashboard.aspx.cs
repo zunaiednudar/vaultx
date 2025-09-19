@@ -126,6 +126,9 @@ namespace vaultx
         protected void btnCreateAccount_Click(object sender, EventArgs e)
         {
             string selectedType = ddlAccountType.SelectedValue;
+            string nomineeName = txtNomineeName.Text.Trim();
+            string nomineeNID = txtNomineeNID.Text.Trim();
+            string nomineeImage = "";
 
             if (string.IsNullOrEmpty(selectedType))
             {
@@ -133,10 +136,25 @@ namespace vaultx
                 return;
             }
 
+            if (string.IsNullOrEmpty(nomineeName) || string.IsNullOrEmpty(nomineeNID))
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please enter nominee details');", true);
+                return;
+            }
+
+            // Handle Nominee Image upload
+            if (fuNomineeImage.HasFile)
+            {
+                string fileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(fuNomineeImage.FileName);
+                string savePath = Server.MapPath("~/images/nominees/") + fileName;
+                fuNomineeImage.SaveAs(savePath);
+                nomineeImage = "~/images/nominees/" + fileName;
+            }
+
             // Check if the account type already exists
             int uid = 1; // Replace with Session UID if needed
             DataTable userAccounts = GetUserAccounts(uid);
-            if (userAccounts.AsEnumerable().Any(r => r.Field<string>("AType") == selectedType))
+            if (userAccounts.AsEnumerable().Any(r => r.Field<string>("AccountType") == selectedType))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('You can only create one account of this type');", true);
                 return;
@@ -146,7 +164,8 @@ namespace vaultx
             int lastAid = GetLastAccountNumber();
             int newAid = lastAid + 1;
 
-            CreateAccount(newAid, selectedType, uid);
+            // Create the account with nominee info
+            CreateAccount(newAid, selectedType, uid, nomineeName, nomineeNID, nomineeImage);
 
             BindAccounts();
 
@@ -170,14 +189,15 @@ namespace vaultx
             }
         }
 
-        private void CreateAccount(int aid, string type, int uid)
+        // Updated CreateAccount to include nominee info
+        private void CreateAccount(int aid, string type, int uid, string nomineeName, string nomineeNID, string nomineeImage)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string query = @"
-                                INSERT INTO Accounts (AID, AccountType, Balance, UID)
-                                VALUES (@AID, @AccountType, @Balance, @UID)
-                                ";
+            INSERT INTO Accounts (AID, AccountType, Balance, UID, NomineeName, NomineeNID, NomineeImage)
+            VALUES (@AID, @AccountType, @Balance, @UID, @NomineeName, @NomineeNID, @NomineeImage)
+        ";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -185,6 +205,9 @@ namespace vaultx
                     command.Parameters.AddWithValue("@AccountType", type);
                     command.Parameters.AddWithValue("@Balance", 0.00m);
                     command.Parameters.AddWithValue("@UID", uid);
+                    command.Parameters.AddWithValue("@NomineeName", nomineeName);
+                    command.Parameters.AddWithValue("@NomineeNID", nomineeNID);
+                    command.Parameters.AddWithValue("@NomineeImage", nomineeImage);
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
