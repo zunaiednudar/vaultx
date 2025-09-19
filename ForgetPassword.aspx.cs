@@ -1,0 +1,127 @@
+﻿using System;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Net;
+using System.Net.Mail;
+
+namespace vaultx
+{
+    public partial class ForgetPassword : System.Web.UI.Page
+    {
+        private string GeneratedOtp
+        {
+            get { return (string)ViewState["GeneratedOtp"]; }
+            set { ViewState["GeneratedOtp"] = value; }
+        }
+
+        private string UserEmail
+        {
+            get { return (string)ViewState["UserEmail"]; }
+            set { ViewState["UserEmail"] = value; }
+        }
+
+        protected void btnSendOtp_Click(object sender, EventArgs e)
+        {
+            string email = txtEmail.Text.Trim();
+            if (IsEmailRegistered(email))
+            {
+                // generate OTP and store in ViewState
+                GeneratedOtp = new Random().Next(100000, 999999).ToString();
+                UserEmail = email;
+
+                // send OTP email
+                SendOtpEmail(email, GeneratedOtp);
+
+                // for development, also write to debug console
+                System.Diagnostics.Debug.WriteLine("OTP for " + email + ": " + GeneratedOtp);
+
+                // switch to OTP panel
+                pnlEmail.Visible = false;
+                pnlOtp.Visible = true;
+            }
+            else
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Email not found!');", true);
+            }
+        }
+
+        protected void btnVerifyOtp_Click(object sender, EventArgs e)
+        {
+            if (txtOtp.Text.Trim() == GeneratedOtp)
+            {
+                pnlOtp.Visible = false;
+                pnlReset.Visible = true;
+            }
+            else
+            {
+                pnlOtp.Visible = false;
+                wrongotp.Visible = true;
+            }
+        }
+
+        protected void btnResetPassword_Click(object sender, EventArgs e)
+        {
+            if (txtNewPassword.Text == txtConfirmPassword.Text)
+            {
+                UpdatePassword(UserEmail, txtNewPassword.Text.Trim());
+                pnlReset.Visible = false;
+                pnlSuccess.Visible = true;
+            }
+            else
+            {
+                lblPasswordError.Text = "Passwords do not match!";
+            }
+        }
+
+        private bool IsEmailRegistered(string email)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT COUNT(*) FROM dbo.Users WHERE Email=@Email";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Email", email);
+                conn.Open();
+                int count = (int)cmd.ExecuteScalar();
+                return count > 0;
+            }
+        }
+
+        private void UpdatePassword(string email, string newPassword)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "UPDATE dbo.Users SET Password=@Password WHERE Email=@Email";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Password", newPassword); // hash in production
+                cmd.Parameters.AddWithValue("@Email", email);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private void SendOtpEmail(string toEmail, string otp)
+        {
+            try
+            {
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress("your-email@gmail.com"); // your email
+                mail.To.Add(toEmail);
+                mail.Subject = "Your OTP Code - VaultX";
+                mail.Body = "Your OTP code is: " + otp;
+                mail.IsBodyHtml = false;
+
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs"); // app password
+                smtp.EnableSsl = true;
+
+                smtp.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error sending OTP: {ex.Message}');", true);
+            }
+        }
+    }
+}
