@@ -39,8 +39,8 @@ namespace vaultx
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    // command.Parameters.AddWithValue("@UID", Session["UID"]);
-                    command.Parameters.AddWithValue("@UID", 1);
+                    command.Parameters.AddWithValue("@UID", Session["UID"]);
+                    // command.Parameters.AddWithValue("@UID", 1);
                     connection.Open();
 
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -97,8 +97,8 @@ namespace vaultx
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    // command.Parameters.AddWithValue("@UID", Session["UID"]);
-                    command.Parameters.AddWithValue("@UID", 1);
+                    command.Parameters.AddWithValue("@UID", Session["UID"]);
+                    // command.Parameters.AddWithValue("@UID", 1);
                     connection.Open();
 
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -152,7 +152,8 @@ namespace vaultx
             }
 
             // Check if the account type already exists
-            int uid = 1; // Replace with Session UID if needed
+            // int uid = 1; // Replace with Session UID if needed
+            int uid = Convert.ToInt32(Session["UID"]);
             DataTable userAccounts = GetUserAccounts(uid);
             if (userAccounts.AsEnumerable().Any(r => r.Field<string>("AccountType") == selectedType))
             {
