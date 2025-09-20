@@ -5,6 +5,7 @@
     <script src="scripts/home.js" defer></script>
     <meta name="description" content="VaultX Bank — secure, smart, and modern banking for everyone." />
 </asp:Content>
+
 <asp:Content ID="HomeMainContent" ContentPlaceHolderID="SiteMainContent" runat="server">
     <!-- HERO SECTION -->
     <section class="hero" role="banner" aria-label="Bank hero section">

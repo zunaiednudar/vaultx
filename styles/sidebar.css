@@ -1,0 +1,148 @@
+﻿
+.site-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background: #1a1a1a;
+    color: #fff;
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+    z-index: 2000;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+}
+
+
+
+    .site-sidebar.open {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+.sidebar-menu {
+
+    margin: 0;
+    list-style: none;
+    font-family: var(--font-stack);
+}
+
+    .sidebar-menu li {
+        margin: 20px 0;
+    }
+
+        .sidebar-menu li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            transition: color 0.2s ease;
+        }
+
+            .sidebar-menu li a i {
+                margin-right: 10px;
+            }
+
+           
+            .sidebar-menu li a:hover {
+                color: #00bfff;
+            }
+
+
+    .sidebar-menu.bottom-menu {
+        margin-bottom: 20px;
+    }
+
+
+body.sidebar-open::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 1500;
+}
+
+body.sidebar-open::after {
+    opacity: 1;
+}
+
+
+body.sidebar-open {
+    overflow: hidden;
+}
+
+.hamburger {
+    position: absolute;
+    top: 20px; 
+    left: 20px; 
+    z-index: 3000;
+    background: none;
+    border: none;
+    width: 30px;
+    height: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+    .hamburger .bar {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color:peru;
+        border-radius: 2px;
+        transition: all 0.4s ease;
+    }
+
+
+body.sidebar-open .hamburger .bar1 {
+    transform: rotate(45deg) translate(5px, 5px);
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+
+body.sidebar-open .hamburger .bar2 {
+    opacity: 0;
+}
+
+body.sidebar-open .hamburger .bar3 {
+    transform: rotate(-45deg) translate(5px, -5px);
+    background-color: #fff;
+    margin-bottom:5px;
+}
+
+
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 0; 
+    margin: 0; 
+    background: transparent; 
+    height: 0;
+}
+
+    header .logo {
+        margin-left: 15px;
+        font-family: var(--font-stack);
+        font-size: 20px;
+        color: #333;
+    }
+.site-sidebar .sidebar-menu li a.active {
+    color: #00bfff;
+    font-weight: bold;
+
+}

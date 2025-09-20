@@ -1,19 +1,33 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="vaultx.Login" %>
-
+<%@ Register Src="Sidebar.ascx" TagName="Sidebar" TagPrefix="uc" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VaultX - Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles/global.css" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+ <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles/global.css?v=<%= DateTime.Now.Ticks %>" />
     <link rel="stylesheet" href="styles/Register.css?v=<%= DateTime.Now.Ticks %>" />
+      <link rel="stylesheet" href="styles/sidebar.css?v=<%= DateTime.Now.Ticks %>" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
     <form id="form1" runat="server">
         <asp:HiddenField ID="hfEmail" runat="server" />
+
+
+            <uc:Sidebar ID="Sidebar1" runat="server" />
+
+   <!-- Hamburger button -->
+   <button type="button" class="hamburger" onclick="toggleSidebar(event)" aria-label="Toggle sidebar">
+       <span class="bar bar1"></span>
+       <span class="bar bar2"></span>
+       <span class="bar bar3"></span>
+   </button>
 
         <div class="page-flex">
 
@@ -85,7 +99,7 @@
 
             </div>
         </div>
-
+           <script src='<%= ResolveUrl("scripts/sidebar.js") %>?v=<%= DateTime.Now.Ticks %>'></script>
         <script runat="server">
             protected void Page_PreInit(object sender, EventArgs e)
             {
