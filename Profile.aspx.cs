@@ -12,7 +12,7 @@ namespace vaultx
             if (!IsPostBack)
             {
                 // Get user ID from session
-                var userId = Session["UserId"];
+                var userId = Session["UID"];
                 if (userId == null)
                 {
                     Response.Redirect("Login.aspx");

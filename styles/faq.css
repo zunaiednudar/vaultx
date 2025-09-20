@@ -9,13 +9,17 @@
 }
 * {
     font-family: var(--font-stack);
+  
 }
 
+body{
+    background-color: hsl(210, 100%, 80%);
+}
 .faq-content {
     max-width: 900px;
     margin: auto;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: hsl(210, 100%, 70%);
     border-radius: var(--radius);
 }
 
@@ -39,7 +43,8 @@
     text-align: left;
     font-size: 1.6rem;
     font-weight: 600;
-    background: #fff;
+    background: hsl(210, 100%, 90%);
+    
     border: none;
     outline: none;
     cursor: pointer;
