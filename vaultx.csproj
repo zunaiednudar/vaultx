@@ -68,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FAQ.aspx" />
     <Content Include="ForgetPassword.aspx" />
     <Content Include="FundTransfer.aspx" />
     <Content Include="Home.aspx" />
@@ -80,15 +81,28 @@
 =======
     <Content Include="scripts\sidebar.js" />
 >>>>>>> 166ce00 (Sidebar added with different options)
+    <Content Include="scripts\terms.js" />
+    <Content Include="styles\faq.css" />
     <Content Include="styles\global.css" />
     <Content Include="styles\home.css" />
     <Content Include="styles\profile.css" />
+    <Content Include="styles\logout.css" />
     <Content Include="styles\Register.css" />
     <Content Include="styles\sidebar.css" />
+    <Content Include="styles\terms.css" />
     <Content Include="Web.config" />
     <Content Include="Sidebar.ascx" />
+    <Content Include="Terms.aspx" />
+    <Content Include="Logout.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FAQ.aspx.cs">
+      <DependentUpon>FAQ.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FAQ.aspx.designer.cs">
+      <DependentUpon>FAQ.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ForgetPassword.aspx.cs">
       <DependentUpon>ForgetPassword.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -145,6 +159,20 @@
     </Compile>
     <Compile Include="Sidebar.ascx.designer.cs">
       <DependentUpon>Sidebar.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Terms.aspx.cs">
+      <DependentUpon>Terms.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Terms.aspx.designer.cs">
+      <DependentUpon>Terms.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Logout.aspx.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Logout.aspx.designer.cs">
+      <DependentUpon>Logout.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

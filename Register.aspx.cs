@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
+using System.Runtime.InteropServices;
 using System.Web;
 
 namespace vaultx
@@ -20,16 +21,27 @@ namespace vaultx
             hfPassword.Value = txtPassword.Text.Trim();
 
 
+            string profileImage = null;
+
+           
             if (fuProfileImage.HasFile)
             {
                 string fileName = Path.GetFileName(fuProfileImage.PostedFile.FileName);
-                string savePath = Server.MapPath("~/images/") + fileName;
+                string savePath = Server.MapPath("~/images/profile_img/") + fileName;
+
+               
+                if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
+                    Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
+
                 fuProfileImage.SaveAs(savePath);
 
-                hfProfileImagePath.Value = "images/" + fileName; // store path in hidden field
+                profileImage = "~/images/profile_img/" + fileName;
+
+                hfProfileImagePath.Value = profileImage;
             }
 
-            // Generate OTP
+
+          
             Random rnd = new Random();
             string otp = rnd.Next(100000, 999999).ToString();
 
@@ -150,11 +162,23 @@ VALUES
                 Response.Cookies.Add(otpCookie);
                 Response.Cookies.Add(emailCookie);
 
-                ClientScript.RegisterStartupScript(this.GetType(), "OtpSuccess", "alert('OTP Verified! Registration successful.'); window.location='Login.aspx';", true);
+               pnlSuccess.Visible = true;
+                pnlStep3.Visible = false;
+                pnlStep2.Visible = false;
+                pnlStep1.Visible = false;
+                areg.Visible = false;
+                string script = @"setTimeout(function() {
+                          window.location='Login.aspx';
+                      }, 3000);";
+                ClientScript.RegisterStartupScript(this.GetType(), "RedirectAfterSuccess", script, true);
             }
             else
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "OtpFailed", "document.getElementById('otpMsg').innerText='Invalid OTP!';", true);
+               pnlfail.Visible = true;
+                pnlStep3.Visible = false;
+                pnlStep2.Visible = false;
+                pnlStep1.Visible = false;
+                areg.Visible = false;
             }
         }
     }

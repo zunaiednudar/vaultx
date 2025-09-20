@@ -2,8 +2,8 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: 'Poppins', 'Josefin Sans', Helvetica, sans-serif;
-    background-color: #f5f5f5;
+    font-family: var(--font-stack);
+     background-color: #f5f5f5;
 }
 
 .page-flex {
@@ -273,7 +273,7 @@ hr {
    
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 0.85rem;
+    font-size: 1rem;
 }
 
 .validator-text {
@@ -345,7 +345,7 @@ hr {
     }
 
         .right-panel img {
-            height: auto;
+            height: 100%;
             object-fit: cover;
         }
 
@@ -446,8 +446,8 @@ hr {
     }
 
         .right-panel img {
-            height:250px;
-            width:576px;
+            height:100%;
+            width:100%;
             object-fit:cover;
         }
 

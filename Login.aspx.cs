@@ -27,8 +27,8 @@ namespace vaultx
                         if (int.TryParse(uidStr, out uid))
                         {
                             Session["Email"] = email;
-                            Session["UserId"] = uid;
-                            //Response.Redirect("Profile.aspx");
+                            Session["UID"] = uid;
+                            //Response.Redirect("Home.aspx");
                             //Context.ApplicationInstance.CompleteRequest();
 
                         }
@@ -55,8 +55,8 @@ namespace vaultx
                 Session["Email"] = email;
                 Session["UID"] = uid;
 
-               //cookie
-                if (chkRememberMe.Checked) 
+                //cookie
+                if (chkRememberMe.Checked)
                 {
                     HttpCookie cookie = new HttpCookie("VaultXUser");
                     cookie["Email"] = email;
@@ -67,13 +67,17 @@ namespace vaultx
                 }
                 pnlLoginForm.Visible = false;
                 pnlSuccess.Visible = true;
-                ClientScript.RegisterStartupScript(this.GetType(), "Redirect", "setTimeout(function(){ window.location='Profile.aspx'; }, 2000);", true);
+                string script = @"
+    sessionStorage.setItem('VaultXLoggedIn', 'true');
+    setTimeout(function(){ window.location='Home.aspx'; }, 2000);
+";
+                ClientScript.RegisterStartupScript(this.GetType(), "Redirect", script, true);
             }
             else
             {
                 pnlLoginForm.Visible = false;
                 pnlfail.Visible = true;
-  
+
             }
         }
 
