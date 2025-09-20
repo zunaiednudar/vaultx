@@ -7,7 +7,10 @@ namespace vaultx
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            this.DataBind(); // Required to evaluate <%# %> expressions
+            bool isLoggedIn = Session["UID"] != null;
+
+            string script = $"var VaultXLoggedIn = {isLoggedIn.ToString().ToLower()};";
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "SetLoginFlag", script, true);
         }
     }
 }
