@@ -181,6 +181,8 @@
 
          <div class="form-group">
     <i class="fa fa-image"></i>
+             <asp:Label ID="Label1" runat="server" CssClass="upimg" Text="Upload Profile Image"></asp:Label>
+             
     <asp:FileUpload ID="fuProfileImage" runat="server" CssClass="form-control" />
              <asp:HiddenField ID="hfProfileImagePath" runat="server" />
 

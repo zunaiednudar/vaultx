@@ -15,7 +15,7 @@
     <!-- Terms Content -->
     <div class="terms-content container">
         <p>Welcome to VaultX Bank. By using our services, you agree to comply with the following terms and conditions. Please read carefully.</p>
-
+        <br />
         <ol>
             <li><strong>Account Usage:</strong> Keep your login credentials confidential. Unauthorized use may result in account suspension.</li>
             <li><strong>Transactions:</strong> All transactions are final. VaultX is not responsible for third-party delays or errors.</li>
@@ -30,7 +30,7 @@
             <li><strong>Third-Party Services:</strong> VaultX is not liable for services outside its control (e.g., partner payment processors).</li>
             <li><strong>Updates:</strong> VaultX may update these terms; continued use implies acceptance.</li>
         </ol>
-
+        <br />
         <p>By using VaultX Bank services, you acknowledge that you have read, understood, and agreed to these Terms & Conditions.</p>
     </div>
 </asp:Content>

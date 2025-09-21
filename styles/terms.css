@@ -57,11 +57,11 @@ body {
 }
 
 .terms-content ol > li strong {
-    color: var(--color-bg-primary); 
+    color: red; 
 }
 
 .terms-content a {
-    color: var(--color-active);
+    color: red;
     text-decoration: underline;
 }
 
