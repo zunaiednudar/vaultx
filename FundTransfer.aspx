@@ -7,45 +7,55 @@
 
 <asp:Content ID="FundTransferMainContent" ContentPlaceHolderID="SiteMainContent" runat="server">
     <div class="fund-transfer-container">
-        <!-- Balance Information -->
-        <div class="balance-section">
-            <div class="balance-card current-balance">
-                <div class="balance-icon">
-                    <i class="fas fa-wallet"></i>
-                </div>
-                <div class="balance-info">
-                    <h3>Current Balance</h3>
-                    <div class="balance-amount">
-                        <asp:Label ID="lblCurrentBalance" runat="server" Text="৳ 0.00"></asp:Label>
-                    </div>
-                </div>
-            </div>
-            <div class="balance-card available-balance">
-                <div class="balance-icon">
-                    <i class="fas fa-coins"></i>
-                </div>
-                <div class="balance-info">
-                    <h3>Available Balance</h3>
-                    <div class="balance-amount">
-                        <asp:Label ID="lblAvailableBalance" runat="server" Text="৳ 0.00"></asp:Label>
-                    </div>
-                </div>
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-exchange-alt"></i> Fund Transfer</h1>
+            <p>Transfer money securely between accounts</p>
+        </div>
+
+        <!-- Account Selection Section -->
+        <div class="account-selection-section">
+            <h2>Select Your Account</h2>
+            <div class="accounts-container">
+                <asp:Repeater ID="rptUserAccounts" runat="server" OnItemCommand="rptUserAccounts_ItemCommand">
+                    <ItemTemplate>
+                        <asp:Panel runat="server" CssClass='<%# "account-card" + (Container.ItemIndex == 0 ? " selected" : "") %>'>
+                            <asp:Button ID="btnSelectAccount" runat="server" 
+                                CssClass="account-select-btn" 
+                                CommandName="SelectAccount" 
+                                CommandArgument='<%# Eval("AID") %>'
+                                Text="" />
+                            <div class="account-info">
+                                <h3><%# Eval("AccountType") %></h3>
+                                <p class="account-number">Account: <%# Eval("AID") %></p>
+                                <p class="account-balance">Balance: ৳ <%# String.Format("{0:N2}", Eval("Balance")) %></p>
+                            </div>
+                        </asp:Panel>
+                    </ItemTemplate>
+                </asp:Repeater>
             </div>
         </div>
 
+        <!-- Selected Account Display -->
+        <asp:Panel ID="pnlSelectedAccount" runat="server" Visible="false" CssClass="selected-account-panel">
+            <div class="selected-account-info">
+                <h3>Selected Account</h3>
+                <div class="selected-details">
+                    <span class="selected-type"><asp:Label ID="lblSelectedAccountType" runat="server"></asp:Label></span>
+                    <span class="selected-number">Account: <asp:Label ID="lblSelectedAccountNumber" runat="server"></asp:Label></span>
+                    <span class="selected-balance">Available Balance: ৳ <asp:Label ID="lblSelectedBalance" runat="server"></asp:Label></span>
+                </div>
+            </div>
+        </asp:Panel>
+
         <!-- Transfer Form -->
         <div class="transfer-form-section">
-            <asp:Panel ID="pnlTransferForm" runat="server" CssClass="transfer-form">
-                <div class="form-header">
-                    <h2><i class="fas fa-exchange-alt"></i> Fund Transfer</h2>
-                    <p>Transfer money securely to any account</p>
-                </div>
-                
+            <asp:Panel ID="pnlTransferForm" runat="server" CssClass="transfer-form" Visible="false">
                 <div class="form-body">
                     <div class="form-group">
                         <label for="<%= txtAccountNo.ClientID %>">
                             <i class="fas fa-university"></i>
-                            Account No (Receiver)
+                            Receiver's Account Number
                         </label>
                         <asp:TextBox ID="txtAccountNo" runat="server" CssClass="form-control" 
                             placeholder="Enter receiver's account number" required></asp:TextBox>
@@ -113,8 +123,12 @@
                 <p>Your fund transfer has been completed successfully.</p>
                 <div class="transfer-details">
                     <div class="detail-item">
+                        <span class="detail-label">Transaction ID:</span>
+                        <span class="detail-value"><asp:Label ID="lblSuccessTID" runat="server"></asp:Label></span>
+                    </div>
+                    <div class="detail-item">
                         <span class="detail-label">Amount:</span>
-                        <span class="detail-value"><asp:Label ID="lblSuccessAmount" runat="server"></asp:Label></span>
+                        <span class="detail-value">৳ <asp:Label ID="lblSuccessAmount" runat="server"></asp:Label></span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label">To Account:</span>
@@ -155,5 +169,18 @@
             document.getElementById('<%= txtPassword.ClientID %>').value = '';
             document.getElementById('<%= chkTerms.ClientID %>').checked = false;
         }
+
+        // Account selection styling
+        document.addEventListener('DOMContentLoaded', function () {
+            const accountCards = document.querySelectorAll('.account-card');
+            accountCards.forEach(card => {
+                card.addEventListener('click', function () {
+                    // Remove selected class from all cards
+                    accountCards.forEach(c => c.classList.remove('selected'));
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                });
+            });
+        });
     </script>
-</asp:Content>
+</asp:Content>      

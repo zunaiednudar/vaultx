@@ -15,22 +15,49 @@ namespace vaultx
     {
 
         /// <summary>
-        /// lblCurrentBalance control.
+        /// rptUserAccounts control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCurrentBalance;
+        protected global::System.Web.UI.WebControls.Repeater rptUserAccounts;
 
         /// <summary>
-        /// lblAvailableBalance control.
+        /// pnlSelectedAccount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblAvailableBalance;
+        protected global::System.Web.UI.WebControls.Panel pnlSelectedAccount;
+
+        /// <summary>
+        /// lblSelectedAccountType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSelectedAccountType;
+
+        /// <summary>
+        /// lblSelectedAccountNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSelectedAccountNumber;
+
+        /// <summary>
+        /// lblSelectedBalance control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSelectedBalance;
 
         /// <summary>
         /// pnlTransferForm control.
@@ -148,6 +175,15 @@ namespace vaultx
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlSuccess;
+
+        /// <summary>
+        /// lblSuccessTID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSuccessTID;
 
         /// <summary>
         /// lblSuccessAmount control.
