@@ -75,12 +75,18 @@
     <Content Include="scripts\home.js" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
+<<<<<<< HEAD
     <Content Include="styles\fundtransfer.css" />
+=======
+    <Content Include="scripts\sidebar.js" />
+>>>>>>> 166ce00 (Sidebar added with different options)
     <Content Include="styles\global.css" />
     <Content Include="styles\home.css" />
     <Content Include="styles\profile.css" />
     <Content Include="styles\Register.css" />
+    <Content Include="styles\sidebar.css" />
     <Content Include="Web.config" />
+    <Content Include="Sidebar.ascx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForgetPassword.aspx.cs">
@@ -132,6 +138,13 @@
     </Compile>
     <Compile Include="Site.Master.designer.cs">
       <DependentUpon>Site.Master</DependentUpon>
+    </Compile>
+    <Compile Include="Sidebar.ascx.cs">
+      <DependentUpon>Sidebar.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sidebar.ascx.designer.cs">
+      <DependentUpon>Sidebar.ascx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

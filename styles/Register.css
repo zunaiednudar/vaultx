@@ -446,8 +446,9 @@ hr {
     }
 
         .right-panel img {
-            height: 150px;
-            object-fit:contain;
+            height:250px;
+            width:576px;
+            object-fit:cover;
         }
 
 
