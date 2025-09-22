@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Runtime.InteropServices;
 using System.Web;
+using vaultx.cls;
 
 namespace vaultx
 {
@@ -17,26 +18,74 @@ namespace vaultx
 
         protected void btnRegister_Click(object sender, EventArgs e)
         {
+            // Validate password strength
+            string password = txtPassword.Text.Trim();
+            if (!PasswordHelper.IsPasswordStrong(password))
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "WeakPassword", 
+                    "alert('Password must be at least 8 characters and contain uppercase, lowercase, number, and special character.');", true);
+                return;
+            }
             
-            hfPassword.Value = txtPassword.Text.Trim();
+            hfPassword.Value = password;
 
+
+            // Validate required fields
+            if (string.IsNullOrWhiteSpace(txtFirstName.Text) || 
+                string.IsNullOrWhiteSpace(txtLastName.Text) ||
+                string.IsNullOrWhiteSpace(txtEmail.Text) ||
+                string.IsNullOrWhiteSpace(txtPhone.Text) ||
+                string.IsNullOrWhiteSpace(txtNID.Text))
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "MissingFields", "alert('Please fill all required fields.');", true);
+                return;
+            }
+            
+            // Validate email format
+            if (!IsValidEmail(txtEmail.Text.Trim()))
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "InvalidEmail", "alert('Please enter a valid email address.');", true);
+                return;
+            }
+            
+            // Check if email already exists
+            if (IsEmailExists(txtEmail.Text.Trim()))
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "EmailExists", "alert('This email is already registered.');", true);
+                return;
+            }
 
             string profileImage = null;
 
-           
+            // Validate and process profile image upload
             if (fuProfileImage.HasFile)
             {
-                string fileName = Path.GetFileName(fuProfileImage.PostedFile.FileName);
+                // Validate file type
+                string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
+                string fileExtension = Path.GetExtension(fuProfileImage.PostedFile.FileName).ToLower();
+                
+                if (!Array.Exists(allowedExtensions, ext => ext == fileExtension))
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "InvalidFile", "alert('Only JPG, JPEG, PNG, and GIF files are allowed.');", true);
+                    return;
+                }
+                
+                // Validate file size (max 5MB)
+                if (fuProfileImage.PostedFile.ContentLength > 5 * 1024 * 1024)
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "FileTooLarge", "alert('File size must be less than 5MB.');", true);
+                    return;
+                }
+                
+                // Generate unique filename to prevent conflicts
+                string fileName = Guid.NewGuid().ToString() + fileExtension;
                 string savePath = Server.MapPath("~/images/profile_img/") + fileName;
 
-               
                 if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
                     Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
 
                 fuProfileImage.SaveAs(savePath);
-
                 profileImage = "~/images/profile_img/" + fileName;
-
                 hfProfileImagePath.Value = profileImage;
             }
 
@@ -76,14 +125,29 @@ namespace vaultx
         {
             try
             {
-                MailMessage mail = new MailMessage();
-                mail.From = new MailAddress("yourmail@example.com"); // replace
-                mail.To.Add(toEmail);
-                mail.Subject = "Your VaultX OTP";
-                mail.Body = $"Your OTP is: {otp}";
+                string smtpEmail = ConfigurationManager.AppSettings["SmtpEmail"] ?? "your-app@example.com";
+                string smtpPassword = ConfigurationManager.AppSettings["SmtpPassword"] ?? "";
+                string smtpHost = ConfigurationManager.AppSettings["SmtpHost"] ?? "smtp.gmail.com";
+                int smtpPort = int.Parse(ConfigurationManager.AppSettings["SmtpPort"] ?? "587");
 
-                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs"); // replace
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(smtpEmail, "VaultX Bank");
+                mail.To.Add(toEmail);
+                mail.Subject = "Your VaultX OTP - Secure Verification";
+                mail.Body = $@"Dear User,
+
+Your OTP for VaultX account registration is: {otp}
+
+This OTP is valid for 5 minutes only.
+
+If you did not request this, please ignore this email.
+
+Best regards,
+VaultX Team";
+                mail.IsBodyHtml = false;
+
+                SmtpClient smtp = new SmtpClient(smtpHost, smtpPort);
+                smtp.Credentials = new NetworkCredential(smtpEmail, smtpPassword);
                 smtp.EnableSsl = true;
                 smtp.Send(mail);
             }
@@ -150,7 +214,10 @@ VALUES
                     cmd.Parameters.AddWithValue("@PostalCode", TextBox5.Text.Trim());
                     cmd.Parameters.AddWithValue("@Profession", TextBox6.Text.Trim());
                     cmd.Parameters.AddWithValue("@MonthlyEarnings", string.IsNullOrEmpty(TextBox7.Text.Trim()) ? 0 : Convert.ToDecimal(TextBox7.Text.Trim()));
-                    cmd.Parameters.AddWithValue("@Password", hfPassword.Value);
+                    
+                    // Hash the password before storing
+                    string hashedPassword = PasswordHelper.HashPassword(hfPassword.Value);
+                    cmd.Parameters.AddWithValue("@Password", hashedPassword);
 
                     cmd.ExecuteNonQuery();
                     conn.Close();
@@ -179,6 +246,32 @@ VALUES
                 pnlStep2.Visible = false;
                 pnlStep1.Visible = false;
                 areg.Visible = false;
+            }
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool IsEmailExists(string email)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT COUNT(*) FROM dbo.Users WHERE Email=@Email";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Email", email);
+                conn.Open();
+                return (int)cmd.ExecuteScalar() > 0;
             }
         }
     }

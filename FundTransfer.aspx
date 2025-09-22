@@ -97,7 +97,7 @@
                     <div class="form-group checkbox-group">
                         <asp:CheckBox ID="chkTerms" runat="server" CssClass="checkbox-input" />
                         <label for="<%= chkTerms.ClientID %>" class="checkbox-label">
-                            I agree to the <a href="#" target="_blank">Terms and Conditions</a>
+                            I agree to the <a href="Terms.aspx" target="_blank">Terms and Conditions</a>
                         </label>
                         <asp:CustomValidator ID="cvTerms" runat="server" 
                             ErrorMessage="You must agree to the terms and conditions" 
@@ -183,4 +183,4 @@
             });
         });
     </script>
-</asp:Content>      
+</asp:Content>

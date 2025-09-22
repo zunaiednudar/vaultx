@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using vaultx.cls;
 
 namespace vaultx
 {
@@ -16,7 +17,7 @@ namespace vaultx
             if (!IsPostBack)
             {
                 // Check if user is logged in
-                var userId = Session["UserId"];
+                var userId = Session["UserId"] ?? Session["UID"];
                 if (userId == null)
                 {
                     Response.Redirect("Login.aspx");
@@ -116,7 +117,7 @@ namespace vaultx
         {
             try
             {
-                var userId = Session["UserId"];
+                var userId = Session["UserId"] ?? Session["UID"];
                 if (userId == null)
                 {
                     Response.Redirect("Login.aspx");
@@ -214,13 +215,43 @@ namespace vaultx
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = "SELECT COUNT(*) FROM Users WHERE UID = @UID AND Password = @Password";
+                string query = "SELECT Password FROM Users WHERE UID = @UID";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@UID", userId);
-                cmd.Parameters.AddWithValue("@Password", password);
 
                 conn.Open();
-                return (int)cmd.ExecuteScalar() > 0;
+                var result = cmd.ExecuteScalar();
+                
+                if (result != null)
+                {
+                    string storedHash = result.ToString();
+                    
+                    // Check if password is already hashed
+                    if (storedHash.Length == 88 && IsBase64String(storedHash))
+                    {
+                        return PasswordHelper.VerifyPassword(password, storedHash);
+                    }
+                    else
+                    {
+                        // Legacy plain text comparison
+                        return storedHash == password;
+                    }
+                }
+                
+                return false;
+            }
+        }
+        
+        private bool IsBase64String(string s)
+        {
+            try
+            {
+                Convert.FromBase64String(s);
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -335,7 +366,7 @@ namespace vaultx
             pnlTransferForm.Visible = false;
             ViewState["SelectedAccountId"] = null;
 
-            var userId = Session["UserId"];
+            var userId = Session["UserId"] ?? Session["UID"];
             if (userId != null)
             {
                 LoadUserAccounts((int)userId);
