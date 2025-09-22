@@ -10,23 +10,26 @@
 .page-header {
     text-align: center;
     margin-bottom: 40px;
-    padding: 30px;
+}
+
+.balance-card {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 30px;
     color: white;
     border-radius: 20px;
 }
 
-    .page-header h1 {
-        margin: 0 0 15px 0;
-        font-size: 2.5rem;
-        font-weight: 700;
-    }
+.page-header h1 {
+    margin: 0 0 15px 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
 
-    .page-header p {
-        margin: 0;
-        font-size: 1.2rem;
-        opacity: 0.9;
-    }
+.page-header p {
+    margin: 0;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
 
 /* Account Selection Section */
 .account-selection-section {
@@ -116,6 +119,11 @@
     margin: 0 0 20px 0;
     font-size: 1.4rem;
     font-weight: 600;
+}
+
+.selected-account-panel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .selected-details {
@@ -416,6 +424,7 @@
 @media (max-width: 480px) {
     .account-card {
         text-align: center;
+        gap: 15px;
     }
 
     .account-info h3 {

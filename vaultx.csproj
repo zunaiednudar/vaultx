@@ -73,7 +73,7 @@
     <Content Include="ForgetPassword.aspx" />
     <Content Include="FundTransfer.aspx" />
     <Content Include="Dashboard.aspx" />
-    <Content Include="FundTransfer.aspx" />
+    <Content Include="Global.asax" />
     <Content Include="Home.aspx" />
     <Content Include="Profile.aspx" />
     <Content Include="scripts\home.js" />
@@ -85,7 +85,6 @@
     <Content Include="styles\faq.css" />
     <Content Include="styles\accountdetails.css" />
     <Content Include="styles\dashboard.css" />
-    <Content Include="styles\fundtransfer.css" />
     <Content Include="styles\global.css" />
     <Content Include="styles\home.css" />
     <Content Include="styles\profile.css" />
@@ -93,6 +92,7 @@
     <Content Include="styles\Register.css" />
     <Content Include="styles\sidebar.css" />
     <Content Include="styles\terms.css" />
+    <Content Include="Test.aspx" />
     <Content Include="Web.config" />
     <Content Include="Sidebar.ascx" />
     <Content Include="Terms.aspx" />
@@ -120,13 +120,6 @@
     <Compile Include="ForgetPassword.aspx.designer.cs">
       <DependentUpon>ForgetPassword.aspx</DependentUpon>
     </Compile>
-    <Compile Include="FundTransfer.aspx.cs">
-      <DependentUpon>FundTransfer.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="FundTransfer.aspx.designer.cs">
-      <DependentUpon>FundTransfer.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -141,6 +134,11 @@
     <Compile Include="FundTransfer.aspx.designer.cs">
       <DependentUpon>FundTransfer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="helper\InputValidator.cs" />
+    <Compile Include="helper\PasswordHelper.cs" />
     <Compile Include="Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -198,6 +196,13 @@
     <Compile Include="Logout.aspx.designer.cs">
       <DependentUpon>Logout.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Test.aspx.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Test.aspx.designer.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
@@ -230,7 +235,6 @@
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>https://localhost:44387/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
           </CustomServerUrl>

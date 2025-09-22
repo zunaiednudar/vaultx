@@ -9,7 +9,7 @@
 
 namespace vaultx
 {
-    public partial class Sidebar
+    public partial class Test
     {
     }
 }
