@@ -75,28 +75,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Content Include="FAQ.aspx" />
     <Content Include="AccountDetails.aspx" />
     <Content Include="ForgetPassword.aspx" />
     <Content Include="FundTransfer.aspx" />
     <Content Include="Dashboard.aspx" />
     <Content Include="Global.asax" />
-=======
-    <Content Include="AccountDetails.aspx" />
-    <Content Include="ForgetPassword.aspx" />
-    <Content Include="Dashboard.aspx" />
->>>>>>> master
     <Content Include="Home.aspx" />
     <Content Include="Profile.aspx" />
     <Content Include="scripts\fundtransfer.js" />
     <Content Include="scripts\home.js" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
-<<<<<<< HEAD
     <Content Include="styles\fundtransfer.css" />
-=======
->>>>>>> master
     <Content Include="scripts\sidebar.js" />
     <Content Include="scripts\terms.js" />
     <Content Include="styles\faq.css" />
@@ -110,10 +101,7 @@
     <Content Include="styles\Register.css" />
     <Content Include="styles\sidebar.css" />
     <Content Include="styles\terms.css" />
-<<<<<<< HEAD
     <Content Include="Test.aspx" />
-=======
->>>>>>> master
     <Content Include="Web.config" />
     <Content Include="Sidebar.ascx" />
     <Content Include="Terms.aspx" />
@@ -148,7 +136,6 @@
     <Compile Include="Dashboard.aspx.designer.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
-<<<<<<< HEAD
     <Compile Include="FundTransfer.aspx.cs">
       <DependentUpon>FundTransfer.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -161,8 +148,6 @@
     </Compile>
     <Compile Include="helper\InputValidator.cs" />
     <Compile Include="helper\PasswordHelper.cs" />
-=======
->>>>>>> master
     <Compile Include="Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -220,7 +205,6 @@
     <Compile Include="Logout.aspx.designer.cs">
       <DependentUpon>Logout.aspx</DependentUpon>
     </Compile>
-<<<<<<< HEAD
     <Compile Include="Test.aspx.cs">
       <DependentUpon>Test.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -228,8 +212,6 @@
     <Compile Include="Test.aspx.designer.cs">
       <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
-=======
->>>>>>> master
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
@@ -243,10 +225,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="assets\" />
-<<<<<<< HEAD
-=======
-    <Folder Include="images\" />
->>>>>>> master
     <Folder Include="images\nominees\" />
   </ItemGroup>
   <PropertyGroup>
