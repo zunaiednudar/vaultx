@@ -77,13 +77,13 @@ namespace vaultx
             try
             {
                 MailMessage mail = new MailMessage();
-                mail.From = new MailAddress("yourmail@example.com"); // replace
+                mail.From = new MailAddress("yourmail@example.com"); 
                 mail.To.Add(toEmail);
                 mail.Subject = "Your VaultX OTP";
                 mail.Body = $"Your OTP is: {otp}";
 
                 SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs"); // replace
+                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs"); 
                 smtp.EnableSsl = true;
                 smtp.Send(mail);
             }

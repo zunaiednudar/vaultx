@@ -40,8 +40,12 @@ namespace vaultx
         protected void btnLogin_Click(object sender, EventArgs e)
         {
             string email = txtEmail.Text.Trim();
+           
             string password = txtPassword.Text.Trim();
-
+            if (email == "adminvaultx@hotmail.business" && password == "admin")
+            {
+                Response.Redirect("Admin.aspx");
+            }
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "EmptyFields", "alert('Please fill all fields');", true);
