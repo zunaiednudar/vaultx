@@ -51,15 +51,6 @@ namespace vaultx
         protected global::System.Web.UI.WebControls.Label lblAccountHolder;
 
         /// <summary>
-        /// btnAddFunds control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddFunds;
-
-        /// <summary>
         /// btnDownloadStatement control.
         /// </summary>
         /// <remarks>
@@ -69,6 +60,33 @@ namespace vaultx
         protected global::System.Web.UI.WebControls.Button btnDownloadStatement;
 
         /// <summary>
+        /// imgNominee control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgNominee;
+
+        /// <summary>
+        /// lblNomineeName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNomineeName;
+
+        /// <summary>
+        /// lblNomineeNID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNomineeNID;
+
+        /// <summary>
         /// rptAccountTransactions control.
         /// </summary>
         /// <remarks>
@@ -76,5 +94,41 @@ namespace vaultx
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptAccountTransactions;
+
+        /// <summary>
+        /// pnlYearModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlYearModal;
+
+        /// <summary>
+        /// ddlYears control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlYears;
+
+        /// <summary>
+        /// btnDownloadPDF control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnDownloadPDF;
+
+        /// <summary>
+        /// btnOpenYearModal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnOpenYearModal;
     }
 }
