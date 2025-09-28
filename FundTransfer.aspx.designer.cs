@@ -15,49 +15,40 @@ namespace vaultx
     {
 
         /// <summary>
-        /// rptUserAccounts control.
+        /// lblAccountHolderName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptUserAccounts;
+        protected global::System.Web.UI.WebControls.Label lblAccountHolderName;
 
         /// <summary>
-        /// pnlSelectedAccount control.
+        /// btnSavings control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSelectedAccount;
+        protected global::System.Web.UI.WebControls.Button btnSavings;
 
         /// <summary>
-        /// lblSelectedAccountType control.
+        /// btnCurrent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSelectedAccountType;
+        protected global::System.Web.UI.WebControls.Button btnCurrent;
 
         /// <summary>
-        /// lblSelectedAccountNumber control.
+        /// btnFixedDeposit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSelectedAccountNumber;
-
-        /// <summary>
-        /// lblSelectedBalance control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSelectedBalance;
+        protected global::System.Web.UI.WebControls.Button btnFixedDeposit;
 
         /// <summary>
         /// pnlTransferForm control.
@@ -67,6 +58,33 @@ namespace vaultx
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlTransferForm;
+
+        /// <summary>
+        /// lblFromAccountType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFromAccountType;
+
+        /// <summary>
+        /// lblFromAccountNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFromAccountNumber;
+
+        /// <summary>
+        /// lblFromAccountBalance control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFromAccountBalance;
 
         /// <summary>
         /// txtAccountNo control.
@@ -213,6 +231,15 @@ namespace vaultx
         protected global::System.Web.UI.WebControls.Label lblSuccessReference;
 
         /// <summary>
+        /// lblSuccessNewBalance control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblSuccessNewBalance;
+
+        /// <summary>
         /// btnNewTransfer control.
         /// </summary>
         /// <remarks>
@@ -220,32 +247,5 @@ namespace vaultx
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnNewTransfer;
-
-        /// <summary>
-        /// pnlError control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlError;
-
-        /// <summary>
-        /// lblErrorMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblErrorMessage;
-
-        /// <summary>
-        /// btnTryAgain control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnTryAgain;
     }
 }

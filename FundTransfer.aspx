@@ -13,44 +13,42 @@
             <p>Transfer money securely between accounts</p>
         </div>
 
-        <!-- Account Selection Section -->
-        <div class="account-selection-section">
-            <h2>Select Your Account</h2>
-            <div class="accounts-container">
-                <asp:Repeater ID="rptUserAccounts" runat="server" OnItemCommand="rptUserAccounts_ItemCommand">
-                    <ItemTemplate>
-                        <asp:Panel runat="server" CssClass='<%# "account-card" + (Container.ItemIndex == 0 ? " selected" : "") %>'>
-                            <asp:Button ID="btnSelectAccount" runat="server" 
-                                CssClass="account-select-btn" 
-                                CommandName="SelectAccount" 
-                                CommandArgument='<%# Eval("AID") %>'
-                                Text="" />
-                            <div class="account-info">
-                                <h3><%# Eval("AccountType") %></h3>
-                                <p class="account-number">Account: <%# Eval("AID") %></p>
-                                <p class="account-balance">Balance: ৳ <%# String.Format("{0:N2}", Eval("Balance")) %></p>
-                            </div>
-                        </asp:Panel>
-                    </ItemTemplate>
-                </asp:Repeater>
+        <!-- Account Holder Info Section -->
+        <div class="account-holder-info">
+            <div class="holder-card">
+                <div class="holder-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="holder-details">
+                    <h3>Account Holder</h3>
+                    <p class="holder-name"><asp:Label ID="lblAccountHolderName" runat="server"></asp:Label></p>
+                </div>
             </div>
         </div>
 
-        <!-- Selected Account Display -->
-        <asp:Panel ID="pnlSelectedAccount" runat="server" Visible="false" CssClass="selected-account-panel">
-            <div class="selected-account-info">
-                <h3>Selected Account</h3>
-                <div class="selected-details">
-                    <span class="selected-type"><asp:Label ID="lblSelectedAccountType" runat="server"></asp:Label></span>
-                    <span class="selected-number">Account: <asp:Label ID="lblSelectedAccountNumber" runat="server"></asp:Label></span>
-                    <span class="selected-balance">Available Balance: ৳ <asp:Label ID="lblSelectedBalance" runat="server"></asp:Label></span>
-                </div>
+        <!-- Account Type Selection Section -->
+        <div class="account-selection-section">
+            <h2>Select Account Type</h2>
+            <div class="account-types-container">
+                <asp:Button ID="btnSavings" runat="server" Text="Savings" CssClass="account-type-btn" 
+                    OnClick="btnAccountType_Click" CommandArgument="Savings" />
+                <asp:Button ID="btnCurrent" runat="server" Text="Current" CssClass="account-type-btn" 
+                    OnClick="btnAccountType_Click" CommandArgument="Current" />
+                <asp:Button ID="btnFixedDeposit" runat="server" Text="Fixed Deposit" CssClass="account-type-btn" 
+                    OnClick="btnAccountType_Click" CommandArgument="Fixed Deposit" />
             </div>
-        </asp:Panel>
+        </div>
 
         <!-- Transfer Form -->
         <div class="transfer-form-section">
             <asp:Panel ID="pnlTransferForm" runat="server" CssClass="transfer-form" Visible="false">
+                <h3>Transfer Details</h3>
+                <div class="selected-account-summary">
+                    <span>From: <asp:Label ID="lblFromAccountType" runat="server"></asp:Label> 
+                    (Account: <asp:Label ID="lblFromAccountNumber" runat="server"></asp:Label>)</span>
+                    <span class="account-balance-info">Available Balance: ৳ <asp:Label ID="lblFromAccountBalance" runat="server"></asp:Label></span>
+                </div>
+
                 <div class="form-body">
                     <div class="form-group">
                         <label for="<%= txtAccountNo.ClientID %>">
@@ -110,7 +108,7 @@
                     <asp:Button ID="btnSend" runat="server" Text="Send Money" CssClass="btn btn-primary" 
                         OnClick="btnSend_Click" />
                     <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-secondary" 
-                        OnClientClick="clearForm(); return false;" />
+                        OnClick="btnCancel_Click" />
                 </div>
             </asp:Panel>
 
@@ -127,7 +125,7 @@
                         <span class="detail-value"><asp:Label ID="lblSuccessTID" runat="server"></asp:Label></span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label">Amount:</span>
+                        <span class="detail-label">Amount Transferred:</span>
                         <span class="detail-value">৳ <asp:Label ID="lblSuccessAmount" runat="server"></asp:Label></span>
                     </div>
                     <div class="detail-item">
@@ -138,21 +136,39 @@
                         <span class="detail-label">Reference:</span>
                         <span class="detail-value"><asp:Label ID="lblSuccessReference" runat="server"></asp:Label></span>
                     </div>
+                    <div class="detail-item balance-info">
+                        <span class="detail-label">Your New Balance:</span>
+                        <span class="detail-value balance-highlight">৳ <asp:Label ID="lblSuccessNewBalance" runat="server"></asp:Label></span>
+                    </div>
                 </div>
                 <asp:Button ID="btnNewTransfer" runat="server" Text="New Transfer" CssClass="btn btn-primary" 
                     OnClick="btnNewTransfer_Click" />
             </asp:Panel>
+        </div>
+    </div>
 
-            <!-- Error Panel -->
-            <asp:Panel ID="pnlError" runat="server" Visible="false" CssClass="result-panel error">
-                <div class="result-icon">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <h3>Transfer Failed</h3>
-                <p><asp:Label ID="lblErrorMessage" runat="server"></asp:Label></p>
-                <asp:Button ID="btnTryAgain" runat="server" Text="Try Again" CssClass="btn btn-secondary" 
-                    OnClick="btnTryAgain_Click" />
-            </asp:Panel>
+    <!-- No Account Modal -->
+    <div class="modal-overlay" id="noAccountModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3>No Account Available</h3>
+            <p>You don't have a <span id="selectedAccountType"></span> account.</p>
+            <p>Please contact your bank to open this type of account or select a different account type.</p>
+            <button type="button" class="btn btn-secondary" onclick="closeNoAccountModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Transfer Error Modal -->
+    <div class="modal-overlay" id="transferErrorModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon error-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <h3>Transfer Error</h3>
+            <p id="transferErrorMessage"></p>
+            <button type="button" class="btn btn-primary" onclick="closeTransferErrorModal()">Try Again</button>
         </div>
     </div>
 
@@ -170,17 +186,43 @@
             document.getElementById('<%= chkTerms.ClientID %>').checked = false;
         }
 
-        // Account selection styling
-        document.addEventListener('DOMContentLoaded', function () {
-            const accountCards = document.querySelectorAll('.account-card');
-            accountCards.forEach(card => {
-                card.addEventListener('click', function () {
-                    // Remove selected class from all cards
-                    accountCards.forEach(c => c.classList.remove('selected'));
-                    // Add selected class to clicked card
-                    this.classList.add('selected');
-                });
-            });
+        function showNoAccountModal(accountType) {
+            document.getElementById('selectedAccountType').textContent = accountType;
+            document.getElementById('noAccountModal').style.display = 'flex';
+        }
+
+        function closeNoAccountModal() {
+            document.getElementById('noAccountModal').style.display = 'none';
+        }
+
+        function showTransferErrorModal(message) {
+            document.getElementById('transferErrorMessage').textContent = message;
+            document.getElementById('transferErrorModal').style.display = 'flex';
+        }
+
+        function closeTransferErrorModal() {
+            document.getElementById('transferErrorModal').style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function (event) {
+            var noAccountModal = document.getElementById('noAccountModal');
+            var transferErrorModal = document.getElementById('transferErrorModal');
+
+            if (event.target === noAccountModal) {
+                closeNoAccountModal();
+            }
+            if (event.target === transferErrorModal) {
+                closeTransferErrorModal();
+            }
+        }
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeNoAccountModal();
+                closeTransferErrorModal();
+            }
         });
     </script>
 </asp:Content>

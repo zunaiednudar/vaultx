@@ -37,12 +37,7 @@
         <!--Navigation Section-->
         <nav class="site-nav">
             <ul class="site-nav-ul">
-                <li class="site-nav-ul-li" runat="server" id="navHome">
-                    <a href="Home.aspx">Home</a>
-                </li>
-                <li class="site-nav-ul-li" runat="server" id="navDashboard">
-                    <a href="Dashboard.aspx">Dashboard</a>
-                </li>
+                
             </ul>
         </nav>
 
