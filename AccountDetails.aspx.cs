@@ -5,6 +5,10 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using static vaultx.Dashboard;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.IO;
 
 namespace vaultx
 {
@@ -24,6 +28,33 @@ namespace vaultx
                 {
                     LoadAccountInfo(accountNumber);
                     LoadTransactions(accountNumber);
+                    LoadNomineeDetails(accountNumber);
+                    PopulateYearDropdown(accountNumber);
+                }
+            }
+        }
+
+        private void PopulateYearDropdown(string accountNumber)
+        {
+            int createdYear = DateTime.Now.Year; // Default fallback
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT CreatedAt FROM Accounts WHERE AID = @AID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@AID", accountNumber);
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        createdYear = Convert.ToDateTime(result).Year;
+                    }
+                    ddlYears.Items.Clear();
+                    int currentYear = DateTime.Now.Year;
+                    for (int year = currentYear; year >= createdYear; year--)
+                    {
+                        ddlYears.Items.Add(new System.Web.UI.WebControls.ListItem(year.ToString(), year.ToString()));
+                    }
                 }
             }
         }
@@ -76,8 +107,8 @@ namespace vaultx
                         {
                             transactions.Add(new
                             {
-                                FromAccountNumber = (reader["FromAID"].ToString() == accountNumber) ? "Self" : reader["FromAID"].ToString(),
-                                ToAccountNumber = (reader["ToAID"].ToString() == accountNumber) ? "Self" : reader["ToAID"].ToString(),
+                                FromAccountNumber = reader["FromAID"].ToString(),
+                                ToAccountNumber = reader["ToAID"].ToString(),
                                 TransactionType = reader["FromAID"].ToString() == accountNumber.ToString() ? "Debit" : "Credit",
                                 Amount = Convert.ToDecimal(reader["Amount"]),
                                 Reference = reader["Reference"].ToString(),
@@ -92,55 +123,129 @@ namespace vaultx
             rptAccountTransactions.DataBind();
         }
 
-        protected void btnAddFunds_Click(object sender, EventArgs e)
-        {
-            // Redirect to Add Funds page or open modal
-            Response.Redirect($"AddFunds.aspx?aid={AccountID}");
-        }
-
         protected void btnDownloadStatement_Click(object sender, EventArgs e)
         {
+            string accountNumber = Request.QueryString["account"];
+            if (ddlYears.SelectedValue == null) return;
+            int selectedYear = Convert.ToInt32(ddlYears.SelectedValue);
             DataTable dt = new DataTable();
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = @"SELECT FromAID, ToAID, Amount, Reference, Date
+                string query = @"SELECT FromAID as [From], ToAID as [To], Amount, Reference, Date
                                  FROM Transactions
-                                 WHERE FromAID = @AID OR ToAID = @AID
+                                 WHERE (FromAID = @AID OR ToAID = @AID) AND YEAR(Date) = @Year
                                  ORDER BY Date DESC";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@AID", AccountID);
+                    cmd.Parameters.AddWithValue("@AID", accountNumber);
+                    cmd.Parameters.AddWithValue("@Year", selectedYear);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
                 }
             }
 
             // Export CSV
-            Response.Clear();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", $"attachment;filename=Statement_{AccountID}.csv");
-            Response.Charset = "";
-            Response.ContentType = "application/text";
+            // Response.Clear();
+            // Response.Buffer = true;
+            // Response.AddHeader("content-disposition", $"attachment;filename=Statement_{accountNumber}.csv");
+            // Response.Charset = "";
+            // Response.ContentType = "application/text";
 
-            for (int i = 0; i < dt.Columns.Count; i++)
+            // for (int i = 0; i < dt.Columns.Count; i++)
+            // {
+            //     Response.Write(dt.Columns[i]);
+            //     if (i < dt.Columns.Count - 1) Response.Write(",");
+            // }
+            // Response.Write("\n");
+
+            // foreach (DataRow row in dt.Rows)
+            // {
+            //      for (int i = 0; i < dt.Columns.Count; i++)
+            //     {
+            //         Response.Write(row[i].ToString());
+            //         if (i < dt.Columns.Count - 1) Response.Write(",");
+            //     }
+            //     Response.Write("\n");
+            // }
+            // Response.Flush();
+            // Response.End();
+            // Create PDF document
+            Document pdfDoc = new Document(PageSize.A4, 25, 25, 30, 30);
+            MemoryStream memoryStream = new MemoryStream();
+            PdfWriter.GetInstance(pdfDoc, memoryStream);
+            pdfDoc.Open();
+
+            // Title
+            Paragraph title = new Paragraph($"Account Statement - {accountNumber}")
             {
-                Response.Write(dt.Columns[i]);
-                if (i < dt.Columns.Count - 1) Response.Write(",");
-            }
-            Response.Write("\n");
+                Alignment = Element.ALIGN_CENTER,
+                SpacingAfter = 20f
+            };
+            pdfDoc.Add(title);
 
+            // Table
+            PdfPTable table = new PdfPTable(dt.Columns.Count);
+            table.WidthPercentage = 100;
+
+            // Headers
+            foreach (DataColumn column in dt.Columns)
+            {
+                PdfPCell cell = new PdfPCell(new Phrase(column.ColumnName))
+                {
+                    BackgroundColor = BaseColor.LIGHT_GRAY,
+                    HorizontalAlignment = Element.ALIGN_CENTER
+                };
+                table.AddCell(cell);
+            }
+
+            // Data rows
             foreach (DataRow row in dt.Rows)
             {
-                for (int i = 0; i < dt.Columns.Count; i++)
+                foreach (DataColumn column in dt.Columns)
                 {
-                    Response.Write(row[i].ToString());
-                    if (i < dt.Columns.Count - 1) Response.Write(",");
+                    PdfPCell cell = new PdfPCell(new Phrase(row[column].ToString()))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER
+                    };
+                    table.AddCell(cell);
                 }
-                Response.Write("\n");
             }
+
+            pdfDoc.Add(table);
+            pdfDoc.Close();
+
+            byte[] bytes = memoryStream.ToArray();
+            memoryStream.Close();
+
+            // Send PDF to browser
+            Response.Clear();
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", $"attachment;filename=Statement_{accountNumber}.pdf");
+            Response.Buffer = true;
+            Response.BinaryWrite(bytes);
             Response.Flush();
             Response.End();
         }
+
+        private void LoadNomineeDetails(string accountId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT NomineeName, NomineeNID, NomineeImage FROM Accounts WHERE AID = @AccountID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@AccountID", accountId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    lblNomineeName.Text = reader["NomineeName"].ToString();
+                    lblNomineeNID.Text = reader["NomineeNID"].ToString();
+                    imgNominee.ImageUrl = reader["NomineeImage"].ToString(); // stored path "~/images/nominees/..."
+                }
+            }
+        }
+
     }
 }

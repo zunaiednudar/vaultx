@@ -221,10 +221,12 @@
     border-radius: var(--radius);
     box-shadow: var(--box-shadow);
     width: 400px;
+    max-height: 90vh;
     max-width: 90%;
     position: relative;
     transition: transform 0.3s ease;
     color: var(--color-font-primary);
+    overflow-y: auto;
 }
 
     .modal-content:hover {
@@ -353,6 +355,22 @@
         background-color: var(--color-bg-secondary);
         transform: scale(1.03);
     }
+
+.file-name-label {
+    display: block;
+    margin-top: 5px;
+    font-style: italic;
+    color: #555;
+}
+
+.img-preview {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 3px;
+}
+
 
 /* Responsive adjustments */
 

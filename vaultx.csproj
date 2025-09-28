@@ -44,6 +44,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -71,14 +77,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FAQ.aspx" />
     <Content Include="AccountDetails.aspx" />
     <Content Include="ForgetPassword.aspx" />
+    <Content Include="FundTransfer.aspx" />
     <Content Include="Dashboard.aspx" />
+    <Content Include="Global.asax" />
     <Content Include="Home.aspx" />
     <Content Include="Profile.aspx" />
+    <Content Include="scripts\fundtransfer.js" />
     <Content Include="scripts\home.js" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />
+    <Content Include="styles\fundtransfer.css" />
     <Content Include="scripts\sidebar.js" />
     <Content Include="scripts\terms.js" />
     <Content Include="styles\faq.css" />
@@ -88,9 +99,11 @@
     <Content Include="styles\logout.css" />
     <Content Include="styles\home.css" />
     <Content Include="styles\profile.css" />
+    <Content Include="styles\logout.css" />
     <Content Include="styles\Register.css" />
     <Content Include="styles\sidebar.css" />
     <Content Include="styles\terms.css" />
+    <Content Include="Test.aspx" />
     <Content Include="Web.config" />
     <Content Include="Sidebar.ascx" />
     <Content Include="Terms.aspx" />
@@ -125,6 +138,18 @@
     <Compile Include="Dashboard.aspx.designer.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
+    <Compile Include="FundTransfer.aspx.cs">
+      <DependentUpon>FundTransfer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="FundTransfer.aspx.designer.cs">
+      <DependentUpon>FundTransfer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="helper\InputValidator.cs" />
+    <Compile Include="helper\PasswordHelper.cs" />
     <Compile Include="Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -181,6 +206,13 @@
     </Compile>
     <Compile Include="Logout.aspx.designer.cs">
       <DependentUpon>Logout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Test.aspx.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Test.aspx.designer.cs">
+      <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin.aspx.cs">
       <DependentUpon>Admin.aspx</DependentUpon>
