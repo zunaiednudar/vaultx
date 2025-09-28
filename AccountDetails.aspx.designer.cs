@@ -51,15 +51,6 @@ namespace vaultx
         protected global::System.Web.UI.WebControls.Label lblAccountHolder;
 
         /// <summary>
-        /// btnAddFunds control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddFunds;
-
-        /// <summary>
         /// btnDownloadStatement control.
         /// </summary>
         /// <remarks>

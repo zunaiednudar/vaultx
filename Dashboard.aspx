@@ -69,7 +69,7 @@
                 <asp:ListItem Text="Select Type" Value="" />
                 <asp:ListItem Text="Current" Value="Current" />
                 <asp:ListItem Text="Savings" Value="Savings" />
-                <asp:ListItem Text="Fixed Deposit" Value="Fixed Deposit" />
+                <asp:ListItem Text="Student" Value="Student" />
             </asp:DropDownList>
 
             <!-- Nominee Name -->

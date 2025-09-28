@@ -30,7 +30,6 @@
                 <asp:Label ID="lblAccountHolder" runat="server" />
             </div>
 
-            <asp:Button ID="btnAddFunds" runat="server" Text="Add Funds" OnClick="btnAddFunds_Click" CssClass="btn-action" />
             <asp:Button ID="btnDownloadStatement" runat="server" Text="Download Statement"
                 CssClass="btn-action" OnClientClick="openYearModal(); return false;" />
         </div>

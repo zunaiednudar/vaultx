@@ -123,12 +123,6 @@ namespace vaultx
             rptAccountTransactions.DataBind();
         }
 
-        protected void btnAddFunds_Click(object sender, EventArgs e)
-        {
-            // Redirect to Add Funds page or open modal
-            Response.Redirect($"AddFunds.aspx?aid={AccountID}");
-        }
-
         protected void btnDownloadStatement_Click(object sender, EventArgs e)
         {
             string accountNumber = Request.QueryString["account"];

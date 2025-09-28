@@ -21,7 +21,8 @@ namespace vaultx
             {
                 BindAccounts();
                 BindTransactions();
-                int uid = 1; // later replace with Session["UID"]
+                // int uid = 1; // later replace with Session["UID"]
+                int uid = Convert.ToInt32(Session["UID"]);
                 BindAccountTypes(uid);
             }
         }
@@ -41,8 +42,8 @@ namespace vaultx
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    // command.Parameters.AddWithValue("@UID", Session["UID"]);
-                    command.Parameters.AddWithValue("@UID", 1);
+                    command.Parameters.AddWithValue("@UID", Session["UID"]);
+                    // command.Parameters.AddWithValue("@UID", 1);
                     connection.Open();
 
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -70,7 +71,7 @@ namespace vaultx
         private void BindAccountTypes(int uid)
         {
             // All possible account types
-            List<string> allTypes = new List<string> { "Current", "Savings", "Fixed Deposit" };
+            List<string> allTypes = new List<string> { "Current", "Savings", "Student" };
 
             // Fetch user’s existing accounts
             DataTable userAccounts = GetUserAccounts(uid);
@@ -124,8 +125,8 @@ namespace vaultx
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    // command.Parameters.AddWithValue("@UID", Session["UID"]);
-                    command.Parameters.AddWithValue("@UID", 1);
+                    command.Parameters.AddWithValue("@UID", Session["UID"]);
+                    // command.Parameters.AddWithValue("@UID", 1);
                     connection.Open();
 
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -185,8 +186,8 @@ namespace vaultx
 
 
             // Check if the account type already exists
-            int uid = 1; // Replace with Session UID if needed
-            // int uid = Convert.ToInt32(Session["UID"]);
+            // int uid = 1; // Replace with Session UID if needed
+            int uid = Convert.ToInt32(Session["UID"]);
             DataTable userAccounts = GetUserAccounts(uid);
             if (userAccounts.AsEnumerable().Any(r => r.Field<string>("AccountType") == selectedType))
             {
