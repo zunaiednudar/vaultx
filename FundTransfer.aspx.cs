@@ -30,6 +30,8 @@ namespace vaultx
                 // Load user information and initialize page
                 LoadAccountHolderName(currentUserId);
                 ResetAllPanels();
+                // Add debug to ensure CSS classes are clean
+                System.Diagnostics.Debug.WriteLine("Page_Load - Initial state set");
             }
             else
             {
@@ -38,6 +40,9 @@ namespace vaultx
                 {
                     selectedAccountId = (long)ViewState["SelectedAccountId"];
                 }
+
+                // IMPORTANT: Always restore button selection state on postback
+                RestoreButtonSelection();
             }
         }
 
@@ -82,10 +87,125 @@ namespace vaultx
             Button btn = (Button)sender;
             string accountType = btn.CommandArgument;
 
-            CheckAccountByTypeAndProceed(currentUserId, accountType);
+            string currentSelectedType = ViewState["SelectedAccountType"] as string;
+
+            System.Diagnostics.Debug.WriteLine($"Button clicked: {accountType}, Current: {currentSelectedType}");
+
+            // FIXED TOGGLE LOGIC: Check if clicking the same button (toggle off)
+            if (currentSelectedType == accountType)
+            {
+                System.Diagnostics.Debug.WriteLine("Toggling OFF - Same button clicked");
+
+                // Toggle off - clear selection and hide form but preserve form data
+                ViewState["SelectedAccountType"] = null;
+                ViewState["SelectedAccountId"] = null;
+
+                // Reset all button visual states
+                ResetAllButtonStates();
+
+                // Hide form panels but keep form data intact
+                pnlTransferForm.Visible = false;
+                pnlSuccess.Visible = false;
+
+                // Clear only account details, not form fields
+                ClearAccountDetails();
+
+                // Add visual feedback for toggle off
+                ShowToggleOffFeedback();
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine("Switching account type or first selection");
+
+            // Different button clicked or first selection - switch account type
+            ViewState["SelectedAccountType"] = accountType;
+
+            // Update button visual states
+            UpdateButtonSelection(accountType);
+
+            // Check account and update form details (preserve form data)
+            CheckAccountAndUpdateForm(currentUserId, accountType);
         }
 
-        private void CheckAccountByTypeAndProceed(int userId, string accountType)
+        private void UpdateButtonSelection(string selectedAccountType)
+        {
+            System.Diagnostics.Debug.WriteLine($"UpdateButtonSelection: {selectedAccountType}");
+
+            // Reset all buttons to default state first
+            ResetAllButtonStates();
+
+            // Add selected class to the clicked button
+            switch (selectedAccountType)
+            {
+                case "Savings":
+                    btnSavings.CssClass = "account-type-btn selected";
+                    System.Diagnostics.Debug.WriteLine("Savings button selected");
+                    break;
+                case "Current":
+                    btnCurrent.CssClass = "account-type-btn selected";
+                    System.Diagnostics.Debug.WriteLine("Current button selected");
+                    break;
+                case "Fixed Deposit":
+                    btnFixedDeposit.CssClass = "account-type-btn selected";
+                    System.Diagnostics.Debug.WriteLine("Fixed Deposit button selected");
+                    break;
+            }
+        }
+
+        private void ResetAllButtonStates()
+        {
+            btnSavings.CssClass = "account-type-btn";
+            btnCurrent.CssClass = "account-type-btn";
+            btnFixedDeposit.CssClass = "account-type-btn";
+            System.Diagnostics.Debug.WriteLine("All button states reset");
+        }
+
+        private void RestoreButtonSelection()
+        {
+            string selectedAccountType = ViewState["SelectedAccountType"] as string;
+            System.Diagnostics.Debug.WriteLine($"RestoreButtonSelection: {selectedAccountType}");
+
+            if (!string.IsNullOrEmpty(selectedAccountType))
+            {
+                UpdateButtonSelection(selectedAccountType);
+            }
+            else
+            {
+                ResetAllButtonStates();
+            }
+        }
+
+        private void ClearAccountDetails()
+        {
+            lblFromAccountType.Text = "";
+            lblFromAccountNumber.Text = "";
+            lblFromAccountBalance.Text = "";
+        }
+
+        private void ShowToggleOffFeedback()
+        {
+            string script = @"
+                const accountTypes = document.querySelectorAll('.account-type-btn');
+                accountTypes.forEach(btn => {
+                    btn.style.transition = 'all 0.3s ease';
+                    btn.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        btn.style.transform = '';
+                    }, 200);
+                });
+                
+                const accountSelection = document.querySelector('.account-selection-section');
+                if (accountSelection) {
+                    accountSelection.style.transition = 'all 0.3s ease';
+                    accountSelection.style.backgroundColor = '#f0f8ff';
+                    setTimeout(() => {
+                        accountSelection.style.backgroundColor = '';
+                    }, 800);
+                }";
+            ClientScript.RegisterStartupScript(this.GetType(), "ToggleOffFeedback", script, true);
+        }
+
+        private void CheckAccountAndUpdateForm(int userId, string accountType)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
 
@@ -107,7 +227,7 @@ namespace vaultx
 
                     if (reader.Read())
                     {
-                        // Account found - proceed to transfer form
+                        // Account found - update form with new account details
                         selectedAccountId = Convert.ToInt64(reader["AID"]);
                         ViewState["SelectedAccountId"] = selectedAccountId;
 
@@ -115,21 +235,31 @@ namespace vaultx
                         string accountNumber = reader["AID"].ToString();
                         decimal balance = Convert.ToDecimal(reader["Balance"]);
 
-                        // Set the from account details in transfer form
+                        // Update ONLY the account details (preserve form data)
                         lblFromAccountType.Text = accountTypeText;
                         lblFromAccountNumber.Text = accountNumber;
                         lblFromAccountBalance.Text = balance.ToString("N2");
 
-                        // Show transfer form and hide success panel
+                        // Show transfer form
                         pnlTransferForm.Visible = true;
                         pnlSuccess.Visible = false;
+
+                        // Visual feedback for account switch
+                        ShowAccountSwitchFeedback();
                     }
                     else
                     {
-                        // No account found - show popup
+                        // No account found - reset selection and show modal
                         ViewState["SelectedAccountId"] = null;
+                        ViewState["SelectedAccountType"] = null;
+                        ResetAllButtonStates();
+
                         string script = $"showNoAccountModal('{accountType}');";
                         ClientScript.RegisterStartupScript(this.GetType(), "ShowNoAccountModal", script, true);
+
+                        // Clear account details and hide form
+                        ClearAccountDetails();
+                        pnlTransferForm.Visible = false;
                     }
 
                     reader.Close();
@@ -138,8 +268,24 @@ namespace vaultx
             catch (Exception ex)
             {
                 ShowErrorModal($"Error checking account: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"CheckAccountByTypeAndProceed error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"CheckAccountAndUpdateForm error: {ex.Message}");
             }
+        }
+
+        private void ShowAccountSwitchFeedback()
+        {
+            string script = @"
+                const accountSummary = document.querySelector('.selected-account-summary');
+                if (accountSummary) {
+                    accountSummary.style.transition = 'all 0.3s ease';
+                    accountSummary.style.backgroundColor = '#e8f5e8';
+                    accountSummary.style.borderLeft = '4px solid #4ECDC4';
+                    setTimeout(() => {
+                        accountSummary.style.backgroundColor = '#f8f9fa';
+                        accountSummary.style.borderLeft = 'none';
+                    }, 1200);
+                }";
+            ClientScript.RegisterStartupScript(this.GetType(), "AccountSwitchFeedback", script, true);
         }
 
         protected void btnSend_Click(object sender, EventArgs e)
@@ -263,7 +409,6 @@ namespace vaultx
             }
         }
 
-        // Enhanced ProcessFundTransfer with proper database transaction handling
         private TransferResult ProcessFundTransfer(long fromAccountId, long toAccountId, decimal amount, string reference)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
@@ -277,37 +422,43 @@ namespace vaultx
                     {
                         try
                         {
-                            // Step 1: Generate 12-digit TID
-                            string newTID = GenerateTransactionId(conn, transaction);
+                            // Step 1: Generate TID (using INT instead of BIGINT for compatibility)
+                            int newTID = GenerateTransactionIdInt(conn, transaction);
 
-                            // Step 2: Deduct amount from sender (with verification)
-                            string debitQuery = @"UPDATE Accounts 
-                                                SET Balance = Balance - @Amount 
-                                                WHERE AID = @AID AND Balance - @Amount >= 500";
+                            // Step 2: Verify sender account and balance before update
+                            string verifyQuery = "SELECT Balance FROM Accounts WHERE AID = @AID";
+                            SqlCommand verifyCmd = new SqlCommand(verifyQuery, conn, transaction);
+                            verifyCmd.Parameters.Add("@AID", SqlDbType.BigInt).Value = fromAccountId;
 
-                            SqlCommand debitCmd = new SqlCommand(debitQuery, conn, transaction);
-                            debitCmd.Parameters.AddWithValue("@Amount", amount);
-                            debitCmd.Parameters.AddWithValue("@AID", fromAccountId);
-
-                            int debitResult = debitCmd.ExecuteNonQuery();
-                            if (debitResult == 0)
+                            var currentBalanceObj = verifyCmd.ExecuteScalar();
+                            if (currentBalanceObj == null)
                             {
                                 transaction.Rollback();
                                 return new TransferResult
                                 {
                                     Success = false,
-                                    ErrorMessage = "Insufficient balance or account not found."
+                                    ErrorMessage = "Sender account not found."
                                 };
                             }
 
-                            // Step 3: Add amount to receiver
-                            string creditQuery = "UPDATE Accounts SET Balance = Balance + @Amount WHERE AID = @AID";
-                            SqlCommand creditCmd = new SqlCommand(creditQuery, conn, transaction);
-                            creditCmd.Parameters.AddWithValue("@Amount", amount);
-                            creditCmd.Parameters.AddWithValue("@AID", toAccountId);
+                            decimal currentBalance = Convert.ToDecimal(currentBalanceObj);
+                            if (currentBalance - amount < 500)
+                            {
+                                transaction.Rollback();
+                                return new TransferResult
+                                {
+                                    Success = false,
+                                    ErrorMessage = "Insufficient balance. Minimum balance of ৳500 must be maintained."
+                                };
+                            }
 
-                            int creditResult = creditCmd.ExecuteNonQuery();
-                            if (creditResult == 0)
+                            // Step 3: Verify receiver account exists
+                            string receiverQuery = "SELECT COUNT(*) FROM Accounts WHERE AID = @AID";
+                            SqlCommand receiverCmd = new SqlCommand(receiverQuery, conn, transaction);
+                            receiverCmd.Parameters.Add("@AID", SqlDbType.BigInt).Value = toAccountId;
+
+                            int receiverCount = (int)receiverCmd.ExecuteScalar();
+                            if (receiverCount == 0)
                             {
                                 transaction.Rollback();
                                 return new TransferResult
@@ -317,17 +468,51 @@ namespace vaultx
                                 };
                             }
 
-                            // Step 4: Insert transaction record
+                            // Step 4: Deduct amount from sender
+                            string debitQuery = "UPDATE Accounts SET Balance = Balance - @Amount WHERE AID = @AID";
+                            SqlCommand debitCmd = new SqlCommand(debitQuery, conn, transaction);
+                            debitCmd.Parameters.Add("@Amount", SqlDbType.Decimal).Value = amount;
+                            debitCmd.Parameters.Add("@AID", SqlDbType.BigInt).Value = fromAccountId;
+
+                            int debitResult = debitCmd.ExecuteNonQuery();
+                            if (debitResult == 0)
+                            {
+                                transaction.Rollback();
+                                return new TransferResult
+                                {
+                                    Success = false,
+                                    ErrorMessage = "Failed to debit sender account."
+                                };
+                            }
+
+                            // Step 5: Add amount to receiver
+                            string creditQuery = "UPDATE Accounts SET Balance = Balance + @Amount WHERE AID = @AID";
+                            SqlCommand creditCmd = new SqlCommand(creditQuery, conn, transaction);
+                            creditCmd.Parameters.Add("@Amount", SqlDbType.Decimal).Value = amount;
+                            creditCmd.Parameters.Add("@AID", SqlDbType.BigInt).Value = toAccountId;
+
+                            int creditResult = creditCmd.ExecuteNonQuery();
+                            if (creditResult == 0)
+                            {
+                                transaction.Rollback();
+                                return new TransferResult
+                                {
+                                    Success = false,
+                                    ErrorMessage = "Failed to credit receiver account."
+                                };
+                            }
+
+                            // Step 6: Insert transaction record with proper data types
                             string insertQuery = @"INSERT INTO Transactions (TID, FromAID, ToAID, Amount, Reference, Date) 
                                                  VALUES (@TID, @FromAID, @ToAID, @Amount, @Reference, @Date)";
 
                             SqlCommand insertCmd = new SqlCommand(insertQuery, conn, transaction);
-                            insertCmd.Parameters.AddWithValue("@TID", Convert.ToInt64(newTID));
-                            insertCmd.Parameters.AddWithValue("@FromAID", fromAccountId);
-                            insertCmd.Parameters.AddWithValue("@ToAID", toAccountId);
-                            insertCmd.Parameters.AddWithValue("@Amount", amount);
-                            insertCmd.Parameters.AddWithValue("@Reference", reference ?? "");
-                            insertCmd.Parameters.AddWithValue("@Date", DateTime.Now);
+                            insertCmd.Parameters.Add("@TID", SqlDbType.Int).Value = newTID;
+                            insertCmd.Parameters.Add("@FromAID", SqlDbType.Int).Value = (int)fromAccountId;
+                            insertCmd.Parameters.Add("@ToAID", SqlDbType.Int).Value = (int)toAccountId;
+                            insertCmd.Parameters.Add("@Amount", SqlDbType.Decimal).Value = amount;
+                            insertCmd.Parameters.Add("@Reference", SqlDbType.VarChar, 255).Value = reference ?? "";
+                            insertCmd.Parameters.Add("@Date", SqlDbType.DateTime).Value = DateTime.Now;
 
                             int insertResult = insertCmd.ExecuteNonQuery();
                             if (insertResult == 0)
@@ -340,10 +525,10 @@ namespace vaultx
                                 };
                             }
 
-                            // Step 5: Get updated sender balance from database
+                            // Step 7: Get updated sender balance from database
                             string balanceQuery = "SELECT Balance FROM Accounts WHERE AID = @AID";
                             SqlCommand balanceCmd = new SqlCommand(balanceQuery, conn, transaction);
-                            balanceCmd.Parameters.AddWithValue("@AID", fromAccountId);
+                            balanceCmd.Parameters.Add("@AID", SqlDbType.BigInt).Value = fromAccountId;
 
                             var newBalanceObj = balanceCmd.ExecuteScalar();
                             if (newBalanceObj == null)
@@ -358,14 +543,24 @@ namespace vaultx
 
                             decimal newSenderBalance = Convert.ToDecimal(newBalanceObj);
 
-                            // Step 6: All operations successful - commit transaction
+                            // Step 8: All operations successful - commit transaction
                             transaction.Commit();
 
                             return new TransferResult
                             {
                                 Success = true,
-                                TransactionId = newTID,
+                                TransactionId = newTID.ToString(),
                                 NewSenderBalance = newSenderBalance
+                            };
+                        }
+                        catch (SqlException sqlEx)
+                        {
+                            transaction.Rollback();
+                            System.Diagnostics.Debug.WriteLine($"SQL Error in ProcessFundTransfer: {sqlEx.Message}");
+                            return new TransferResult
+                            {
+                                Success = false,
+                                ErrorMessage = $"Database error: {sqlEx.Message}"
                             };
                         }
                         catch (Exception ex)
@@ -375,7 +570,7 @@ namespace vaultx
                             return new TransferResult
                             {
                                 Success = false,
-                                ErrorMessage = "Database transaction failed."
+                                ErrorMessage = $"Transaction failed: {ex.Message}"
                             };
                         }
                     }
@@ -392,7 +587,35 @@ namespace vaultx
             }
         }
 
-        // Helper class for transfer results
+        private int GenerateTransactionIdInt(SqlConnection conn, SqlTransaction transaction)
+        {
+            try
+            {
+                string query = "SELECT ISNULL(MAX(TID), 1000000) FROM Transactions";
+                SqlCommand cmd = new SqlCommand(query, conn, transaction);
+                var lastTID = cmd.ExecuteScalar();
+
+                int nextTID = Convert.ToInt32(lastTID) + 1;
+
+                if (nextTID < 1000000)
+                {
+                    nextTID = 1000001;
+                }
+
+                return nextTID;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GenerateTransactionIdInt error: {ex.Message}");
+                string timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                if (timeStamp.Length > 10)
+                {
+                    timeStamp = timeStamp.Substring(timeStamp.Length - 10);
+                }
+                return int.Parse(timeStamp);
+            }
+        }
+
         private class TransferResult
         {
             public bool Success { get; set; }
@@ -422,7 +645,6 @@ namespace vaultx
                         string accountNumber = reader["AID"].ToString();
                         decimal balance = Convert.ToDecimal(reader["Balance"]);
 
-                        // Update all account details with fresh data from database
                         lblFromAccountType.Text = accountTypeText;
                         lblFromAccountNumber.Text = accountNumber;
                         lblFromAccountBalance.Text = balance.ToString("N2");
@@ -436,10 +658,45 @@ namespace vaultx
             }
         }
 
+        // FIXED: Enhanced Cancel button functionality
         protected void btnCancel_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("Cancel button clicked");
+
+            // Clear form fields completely
             ClearForm();
+
+            // Reset ALL state - panels, buttons, ViewState
             ResetAllPanels();
+
+            // Show visual feedback for cancel action
+            ShowCancelFeedback();
+        }
+
+        private void ShowCancelFeedback()
+        {
+            string script = @"
+                const formSection = document.querySelector('.transfer-form-section');
+                const accountSection = document.querySelector('.account-selection-section');
+                
+                if (formSection) {
+                    formSection.style.transition = 'all 0.4s ease';
+                    formSection.style.transform = 'scale(0.98)';
+                    formSection.style.opacity = '0.7';
+                    setTimeout(() => {
+                        formSection.style.transform = '';
+                        formSection.style.opacity = '';
+                    }, 400);
+                }
+                
+                if (accountSection) {
+                    accountSection.style.transition = 'all 0.3s ease';
+                    accountSection.style.backgroundColor = '#fff3cd';
+                    setTimeout(() => {
+                        accountSection.style.backgroundColor = '';
+                    }, 1000);
+                }";
+            ClientScript.RegisterStartupScript(this.GetType(), "CancelFeedback", script, true);
         }
 
         protected void btnNewTransfer_Click(object sender, EventArgs e)
@@ -450,17 +707,12 @@ namespace vaultx
             if (ViewState["SelectedAccountId"] != null)
             {
                 selectedAccountId = (long)ViewState["SelectedAccountId"];
-
-                // Refresh the complete account information with updated balance from database
                 RefreshCompleteAccountInfo(selectedAccountId);
-
-                // Keep the transfer form visible with updated information
                 pnlTransferForm.Visible = true;
                 pnlSuccess.Visible = false;
             }
             else
             {
-                // If no account was previously selected, reset everything
                 ResetAllPanels();
             }
         }
@@ -484,14 +736,12 @@ namespace vaultx
                     {
                         string storedHash = result.ToString();
 
-                        // Check if password is already hashed
                         if (storedHash.Length == 88 && IsBase64String(storedHash))
                         {
                             return PasswordHelper.VerifyPassword(password, storedHash);
                         }
                         else
                         {
-                            // Legacy plain text comparison
                             return storedHash == password;
                         }
                     }
@@ -567,38 +817,23 @@ namespace vaultx
             }
         }
 
-        private string GenerateTransactionId(SqlConnection conn, SqlTransaction transaction)
-        {
-            try
-            {
-                // Get the latest TID
-                string query = "SELECT ISNULL(MAX(TID), 100000000000) FROM Transactions";
-                SqlCommand cmd = new SqlCommand(query, conn, transaction);
-                var lastTID = cmd.ExecuteScalar();
-
-                long nextTID = Convert.ToInt64(lastTID) + 1;
-
-                // Ensure it's 12 digits
-                if (nextTID < 100000000000) // Less than 12 digits
-                {
-                    nextTID = 100000000001; // Start from first 12-digit number
-                }
-
-                return nextTID.ToString();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"GenerateTransactionId error: {ex.Message}");
-                // If TID generation fails, create one based on timestamp
-                return DateTime.Now.ToString("yyyyMMddHHmmss");
-            }
-        }
-
         private void ResetAllPanels()
         {
+            System.Diagnostics.Debug.WriteLine("ResetAllPanels called");
+
+            // Hide all panels
             pnlTransferForm.Visible = false;
             pnlSuccess.Visible = false;
+
+            // Clear ViewState
             ViewState["SelectedAccountId"] = null;
+            ViewState["SelectedAccountType"] = null;
+
+            // Reset all button visual states
+            ResetAllButtonStates();
+
+            // Clear account details
+            ClearAccountDetails();
         }
 
         private void ShowErrorModal(string message)
@@ -614,12 +849,11 @@ namespace vaultx
             pnlTransferForm.Visible = false;
             pnlSuccess.Visible = true;
 
-            // Display all success information with updated balance from database
             lblSuccessTID.Text = transactionId;
             lblSuccessAmount.Text = amount.ToString("N2");
             lblSuccessAccount.Text = toAccount.ToString();
             lblSuccessReference.Text = string.IsNullOrEmpty(reference) ? "N/A" : reference;
-            lblSuccessNewBalance.Text = newBalance.ToString("N2"); // This is fetched from DB after transaction commit
+            lblSuccessNewBalance.Text = newBalance.ToString("N2");
         }
 
         private void ClearForm()

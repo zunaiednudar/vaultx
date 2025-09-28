@@ -76,6 +76,7 @@
     <Content Include="Global.asax" />
     <Content Include="Home.aspx" />
     <Content Include="Profile.aspx" />
+    <Content Include="scripts\fundtransfer.js" />
     <Content Include="scripts\home.js" />
     <Content Include="Login.aspx" />
     <Content Include="Register.aspx" />

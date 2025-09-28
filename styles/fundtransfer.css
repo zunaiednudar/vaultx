@@ -74,6 +74,7 @@
 /* Account Type Selection Section */
 .account-selection-section {
     margin-bottom: 40px;
+    transition: all 0.3s ease;
 }
 
     .account-selection-section h2 {
@@ -91,6 +92,7 @@
     margin-bottom: 30px;
 }
 
+/* Enhanced Account Type Button Styles with Toggle Effects */
 .account-type-btn {
     padding: 20px 30px;
     background: linear-gradient(135deg, #4ECDC4, #55EFC4);
@@ -104,6 +106,8 @@
     box-shadow: 0 5px 20px rgba(78, 205, 196, 0.3);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
 }
 
     .account-type-btn:hover {
@@ -117,6 +121,126 @@
         box-shadow: 0 5px 15px rgba(78, 205, 196, 0.5);
     }
 
+    /* Selected Button State - Toggle Effect */
+    .account-type-btn.selected {
+        background: linear-gradient(135deg, #00a085, #00c9a7) !important;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 201, 167, 0.6);
+        border: 3px solid #ffffff;
+        position: relative;
+        animation: selectedPulse 2s ease-in-out infinite;
+    }
+
+        .account-type-btn.selected::after {
+            content: "✓";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ffffff;
+            color: #00a085;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+            animation: checkmark 0.3s ease-in-out;
+        }
+
+        .account-type-btn.selected:hover {
+            background: linear-gradient(135deg, #008770, #00b595) !important;
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(0, 201, 167, 0.7);
+        }
+
+/* Checkmark Animation */
+@keyframes checkmark {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1) rotate(360deg);
+        opacity: 1;
+    }
+}
+
+/* Pulse Animation for Selected Buttons */
+@keyframes selectedPulse {
+    0% {
+        box-shadow: 0 10px 30px rgba(0, 201, 167, 0.6);
+    }
+
+    50% {
+        box-shadow: 0 10px 30px rgba(0, 201, 167, 0.9);
+    }
+
+    100% {
+        box-shadow: 0 10px 30px rgba(0, 201, 167, 0.6);
+    }
+}
+
+/* Toggle Off Effect */
+.account-type-btn.toggle-off {
+    animation: toggleOff 0.3s ease-out;
+}
+
+@keyframes toggleOff {
+    0% {
+        transform: translateY(-5px) scale(1);
+    }
+
+    50% {
+        transform: translateY(0) scale(0.95);
+        background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+        background: linear-gradient(135deg, #4ECDC4, #55EFC4);
+    }
+}
+
+/* Loading state for button transitions */
+.account-type-btn.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+    position: relative;
+}
+
+    .account-type-btn.loading::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        margin: -10px 0 0 -10px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 /* Transfer Form Section */
 .transfer-form-section {
     background: white;
@@ -128,6 +252,7 @@
 
 .transfer-form {
     padding: 0;
+    transition: all 0.3s ease;
 }
 
     .transfer-form h3 {
@@ -148,11 +273,19 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 15px;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
     .selected-account-summary span {
         font-weight: 500;
         color: #333;
+    }
+
+    .selected-account-summary.updating {
+        background-color: rgba(78, 205, 196, 0.1);
+        border-left: 4px solid #4ECDC4;
+        padding-left: 20px;
     }
 
 .account-balance-info {
@@ -161,6 +294,7 @@
     padding: 8px 15px;
     border-radius: 20px;
     font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 .form-body {
@@ -288,16 +422,41 @@
         box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
     }
 
+/* Enhanced Cancel Button */
 .btn-secondary {
-    background: #6c757d;
+    background: linear-gradient(135deg, #6c757d, #5a6268);
     color: white;
     box-shadow: 0 5px 20px rgba(108, 117, 125, 0.3);
+    transition: all 0.3s ease;
 }
 
     .btn-secondary:hover {
-        background: #5a6268;
+        background: linear-gradient(135deg, #5a6268, #495057);
         transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
     }
+
+    .btn-secondary:active {
+        transform: translateY(-1px);
+        animation: cancelClick 0.2s ease-out;
+    }
+
+@keyframes cancelClick {
+    0% {
+        transform: scale(1);
+        background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+
+    50% {
+        transform: scale(0.98);
+        background: linear-gradient(135deg, #dc3545, #c82333);
+    }
+
+    100% {
+        transform: scale(1);
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+    }
+}
 
 /* Modal Styles */
 .modal-overlay {
@@ -483,6 +642,22 @@
         gap: 15px;
     }
 
+    .account-type-btn.selected::after {
+        top: -6px;
+        right: -6px;
+        width: 22px;
+        height: 22px;
+        font-size: 14px;
+    }
+
+    .account-type-btn.selected {
+        transform: translateY(-3px);
+    }
+
+        .account-type-btn.selected:hover {
+            transform: translateY(-4px);
+        }
+
     .selected-account-summary {
         flex-direction: column;
         align-items: flex-start;
@@ -573,6 +748,22 @@
         padding: 15px 20px;
         font-size: 1rem;
     }
+
+        .account-type-btn.selected {
+            transform: translateY(-2px);
+        }
+
+            .account-type-btn.selected::after {
+                top: -4px;
+                right: -4px;
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+            }
+
+            .account-type-btn.selected:hover {
+                transform: translateY(-3px);
+            }
 
     .balance-highlight {
         font-size: 1.1rem !important;

@@ -2,10 +2,12 @@
 
 <asp:Content ID="FundTransferHead" ContentPlaceHolderID="SiteHead" runat="server">
     <link rel="stylesheet" href="styles/fundtransfer.css" />
+    <script src="scripts/fundtransfer.js?v=<%= DateTime.Now.Ticks %>"></script>
     <meta name="description" content="VaultX Bank — Fund Transfer" />
 </asp:Content>
 
 <asp:Content ID="FundTransferMainContent" ContentPlaceHolderID="SiteMainContent" runat="server">
+    <!-- Your existing HTML content remains the same -->
     <div class="fund-transfer-container">
         <!-- Page Header -->
         <div class="page-header">
@@ -31,11 +33,11 @@
             <h2>Select Account Type</h2>
             <div class="account-types-container">
                 <asp:Button ID="btnSavings" runat="server" Text="Savings" CssClass="account-type-btn" 
-                    OnClick="btnAccountType_Click" CommandArgument="Savings" />
+                    OnClick="btnAccountType_Click" CommandArgument="Savings" CausesValidation="false" />
                 <asp:Button ID="btnCurrent" runat="server" Text="Current" CssClass="account-type-btn" 
-                    OnClick="btnAccountType_Click" CommandArgument="Current" />
+                    OnClick="btnAccountType_Click" CommandArgument="Current" CausesValidation="false" />
                 <asp:Button ID="btnFixedDeposit" runat="server" Text="Fixed Deposit" CssClass="account-type-btn" 
-                    OnClick="btnAccountType_Click" CommandArgument="Fixed Deposit" />
+                    OnClick="btnAccountType_Click" CommandArgument="Fixed Deposit" CausesValidation="false" />
             </div>
         </div>
 
@@ -56,9 +58,10 @@
                             Receiver's Account Number
                         </label>
                         <asp:TextBox ID="txtAccountNo" runat="server" CssClass="form-control" 
-                            placeholder="Enter receiver's account number" required></asp:TextBox>
+                            placeholder="Enter receiver's account number"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="rfvAccountNo" runat="server" ControlToValidate="txtAccountNo" 
-                            ErrorMessage="Account number is required" CssClass="validator-text" Display="Dynamic" />
+                            ErrorMessage="Account number is required" CssClass="validator-text" Display="Dynamic" 
+                            ValidationGroup="TransferValidation" />
                     </div>
 
                     <div class="form-group">
@@ -67,9 +70,10 @@
                             Amount
                         </label>
                         <asp:TextBox ID="txtAmount" runat="server" CssClass="form-control" 
-                            placeholder="Enter amount to transfer" TextMode="Number" step="0.01" min="1" required></asp:TextBox>
+                            placeholder="Enter amount to transfer" TextMode="Number" step="0.01" min="1"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="rfvAmount" runat="server" ControlToValidate="txtAmount" 
-                            ErrorMessage="Amount is required" CssClass="validator-text" Display="Dynamic" />
+                            ErrorMessage="Amount is required" CssClass="validator-text" Display="Dynamic" 
+                            ValidationGroup="TransferValidation" />
                     </div>
 
                     <div class="form-group">
@@ -87,9 +91,10 @@
                             Password
                         </label>
                         <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" 
-                            TextMode="Password" placeholder="Enter your password" required></asp:TextBox>
+                            TextMode="Password" placeholder="Enter your password"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ControlToValidate="txtPassword" 
-                            ErrorMessage="Password is required" CssClass="validator-text" Display="Dynamic" />
+                            ErrorMessage="Password is required" CssClass="validator-text" Display="Dynamic" 
+                            ValidationGroup="TransferValidation" />
                     </div>
 
                     <div class="form-group checkbox-group">
@@ -100,15 +105,16 @@
                         <asp:CustomValidator ID="cvTerms" runat="server" 
                             ErrorMessage="You must agree to the terms and conditions" 
                             CssClass="validator-text" Display="Dynamic" 
-                            ClientValidationFunction="validateTerms" />
+                            ClientValidationFunction="validateTerms" 
+                            ValidationGroup="TransferValidation" />
                     </div>
                 </div>
 
                 <div class="form-actions">
                     <asp:Button ID="btnSend" runat="server" Text="Send Money" CssClass="btn btn-primary" 
-                        OnClick="btnSend_Click" />
+                        OnClick="btnSend_Click" ValidationGroup="TransferValidation" />
                     <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn btn-secondary" 
-                        OnClick="btnCancel_Click" />
+                        OnClick="btnCancel_Click" CausesValidation="false" />
                 </div>
             </asp:Panel>
 
@@ -142,7 +148,7 @@
                     </div>
                 </div>
                 <asp:Button ID="btnNewTransfer" runat="server" Text="New Transfer" CssClass="btn btn-primary" 
-                    OnClick="btnNewTransfer_Click" />
+                    OnClick="btnNewTransfer_Click" CausesValidation="false" />
             </asp:Panel>
         </div>
     </div>
@@ -172,57 +178,5 @@
         </div>
     </div>
 
-    <script type="text/javascript">
-        function validateTerms(sender, args) {
-            var checkbox = document.getElementById('<%= chkTerms.ClientID %>');
-            args.IsValid = checkbox.checked;
-        }
-
-        function clearForm() {
-            document.getElementById('<%= txtAccountNo.ClientID %>').value = '';
-            document.getElementById('<%= txtAmount.ClientID %>').value = '';
-            document.getElementById('<%= txtReference.ClientID %>').value = '';
-            document.getElementById('<%= txtPassword.ClientID %>').value = '';
-            document.getElementById('<%= chkTerms.ClientID %>').checked = false;
-        }
-
-        function showNoAccountModal(accountType) {
-            document.getElementById('selectedAccountType').textContent = accountType;
-            document.getElementById('noAccountModal').style.display = 'flex';
-        }
-
-        function closeNoAccountModal() {
-            document.getElementById('noAccountModal').style.display = 'none';
-        }
-
-        function showTransferErrorModal(message) {
-            document.getElementById('transferErrorMessage').textContent = message;
-            document.getElementById('transferErrorModal').style.display = 'flex';
-        }
-
-        function closeTransferErrorModal() {
-            document.getElementById('transferErrorModal').style.display = 'none';
-        }
-
-        // Close modals when clicking outside
-        window.onclick = function (event) {
-            var noAccountModal = document.getElementById('noAccountModal');
-            var transferErrorModal = document.getElementById('transferErrorModal');
-
-            if (event.target === noAccountModal) {
-                closeNoAccountModal();
-            }
-            if (event.target === transferErrorModal) {
-                closeTransferErrorModal();
-            }
-        }
-
-        // Close modals with Escape key
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                closeNoAccountModal();
-                closeTransferErrorModal();
-            }
-        });
-    </script>
+    <!-- No embedded script needed anymore - everything is in fundtransfer.js -->
 </asp:Content>
