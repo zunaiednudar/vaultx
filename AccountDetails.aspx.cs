@@ -29,6 +29,32 @@ namespace vaultx
                     LoadAccountInfo(accountNumber);
                     LoadTransactions(accountNumber);
                     LoadNomineeDetails(accountNumber);
+                    PopulateYearDropdown(accountNumber);
+                }
+            }
+        }
+
+        private void PopulateYearDropdown(string accountNumber)
+        {
+            int createdYear = DateTime.Now.Year; // Default fallback
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT CreatedAt FROM Accounts WHERE AID = @AID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@AID", accountNumber);
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        createdYear = Convert.ToDateTime(result).Year;
+                    }
+                    ddlYears.Items.Clear();
+                    int currentYear = DateTime.Now.Year;
+                    for (int year = currentYear; year >= createdYear; year--)
+                    {
+                        ddlYears.Items.Add(new System.Web.UI.WebControls.ListItem(year.ToString(), year.ToString()));
+                    }
                 }
             }
         }
@@ -106,17 +132,20 @@ namespace vaultx
         protected void btnDownloadStatement_Click(object sender, EventArgs e)
         {
             string accountNumber = Request.QueryString["account"];
+            if (ddlYears.SelectedValue == null) return;
+            int selectedYear = Convert.ToInt32(ddlYears.SelectedValue);
             DataTable dt = new DataTable();
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"SELECT FromAID as [From], ToAID as [To], Amount, Reference, Date
                                  FROM Transactions
-                                 WHERE FromAID = @AID OR ToAID = @AID
+                                 WHERE (FromAID = @AID OR ToAID = @AID) AND YEAR(Date) = @Year
                                  ORDER BY Date DESC";
 
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@AID", accountNumber);
+                    cmd.Parameters.AddWithValue("@Year", selectedYear);
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     da.Fill(dt);
                 }
