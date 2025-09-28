@@ -1,24 +1,21 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="vaultx.Site" %>
-
+<%@ Register Src="Sidebar.ascx" TagName="Sidebar" TagPrefix="uc" %>
 <!DOCTYPE html>
 
 <html>
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <link rel="stylesheet" href="styles/global.css?v=<%= DateTime.Now.Ticks %>" />
+    <link rel="stylesheet" href="styles/sidebar.css?v=<%= DateTime.Now.Ticks %>" />
+        <link rel="stylesheet" href="styles/logout.css?v=<%= DateTime.Now.Ticks %>" />
     <!--Google Fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet" />
 
-    <!--Web app icon-->
-
-    <!--Icons (Font Awesome)-->
-    <script src="https://kit.fontawesome.com/115498d46a.js" crossorigin="anonymous"></script>
-
-    <!--CSS-->
-    <link rel="stylesheet" href="styles/global.css" type="text/css" />
+ 
+ 
 
     <title>VaultX</title>
 
@@ -27,32 +24,51 @@
     </asp:ContentPlaceHolder>
 </head>
 <body>
+    
     <form id="form1" runat="server">
+
+  
+        <uc:Sidebar ID="Sidebar1" runat="server" />
         <!-- Header Section -->
         <header>
-            <!--<p>This is header</p>-->
+ 
+          <button type="button" class="hamburger" onclick="toggleSidebar(event)" aria-label="Toggle sidebar">
+      <span class="bar bar1"></span>
+      <span class="bar bar2"></span>
+      <span class="bar bar3"></span>
+  </button>
         </header>
 
-        <!--Navigation Section-->
-        <!--The popup sidebar should replace this part-->
-        <nav class="site-nav">
-            <ul class="site-nav-ul">
-                <li class="site-nav-ul-li <%# Page.Title == "Home" ? "active" : "" %>"><a href="Home.aspx">Home</a></li>
-                <li class="site-nav-ul-li <%# Page.Title == "Dashboard" ? "active" : "" %>"><a href="Dashboard.aspx">Dashboard</a></li>
-            </ul>
-        </nav>
-
-        <!--Main Section-->
-        <!--This is where each page will inject its unique main content-->
+        
         <main class="site-container">
+
             <asp:ContentPlaceHolder ID="SiteMainContent" runat="server">
+
             </asp:ContentPlaceHolder>
+            
+ 
         </main>
 
         <!--Footer Section-->
         <footer>
             <!--<p>This is footer</p>-->
         </footer>
+
+        <!-- Logout Confirmation Modal -->
+<div class="logout-modal" id="logoutModal" style="display:none;">
+  <div class="logout-modal-content">
+    <h3>Are you sure you want to logout?</h3>
+    <div class="logout-btns">
+      <button type="button" class="btn-yes" onclick="confirmLogout()">Yes</button>
+      <button type="button" class="btn-no" onclick="cancelLogout()">No</button>
+    </div>
+  </div>
+</div>
+       <script src="https://kit.fontawesome.com/115498d46a.js" crossorigin="anonymous"></script>
+ <script src='<%= ResolveUrl("scripts/sidebar.js") %>?v=<%= DateTime.Now.Ticks %>'></script>
     </form>
+
+
+
 </body>
 </html>

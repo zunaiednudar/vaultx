@@ -1,16 +1,21 @@
 ﻿
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Register.aspx.cs" Inherits="vaultx.Register" EnableEventValidation="false" %>
 
-
+<%@ Register Src="Sidebar.ascx" TagName="Sidebar" TagPrefix="uc" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VaultX - Register</title>
-    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+     <link rel="preconnect" href="https://fonts.googleapis.com" />
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+ <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet" />
+
+   
     <link rel="stylesheet" href="styles/global.css?v=<%= DateTime.Now.Ticks %>" />
     <link rel="stylesheet" href="styles/Register.css?v=<%= DateTime.Now.Ticks %>" />
+     <link rel="stylesheet" href="styles/sidebar.css?v=<%= DateTime.Now.Ticks %>" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -29,13 +34,22 @@
             }
         </script>
 
+         <uc:Sidebar ID="Sidebar1" runat="server" />
+
+        <!-- Hamburger button -->
+        <button type="button" class="hamburger" onclick="toggleSidebar(event)" aria-label="Toggle sidebar">
+            <span class="bar bar1"></span>
+            <span class="bar bar2"></span>
+            <span class="bar bar3"></span>
+        </button>
+
         <div class="page-flex">
             <div class="left-panel">
 
                
                 <div class="form-container" id="regForm">
                     <div class="logo-container">
-                        <img src="images/logo.png" alt="VaultX Logo" class="logo" style="width:200px; height:40px; object-fit:cover;" />
+                   <!--     <img src="images/logo.png" alt="VaultX Logo" class="logo" style="width:200px; height:40px; object-fit:cover;" />  -->
                     </div>
 
                     <h2>Registration</h2>
@@ -162,6 +176,7 @@
 
 
 
+
      <asp:Panel ID="pnlStep3" runat="server" class="step-panel" style="display:none;">
 
          <div class="form-group">
@@ -195,16 +210,31 @@
 </asp:Panel>
          
 
+  <asp:Panel ID="pnlSuccess" runat="server" CssClass="form-container-lg" Visible="false">
+                    <div style="text-align:center; font-size:2rem; font-weight:bold; color:var(--color-bg-secondary);">
+                        🎉 Registration Successful! 🎉
+                    </div>
+                   
+                </asp:Panel>
 
+
+     <asp:Panel ID="pnlfail" runat="server" CssClass="form-container-lg" Visible="false">
+                    <div style="text-align:center; font-size:2rem; font-weight:bold; color:var(--color-bg-secondary);">
+                         ❌ Registration Failed! <br />Try Again
+                    </div>
+                  
+                </asp:Panel>
 
  
                  
-
+                      <asp:Panel ID="areg" runat="server">
                     <div class="form-group login-link" style="text-align:center; margin-top:9px;">
                      
                         <span id="ar">Already registered? </span>
                         <a href="Login.aspx" style="color:#FF6B6B; font-weight:bold; text-decoration:none;">Login</a>
                     </div>
+                          </asp:Panel>
+
                 </div>
 
               
@@ -234,11 +264,24 @@
                 <img src="images/reg_img2.jpg" alt="VaultX Banner" />
             </div>
         </div>
-
+          <script src='<%= ResolveUrl("scripts/sidebar.js") %>?v=<%= DateTime.Now.Ticks %>'></script>
         <script>
 
             function nextStep(currentStep) {
+                var currentPanel = document.getElementById('pnlStep' + currentStep);
+                if (!currentPanel)
+                    return;
                
+                var inputs = currentPanel.querySelectorAll('input, select, textarea');
+                for (var i = 0; i < inputs.length; i++) {
+                    if (!inputs[i].checkValidity()) {
+                       
+                        inputs[i].reportValidity();
+                        return; 
+                    }
+                }
+
+
                 var panels = document.querySelectorAll('[id^="pnlStep"]');
                 panels.forEach(function (p) {
                     p.style.display = 'none';

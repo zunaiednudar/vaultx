@@ -33,6 +33,15 @@ namespace vaultx
         protected global::System.Web.UI.WebControls.HiddenField hfEmail;
 
         /// <summary>
+        /// Sidebar1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::vaultx.Sidebar Sidebar1;
+
+        /// <summary>
         /// pnlLoginForm control.
         /// </summary>
         /// <remarks>
