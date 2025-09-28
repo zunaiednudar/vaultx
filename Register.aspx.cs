@@ -84,13 +84,6 @@ namespace vaultx
                 if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
                     Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
 
-                string fileName = Path.GetFileName(fuProfileImage.PostedFile.FileName);
-                string savePath = Server.MapPath("~/images/profile_img/") + fileName;
-
-               
-                if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
-                    Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
-
                 fuProfileImage.SaveAs(savePath);
 
                 profileImage = "~/images/profile_img/" + fileName;
