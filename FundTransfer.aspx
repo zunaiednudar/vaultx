@@ -36,8 +36,8 @@
                     OnClick="btnAccountType_Click" CommandArgument="Savings" CausesValidation="false" />
                 <asp:Button ID="btnCurrent" runat="server" Text="Current" CssClass="account-type-btn" 
                     OnClick="btnAccountType_Click" CommandArgument="Current" CausesValidation="false" />
-                <asp:Button ID="btnFixedDeposit" runat="server" Text="Fixed Deposit" CssClass="account-type-btn" 
-                    OnClick="btnAccountType_Click" CommandArgument="Fixed Deposit" CausesValidation="false" />
+                <asp:Button ID="btnStudent" runat="server" Text="Student" CssClass="account-type-btn" 
+                    OnClick="btnAccountType_Click" CommandArgument="Student" CausesValidation="false" />
             </div>
         </div>
 

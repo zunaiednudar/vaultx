@@ -145,9 +145,9 @@ namespace vaultx
                     btnCurrent.CssClass = "account-type-btn selected";
                     System.Diagnostics.Debug.WriteLine("Current button selected");
                     break;
-                case "Fixed Deposit":
-                    btnFixedDeposit.CssClass = "account-type-btn selected";
-                    System.Diagnostics.Debug.WriteLine("Fixed Deposit button selected");
+                case "Student":
+                    btnStudent.CssClass = "account-type-btn selected";
+                    System.Diagnostics.Debug.WriteLine("Student button selected");
                     break;
             }
         }
@@ -156,7 +156,7 @@ namespace vaultx
         {
             btnSavings.CssClass = "account-type-btn";
             btnCurrent.CssClass = "account-type-btn";
-            btnFixedDeposit.CssClass = "account-type-btn";
+            btnStudent.CssClass = "account-type-btn";
             System.Diagnostics.Debug.WriteLine("All button states reset");
         }
 

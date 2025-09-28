@@ -42,13 +42,13 @@ namespace vaultx
         protected global::System.Web.UI.WebControls.Button btnCurrent;
 
         /// <summary>
-        /// btnFixedDeposit control.
+        /// btnStudent control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFixedDeposit;
+        protected global::System.Web.UI.WebControls.Button btnStudent;
 
         /// <summary>
         /// pnlTransferForm control.
