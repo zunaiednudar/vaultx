@@ -21,6 +21,9 @@ namespace vaultx
             {
                 BindAccounts();
                 BindTransactions();
+                // int uid = 1; // later replace with Session["UID"]
+                int uid = Convert.ToInt32(Session["UID"]);
+                BindAccountTypes(uid);
             }
         }
 
@@ -39,8 +42,8 @@ namespace vaultx
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    // command.Parameters.AddWithValue("@UID", Session["UID"]);
-                    command.Parameters.AddWithValue("@UID", 1);
+                    command.Parameters.AddWithValue("@UID", Session["UID"]);
+                    // command.Parameters.AddWithValue("@UID", 1);
                     connection.Open();
 
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -64,6 +67,31 @@ namespace vaultx
             // Show + if less than 3 accounts
             phAddAccount.Visible = (accounts.Count < 3);
         }
+
+        private void BindAccountTypes(int uid)
+        {
+            // All possible account types
+            List<string> allTypes = new List<string> { "Current", "Savings", "Student" };
+
+            // Fetch user’s existing accounts
+            DataTable userAccounts = GetUserAccounts(uid);
+            List<string> userTypes = userAccounts.AsEnumerable()
+                                                 .Select(r => r.Field<string>("AccountType"))
+                                                 .ToList();
+
+            // Filter out types already present
+            var availableTypes = allTypes.Except(userTypes).ToList();
+
+            // Bind to dropdown
+            ddlAccountType.Items.Clear();
+            ddlAccountType.Items.Add(new ListItem("Select Type", "")); // default option
+
+            foreach (var type in availableTypes)
+            {
+                ddlAccountType.Items.Add(new ListItem(type, type));
+            }
+        }
+
 
         private DataTable GetUserAccounts(int uid)
         {
@@ -97,8 +125,8 @@ namespace vaultx
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    // command.Parameters.AddWithValue("@UID", Session["UID"]);
-                    command.Parameters.AddWithValue("@UID", 1);
+                    command.Parameters.AddWithValue("@UID", Session["UID"]);
+                    // command.Parameters.AddWithValue("@UID", 1);
                     connection.Open();
 
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -107,8 +135,8 @@ namespace vaultx
                         {
                             transactions.Add(new
                             {
-                                FromAccountNumber = (reader["FromAID"].ToString() == reader["AID"].ToString()) ? (reader["AccountType"].ToString() + "<br>Account") : reader["FromAID"].ToString(),
-                                ToAccountNumber = (reader["ToAID"].ToString() == reader["AID"].ToString()) ? (reader["AccountType"].ToString() + "<br>Account") : reader["ToAID"].ToString(),
+                                FromAccountNumber = reader["FromAID"].ToString(),
+                                ToAccountNumber = reader["ToAID"].ToString(),
                                 TransactionType = (reader["FromAID"].ToString() == reader["AID"].ToString()) ? "Debit" : "Credit",
                                 Amount = Convert.ToDecimal(reader["Amount"]),
                                 Reference = reader["Reference"].ToString(),
@@ -143,17 +171,23 @@ namespace vaultx
             }
 
             // Handle Nominee Image upload
-            if (fuNomineeImage.HasFile)
+            if (fuNomineeImage.HasFile && string.IsNullOrEmpty(nomineeImage))
             {
                 string fileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(fuNomineeImage.FileName);
                 string savePath = Server.MapPath("~/images/nominees/") + fileName;
-                fuNomineeImage.SaveAs(savePath);
+
+                if (!System.IO.File.Exists(savePath))  // prevent overwriting
+                {
+                    fuNomineeImage.SaveAs(savePath);
+                }
+
                 nomineeImage = "~/images/nominees/" + fileName;
             }
 
+
             // Check if the account type already exists
-            int uid = 1; // Replace with Session UID if needed
-            // int uid = Convert.ToInt32(Session["UID"]);
+            // int uid = 1; // Replace with Session UID if needed
+            int uid = Convert.ToInt32(Session["UID"]);
             DataTable userAccounts = GetUserAccounts(uid);
             if (userAccounts.AsEnumerable().Any(r => r.Field<string>("AccountType") == selectedType))
             {
@@ -169,9 +203,15 @@ namespace vaultx
             CreateAccount(newAid, selectedType, uid, nomineeName, nomineeNID, nomineeImage);
 
             BindAccounts();
+            BindAccountTypes(uid);
+
 
             // Close modal using JavaScript
             ScriptManager.RegisterStartupScript(this, this.GetType(), "CloseModal", "closeModal();", true);
+
+            // Avoid duplicate SaveAs on refresh
+            Response.Redirect(Request.RawUrl, false);
+            Context.ApplicationInstance.CompleteRequest();
         }
 
 

@@ -30,10 +30,31 @@
                 <asp:Label ID="lblAccountHolder" runat="server" />
             </div>
 
-            <asp:Button ID="btnAddFunds" runat="server" Text="Add Funds" OnClick="btnAddFunds_Click" CssClass="btn-action" />
-            <asp:Button ID="btnDownloadStatement" runat="server" Text="Download Statement" OnClick="btnDownloadStatement_Click" CssClass="btn-action" />
+            <asp:Button ID="btnDownloadStatement" runat="server" Text="Download Statement"
+                CssClass="btn-action" OnClientClick="openYearModal(); return false;" />
         </div>
     </section>
+
+    <!-- Middle Section: Nominee Details -->
+    <section class="nominee-section">
+        <h2>Nominee Details</h2>
+        <div class="nominee-info">
+            <div class="nominee-photo">
+                <asp:Image ID="imgNominee" runat="server" CssClass="nominee-img" />
+            </div>
+            <div class="nominee-data">
+                <div class="nominee-row">
+                    <strong>Name:</strong>
+                    <asp:Label ID="lblNomineeName" CssClass="value" runat="server" />
+                </div>
+                <div class="nominee-row">
+                    <strong>NID Number:</strong>
+                    <asp:Label ID="lblNomineeNID" CssClass="value" runat="server" />
+                </div>
+            </div>
+        </div>
+    </section>
+
 
     <!-- Lower Section: Transactions -->
     <section class="transactions-section">
@@ -65,4 +86,41 @@
         </div>
     </section>
 
+    <!-- Year Selection Modal for PDF Export -->
+    <asp:Panel ID="pnlYearModal" runat="server" CssClass="modal hide">
+        <div class="modal-content">
+            <!-- Close button -->
+            <span class="close" onclick="closeYearModal()">&times;</span>
+
+            <h2>Select Year for Statement</h2>
+
+            <!-- Year Dropdown -->
+            <asp:DropDownList ID="ddlYears" runat="server" CssClass="modal-input"></asp:DropDownList>
+
+            <!-- Download PDF Button -->
+            <asp:Button ID="btnDownloadPDF" runat="server" Text="Download PDF" CssClass="btn-action"
+                OnClick="btnDownloadStatement_Click" />
+        </div>
+    </asp:Panel>
+
+    <!-- Trigger button -->
+    <!-- <asp:Button ID="btnOpenYearModal" runat="server" Text="Download Statement"
+        CssClass="btn-action" OnClientClick="openYearModal(); return false;" />
+        -->
+
+    <script type="text/javascript">
+        window.onload = function () {
+            const modal = document.getElementById('<%= pnlYearModal.ClientID %>');
+
+            window.openYearModal = function () {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            };
+
+            window.closeYearModal = function () {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            };
+        };
+    </script>
 </asp:Content>
