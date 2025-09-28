@@ -26,21 +26,11 @@ namespace vaultx
                         int uid;
                         if (int.TryParse(uidStr, out uid))
                         {
-                            // Verify user still exists in database
-                            if (IsUserValid(email, uid))
-                            {
-                                Session["Email"] = email;
-                                Session["UserId"] = uid;
-                                Session["UID"] = uid; // Keep both for backward compatibility
-                                Response.Redirect("Home.aspx");
-                                Context.ApplicationInstance.CompleteRequest();
-                            }
-                            else
-                            {
-                                // Clear invalid cookie
-                                cookie.Expires = DateTime.Now.AddDays(-1);
-                                Response.Cookies.Add(cookie);
-                            }
+                            Session["Email"] = email;
+                            Session["UID"] = uid;
+                            //Response.Redirect("Home.aspx");
+                            //Context.ApplicationInstance.CompleteRequest();
+
                         }
                     }
                 }
@@ -80,8 +70,8 @@ namespace vaultx
                 Session["UserId"] = uid;
                 Session["UID"] = uid; // Keep both for backward compatibility
 
-                //cookie - only store email and UID, never password
-                if (chkRememberMe.Checked)
+               //cookie
+                if (chkRememberMe.Checked) 
                 {
                     HttpCookie cookie = new HttpCookie("VaultXUser");
                     cookie["Email"] = email;

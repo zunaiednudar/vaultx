@@ -84,8 +84,17 @@ namespace vaultx
                 if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
                     Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
 
+                string fileName = Path.GetFileName(fuProfileImage.PostedFile.FileName);
+                string savePath = Server.MapPath("~/images/profile_img/") + fileName;
+
+               
+                if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
+                    Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
+
                 fuProfileImage.SaveAs(savePath);
+
                 profileImage = "~/images/profile_img/" + fileName;
+
                 hfProfileImagePath.Value = profileImage;
             }
 
@@ -246,32 +255,6 @@ VALUES
                 pnlStep2.Visible = false;
                 pnlStep1.Visible = false;
                 areg.Visible = false;
-            }
-        }
-
-        private bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private bool IsEmailExists(string email)
-        {
-            string connStr = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                string query = "SELECT COUNT(*) FROM dbo.Users WHERE Email=@Email";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Email", email);
-                conn.Open();
-                return (int)cmd.ExecuteScalar() > 0;
             }
         }
     }

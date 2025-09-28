@@ -77,7 +77,10 @@
     letter-spacing:7px;
     
 }
-
+.upimg {
+    font-weight: bold;
+    font-size: 1rem;
+}
     .welcome-msg span {
         display: block;
         font-size: 4rem;
