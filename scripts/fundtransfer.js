@@ -173,3 +173,23 @@ if (document.head) {
     styleSheet.textContent = styles;
     document.head.appendChild(styleSheet);
 }
+
+
+
+
+
+
+
+
+
+
+//otp
+
+function showOtpModal() {
+    document.getElementById('otpModal').style.display = 'block';
+}
+
+function closeOtpModal() {
+    document.getElementById('otpModal').style.display = 'none';
+}
+
