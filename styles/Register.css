@@ -226,6 +226,7 @@ hr {
 .form-group {
     position: relative;
     margin-bottom: 15px;
+   
 }
 
     .form-group i {
@@ -235,6 +236,8 @@ hr {
         transform: translateY(-50%);
         color: #aaa;
         font-size: 1rem;
+        pointer-events: none;
+
     }
 
 .form-control {
@@ -280,7 +283,10 @@ hr {
     font-size: 1rem;
 }
 
+
+
 .validator-text {
+  
     font-size: 0.75rem;
     color: red !important;
 }
