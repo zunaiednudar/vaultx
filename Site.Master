@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="vaultx.Site" %>
+﻿﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="vaultx.Site" %>
 <%@ Register Src="Sidebar.ascx" TagName="Sidebar" TagPrefix="uc" %>
 <!DOCTYPE html>
 

@@ -92,7 +92,7 @@ namespace vaultx
   </body>
 </html>
 ";
-                mail.IsBodyHtml = true;  
+                mail.IsBodyHtml = true;
 
 
                 SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
