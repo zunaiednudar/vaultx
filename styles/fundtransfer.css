@@ -769,3 +769,36 @@
         font-size: 1.1rem !important;
     }
 }
+
+
+
+
+
+/*otp modal styles*/
+/* Overlay - full screen, semi-transparent */
+
+
+
+.ver {
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.res {
+    font-size: 0.85rem;
+    text-align: center;
+}
+    
+
+    
+    .modal-footer .otp-timer {
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+    }
+
+   
+    .modal-footer button {
+        width: 100%;
+       
+    }

@@ -3,7 +3,6 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Net;
 using System.Net.Mail;
-using vaultx.cls;
 
 namespace vaultx
 {
@@ -14,6 +13,11 @@ namespace vaultx
             get { return (string)ViewState["GeneratedOtp"]; }
             set { ViewState["GeneratedOtp"] = value; }
         }
+        protected void Page_PreInit(object sender, EventArgs e)
+        {
+            this.UnobtrusiveValidationMode = System.Web.UI.UnobtrusiveValidationMode.None;
+        }
+
 
         private string UserEmail
         {
@@ -62,24 +66,13 @@ namespace vaultx
 
         protected void btnResetPassword_Click(object sender, EventArgs e)
         {
-            // Validate password strength
-            string newPassword = txtNewPassword.Text.Trim();
-            if (!PasswordHelper.IsPasswordStrong(newPassword))
-            {
-                lblPasswordError.Text = "Password must be at least 8 characters and contain uppercase, lowercase, number, and special character.";
-                return;
-            }
-            
             if (txtNewPassword.Text == txtConfirmPassword.Text)
             {
-                UpdatePassword(UserEmail, newPassword);
+                UpdatePassword(UserEmail, txtNewPassword.Text.Trim());
                 pnlReset.Visible = false;
                 pnlSuccess.Visible = true;
             }
-            else
-            {
-                lblPasswordError.Text = "Passwords do not match!";
-            }
+            
         }
 
         private bool IsEmailRegistered(string email)
@@ -101,10 +94,9 @@ namespace vaultx
             string connStr = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                string hashedPassword = PasswordHelper.HashPassword(newPassword);
                 string query = "UPDATE dbo.Users SET Password=@Password WHERE Email=@Email";
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Password", hashedPassword);
+                cmd.Parameters.AddWithValue("@Password", newPassword); // hash in production
                 cmd.Parameters.AddWithValue("@Email", email);
                 conn.Open();
                 cmd.ExecuteNonQuery();
@@ -115,29 +107,26 @@ namespace vaultx
         {
             try
             {
-                string smtpEmail = ConfigurationManager.AppSettings["SmtpEmail"] ?? "your-app@example.com";
-                string smtpPassword = ConfigurationManager.AppSettings["SmtpPassword"] ?? "";
-                string smtpHost = ConfigurationManager.AppSettings["SmtpHost"] ?? "smtp.gmail.com";
-                int smtpPort = int.Parse(ConfigurationManager.AppSettings["SmtpPort"] ?? "587");
-
                 MailMessage mail = new MailMessage();
-                mail.From = new MailAddress(smtpEmail, "VaultX Bank");
+                mail.From = new MailAddress("your-email@gmail.com"); // your email
                 mail.To.Add(toEmail);
-                mail.Subject = "Password Reset OTP - VaultX Bank";
-                mail.Body = $@"Dear User,
+                mail.Subject = "VaultX Account Verification – Your One-Time Password (OTP)";
+                mail.Body = $@"
+<html>
+  <body style='font-family:Arial,sans-serif; color:#333;'>
+    <h2 style='color:#4ECDC4;'>VaultX Account Verification</h2>
+    <p>Dear User,</p>
+    <p>Thank you for registering with <strong>VaultX</strong>. To complete your registration, please use the following <strong>One-Time Password (OTP)</strong>:</p>
+    <p style='font-size:1.5rem; font-weight:bold; color:#FF6B6B;'>{otp}</p>
+    <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
+    <p>Best regards,<br/><strong>The VaultX Team</strong></p>
+  </body>
+</html>
+";
+                mail.IsBodyHtml = true;  
 
-Your OTP for password reset is: {otp}
-
-This OTP is valid for 10 minutes only.
-
-If you did not request this, please ignore this email.
-
-Best regards,
-VaultX Team";
-                mail.IsBodyHtml = false;
-
-                SmtpClient smtp = new SmtpClient(smtpHost, smtpPort);
-                smtp.Credentials = new NetworkCredential(smtpEmail, smtpPassword);
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs"); // app password
                 smtp.EnableSsl = true;
 
                 smtp.Send(mail);

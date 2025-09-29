@@ -77,13 +77,26 @@ namespace vaultx
             try
             {
                 MailMessage mail = new MailMessage();
-                mail.From = new MailAddress("yourmail@example.com"); // replace
+                mail.From = new MailAddress("yourmail@example.com");
                 mail.To.Add(toEmail);
-                mail.Subject = "Your VaultX OTP";
-                mail.Body = $"Your OTP is: {otp}";
+                mail.Subject = "VaultX Account Verification – Your One-Time Password (OTP)";
+                mail.Body = $@"
+<html>
+  <body style='font-family:Arial,sans-serif; color:#333;'>
+    <h2 style='color:#4ECDC4;'>VaultX Account Verification</h2>
+    <p>Dear User,</p>
+    <p>Thank you for registering with <strong>VaultX</strong>. To complete your registration, please use the following <strong>One-Time Password (OTP)</strong>:</p>
+    <p style='font-size:1.5rem; font-weight:bold; color:#FF6B6B;'>{otp}</p>
+    <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
+    <p>Best regards,<br/><strong>The VaultX Team</strong></p>
+  </body>
+</html>
+";
+                mail.IsBodyHtml = true;
+
 
                 SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs"); // replace
+                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs");
                 smtp.EnableSsl = true;
                 smtp.Send(mail);
             }

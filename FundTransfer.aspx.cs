@@ -2,9 +2,14 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using vaultx.cls;
+
+
+using System.Net;
+using System.Net.Mail;
 
 namespace vaultx
 {
@@ -365,8 +370,68 @@ namespace vaultx
                     return;
                 }
 
+
+
+
+
+
                 // ALL VALIDATIONS PASSED - Process transfer
-                ProcessTransferWithRetry(selectedAccountId, toAccountId, amount, txtReference.Text?.Trim());
+                //    ProcessTransferWithRetry(selectedAccountId, toAccountId, amount, txtReference.Text?.Trim());
+
+
+
+                // ALL VALIDATIONS PASSED - SEND OTP FOR CONFIRMATION
+                Random rnd = new Random();
+                string otp = rnd.Next(100000, 999999).ToString();
+
+                // Store OTP in hidden field and cookie
+                hfTransferOtp.Value = otp;
+
+                HttpCookie otpCookie = new HttpCookie("TransferOtp")
+                {
+                    Value = otp,
+                    Expires = DateTime.Now.AddMinutes(5)
+                };
+                Response.Cookies.Add(otpCookie);
+
+                // Store user's email in cookie
+                HttpCookie emailCookie = new HttpCookie("TransferEmail")
+                {
+                    Value = GetUserEmail(currentUserId),
+                    Expires = DateTime.Now.AddMinutes(5)
+                };
+                Response.Cookies.Add(emailCookie);
+
+                // Send OTP email
+                SendOtpEmail(emailCookie.Value, otp);
+
+                // Hide transfer form and show OTP panel
+                pnlTransferForm.Visible = false;
+                ClientScript.RegisterStartupScript(this.GetType(), "ShowOtpModal", "showOtpModal();", true);
+
+                // Start OTP countdown timer
+                string script = $@"
+    var timeLeft = 90;
+    var timerElem = document.getElementById('{lblOtpTimer.ClientID}');
+    var timer = setInterval(function() {{
+        if(timeLeft <= 0) {{
+            clearInterval(timer);
+            timerElem.innerHTML = 'OTP expired. Please try again.';
+        }} 
+        else {{
+            timerElem.innerHTML = 'Time remaining: ' + timeLeft + 's';
+        }}
+        timeLeft--;
+    }}, 1000);";
+                ClientScript.RegisterStartupScript(this.GetType(), "StartOtpTimer", script, true);
+
+
+
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -374,6 +439,156 @@ namespace vaultx
                 ShowErrorModal("An unexpected error occurred. Please try again.");
             }
         }
+
+
+
+
+
+
+
+
+
+
+        //email otp validation
+
+
+
+
+
+        private string GetUserEmail(int userId)
+        {
+            string email = "";
+            string connStr = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
+
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                string query = "SELECT Email FROM Users WHERE UID = @UID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@UID", userId);
+                conn.Open();
+                var result = cmd.ExecuteScalar();
+                if (result != null) email = result.ToString();
+            }
+
+            return email;
+        }
+
+
+
+        private void SendOtpEmail(string toEmail, string otp)
+        {
+            try
+            {
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress("diptochy430@gmail.com", "VaultX Bank");
+                mail.To.Add(toEmail);
+                mail.Subject = "VaultX Bank - OTP for Fund Transfer";
+                mail.Body = $"Your OTP for fund transfer is: {otp}. It is valid for 5 minutes.";
+                mail.IsBodyHtml = false;
+
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs");
+                smtp.EnableSsl = true;
+
+                smtp.Send(mail);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SendOtpEmail error: {ex.Message}");
+                ShowErrorModal("Failed to send OTP. Please try again.");
+            }
+        }
+
+
+
+        protected void btnResendOtp_Click(object sender, EventArgs e)
+        {
+            Random rnd = new Random();
+            string otp = rnd.Next(100000, 999999).ToString();
+
+            hfTransferOtp.Value = otp;
+            HttpCookie otpCookie = new HttpCookie("TransferOtp") { Value = otp, Expires = DateTime.Now.AddMinutes(5) };
+            Response.Cookies.Add(otpCookie);
+
+            HttpCookie emailCookie = Request.Cookies["TransferEmail"];
+            if (emailCookie != null)
+            {
+                SendOtpEmail(emailCookie.Value, otp);
+                ShowErrorModal("A new OTP has been sent to your email.");
+            }
+            else
+            {
+                ShowErrorModal("Cannot resend OTP. Please restart the transfer.");
+                ClientScript.RegisterStartupScript(this.GetType(), "CloseOtpModal", "closeOtpModal();", true);
+                pnlTransferForm.Visible = true;
+            }
+        }
+
+
+        protected void btnVerifyOtp_Click(object sender, EventArgs e)
+        {
+            string enteredOtp = txtOtp.Text.Trim();
+            HttpCookie otpCookie = Request.Cookies["TransferOtp"];
+            HttpCookie emailCookie = Request.Cookies["TransferEmail"];
+
+            if (otpCookie == null || emailCookie == null)
+            {
+                ShowErrorModal("OTP expired. Please try again.");
+               
+                ClientScript.RegisterStartupScript(this.GetType(), "CloseOtpModal", "closeOtpModal();", false);
+                pnlTransferForm.Visible = true;
+               
+                return;
+            }
+
+            if (enteredOtp == otpCookie.Value)
+            {
+                // Clear cookies
+                otpCookie.Expires = DateTime.Now.AddDays(-1);
+                emailCookie.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Add(otpCookie);
+                Response.Cookies.Add(emailCookie);
+
+                // Proceed with fund transfer
+                selectedAccountId = (long)ViewState["SelectedAccountId"];
+                decimal amount = Convert.ToDecimal(txtAmount.Text);
+                long toAccountId = Convert.ToInt64(txtAccountNo.Text);
+                ProcessTransferWithRetry(selectedAccountId, toAccountId, amount, txtReference.Text?.Trim());
+            }
+            else
+            {
+                ShowErrorModal("Invalid OTP. Please try again.");
+            }
+        }
+
+
+
+
+        //email otp validation end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private void ProcessTransferWithRetry(long fromAccountId, long toAccountId, decimal amount, string reference)
         {
