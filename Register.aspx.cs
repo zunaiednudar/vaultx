@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
-using System.Runtime.InteropServices;
 using System.Web;
 using vaultx.cls;
 
@@ -22,16 +21,16 @@ namespace vaultx
             string password = txtPassword.Text.Trim();
             if (!PasswordHelper.IsPasswordStrong(password))
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "WeakPassword", 
+                ClientScript.RegisterStartupScript(this.GetType(), "WeakPassword",
                     "alert('Password must be at least 8 characters and contain uppercase, lowercase, number, and special character.');", true);
                 return;
             }
-            
+
             hfPassword.Value = password;
 
 
             // Validate required fields
-            if (string.IsNullOrWhiteSpace(txtFirstName.Text) || 
+            if (string.IsNullOrWhiteSpace(txtFirstName.Text) ||
                 string.IsNullOrWhiteSpace(txtLastName.Text) ||
                 string.IsNullOrWhiteSpace(txtEmail.Text) ||
                 string.IsNullOrWhiteSpace(txtPhone.Text) ||
@@ -40,14 +39,14 @@ namespace vaultx
                 ClientScript.RegisterStartupScript(this.GetType(), "MissingFields", "alert('Please fill all required fields.');", true);
                 return;
             }
-            
+
             // Validate email format
             if (!IsValidEmail(txtEmail.Text.Trim()))
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "InvalidEmail", "alert('Please enter a valid email address.');", true);
                 return;
             }
-            
+
             // Check if email already exists
             if (IsEmailExists(txtEmail.Text.Trim()))
             {
@@ -63,43 +62,37 @@ namespace vaultx
                 // Validate file type
                 string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
                 string fileExtension = Path.GetExtension(fuProfileImage.PostedFile.FileName).ToLower();
-                
+
                 if (!Array.Exists(allowedExtensions, ext => ext == fileExtension))
                 {
                     ClientScript.RegisterStartupScript(this.GetType(), "InvalidFile", "alert('Only JPG, JPEG, PNG, and GIF files are allowed.');", true);
                     return;
                 }
-                
+
                 // Validate file size (max 5MB)
                 if (fuProfileImage.PostedFile.ContentLength > 5 * 1024 * 1024)
                 {
                     ClientScript.RegisterStartupScript(this.GetType(), "FileTooLarge", "alert('File size must be less than 5MB.');", true);
                     return;
                 }
-                
-                // Generate unique filename to prevent conflicts
-                string fileName = Guid.NewGuid().ToString() + fileExtension;
-                string savePath = Server.MapPath("~/images/profile_img/") + fileName;
 
-                if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
-                    Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
+                // Generate unique filename to prevent conflicts and save
+                string imagesFolder = Server.MapPath("~/images/profile_img/");
+                if (!Directory.Exists(imagesFolder))
+                    Directory.CreateDirectory(imagesFolder);
 
-                string fileName = Path.GetFileName(fuProfileImage.PostedFile.FileName);
-                string savePath = Server.MapPath("~/images/profile_img/") + fileName;
-
-               
-                if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
-                    Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
+                string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+                string savePath = Path.Combine(imagesFolder, uniqueFileName);
 
                 fuProfileImage.SaveAs(savePath);
 
-                profileImage = "~/images/profile_img/" + fileName;
+                profileImage = "~/images/profile_img/" + uniqueFileName;
 
                 hfProfileImagePath.Value = profileImage;
             }
 
 
-          
+
             Random rnd = new Random();
             string otp = rnd.Next(100000, 999999).ToString();
 
@@ -162,7 +155,9 @@ VaultX Team";
             }
             catch (Exception ex)
             {
-                throw new Exception("OTP Email failed: " + ex.Message);
+                // don't rethrow raw exception into page lifecycle; log and show friendly message if needed
+                // For now rethrowing preserves original behavior but with clearer message
+                throw new Exception("OTP Email failed: " + ex.Message, ex);
             }
         }
 
@@ -188,7 +183,7 @@ VaultX Team";
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
 
-                    
+
 
                     conn.Open();
                     string getMaxUIDQuery = "SELECT ISNULL(MAX(UID), 999) FROM dbo.Users";
@@ -213,7 +208,7 @@ VALUES
                     cmd.Parameters.AddWithValue("@NID", txtNID.Text.Trim());
                     cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
                     cmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim());
-            
+
                     cmd.Parameters.AddWithValue("@ProfileImage", (object)profileImagePath ?? DBNull.Value);
 
                     cmd.Parameters.AddWithValue("@Division", ddlDivision.SelectedValue);
@@ -223,7 +218,7 @@ VALUES
                     cmd.Parameters.AddWithValue("@PostalCode", TextBox5.Text.Trim());
                     cmd.Parameters.AddWithValue("@Profession", TextBox6.Text.Trim());
                     cmd.Parameters.AddWithValue("@MonthlyEarnings", string.IsNullOrEmpty(TextBox7.Text.Trim()) ? 0 : Convert.ToDecimal(TextBox7.Text.Trim()));
-                    
+
                     // Hash the password before storing
                     string hashedPassword = PasswordHelper.HashPassword(hfPassword.Value);
                     cmd.Parameters.AddWithValue("@Password", hashedPassword);
@@ -238,7 +233,7 @@ VALUES
                 Response.Cookies.Add(otpCookie);
                 Response.Cookies.Add(emailCookie);
 
-               pnlSuccess.Visible = true;
+                pnlSuccess.Visible = true;
                 pnlStep3.Visible = false;
                 pnlStep2.Visible = false;
                 pnlStep1.Visible = false;
@@ -250,7 +245,7 @@ VALUES
             }
             else
             {
-               pnlfail.Visible = true;
+                pnlfail.Visible = true;
                 pnlStep3.Visible = false;
                 pnlStep2.Visible = false;
                 pnlStep1.Visible = false;
