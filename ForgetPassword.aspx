@@ -50,22 +50,66 @@
                     </div>
                 </asp:Panel>
 
-                <!-- STEP 3: reset password -->
-                <asp:Panel ID="pnlReset" runat="server" CssClass="form-container-lg" Visible="false">
-                    <h2>Reset Password</h2>
-                    <div class="form-group">
-                        <i class="fa fa-lock"></i>
-                        <asp:TextBox ID="txtNewPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="New Password"></asp:TextBox>
-                    </div>
-                    <div class="form-group">
-                        <i class="fa fa-lock"></i>
-                        <asp:TextBox ID="txtConfirmPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Confirm Password"></asp:TextBox>
-                    <asp:Label ID="lblPasswordError" runat="server" ForeColor="Red" Font-Size="Small"></asp:Label>
-                    </div>
-                    <div class="form-group">
-                        <asp:Button ID="btnResetPassword" runat="server" Text="Reset Password" CssClass="btn" OnClick="btnResetPassword_Click" />
-                    </div>
-                </asp:Panel>
+      <!-- STEP 3: reset password -->
+<asp:Panel ID="pnlReset" runat="server" CssClass="form-container-lg" Visible="false">
+    <h2>Reset Password</h2>
+
+    <div class="form-group">
+  <i class="fa fa-lock" style="position:absolute; top:10px; left:12px; pointer-events:none; transform:none; color:#aaa; font-size:1rem;"></i>
+        <asp:TextBox 
+            ID="txtNewPassword" 
+            runat="server" 
+            CssClass="form-control" 
+            TextMode="Password" 
+            placeholder="New Password">
+        </asp:TextBox>
+
+        <!-- Required -->
+        <asp:RequiredFieldValidator 
+            ID="rfvNewPassword" 
+            runat="server" 
+            ControlToValidate="txtNewPassword"
+            ErrorMessage="Password is required" 
+            ForeColor="Red" 
+            Display="Dynamic" />
+
+        <!-- Regex for strong password -->
+        <asp:RegularExpressionValidator 
+            ID="revNewPassword" 
+            runat="server" 
+            ControlToValidate="txtNewPassword"
+            ErrorMessage="Password must be at least 8 characters long and include uppercase, lowercase, number, and special character." 
+            ForeColor="Red" 
+            Display="Dynamic"
+            ValidationExpression="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$">
+        </asp:RegularExpressionValidator>
+    </div>
+
+    <div class="form-group">
+  <i class="fa fa-lock" style="position:absolute; top:10px; left:12px; pointer-events:none; transform:none; color:#aaa; font-size:1rem;"></i>
+        <asp:TextBox 
+            ID="txtConfirmPassword" 
+            runat="server" 
+            CssClass="form-control" 
+            TextMode="Password" 
+            placeholder="Confirm Password">
+        </asp:TextBox>
+
+        <!-- Compare validator -->
+        <asp:CompareValidator 
+            ID="cvConfirmPassword" 
+            runat="server" 
+            ControlToValidate="txtConfirmPassword" 
+            ControlToCompare="txtNewPassword" 
+            ErrorMessage="Passwords do not match" 
+            ForeColor="Red" 
+            Display="Dynamic" />
+    </div>
+
+    <div class="form-group">
+        <asp:Button ID="btnResetPassword" runat="server" Text="Reset Password" CssClass="btn" OnClick="btnResetPassword_Click" />
+    </div>
+</asp:Panel>
 
 
                   <asp:Panel ID="wrongotp" runat="server" CssClass="form-container-lg" Visible="false">

@@ -5,7 +5,6 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Web;
-using vaultx.cls;
 
 namespace vaultx
 {
@@ -17,6 +16,7 @@ namespace vaultx
 
         protected void btnRegister_Click(object sender, EventArgs e)
         {
+<<<<<<< HEAD
             // Validate password strength
             string password = txtPassword.Text.Trim();
             if (!PasswordHelper.IsPasswordStrong(password))
@@ -27,8 +27,12 @@ namespace vaultx
             }
 
             hfPassword.Value = password;
+=======
+>>>>>>> master
 
+            hfPassword.Value = txtPassword.Text.Trim();
 
+<<<<<<< HEAD
             // Validate required fields
             if (string.IsNullOrWhiteSpace(txtFirstName.Text) ||
                 string.IsNullOrWhiteSpace(txtLastName.Text) ||
@@ -53,12 +57,15 @@ namespace vaultx
                 ClientScript.RegisterStartupScript(this.GetType(), "EmailExists", "alert('This email is already registered.');", true);
                 return;
             }
+=======
+>>>>>>> master
 
             string profileImage = null;
 
-            // Validate and process profile image upload
+
             if (fuProfileImage.HasFile)
             {
+<<<<<<< HEAD
                 // Validate file type
                 string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
                 string fileExtension = Path.GetExtension(fuProfileImage.PostedFile.FileName).ToLower();
@@ -83,6 +90,14 @@ namespace vaultx
 
                 string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
                 string savePath = Path.Combine(imagesFolder, uniqueFileName);
+=======
+                string fileName = Path.GetFileName(fuProfileImage.PostedFile.FileName);
+                string savePath = Server.MapPath("~/images/profile_img/") + fileName;
+
+
+                if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
+                    Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
+>>>>>>> master
 
                 fuProfileImage.SaveAs(savePath);
 
@@ -127,29 +142,27 @@ namespace vaultx
         {
             try
             {
-                string smtpEmail = ConfigurationManager.AppSettings["SmtpEmail"] ?? "your-app@example.com";
-                string smtpPassword = ConfigurationManager.AppSettings["SmtpPassword"] ?? "";
-                string smtpHost = ConfigurationManager.AppSettings["SmtpHost"] ?? "smtp.gmail.com";
-                int smtpPort = int.Parse(ConfigurationManager.AppSettings["SmtpPort"] ?? "587");
-
                 MailMessage mail = new MailMessage();
-                mail.From = new MailAddress(smtpEmail, "VaultX Bank");
+                mail.From = new MailAddress("yourmail@example.com");
                 mail.To.Add(toEmail);
-                mail.Subject = "Your VaultX OTP - Secure Verification";
-                mail.Body = $@"Dear User,
+                mail.Subject = "VaultX Account Verification – Your One-Time Password (OTP)";
+                mail.Body = $@"
+<html>
+  <body style='font-family:Arial,sans-serif; color:#333;'>
+    <h2 style='color:#4ECDC4;'>VaultX Account Verification</h2>
+    <p>Dear User,</p>
+    <p>Thank you for registering with <strong>VaultX</strong>. To complete your registration, please use the following <strong>One-Time Password (OTP)</strong>:</p>
+    <p style='font-size:1.5rem; font-weight:bold; color:#FF6B6B;'>{otp}</p>
+    <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
+    <p>Best regards,<br/><strong>The VaultX Team</strong></p>
+  </body>
+</html>
+";
+                mail.IsBodyHtml = true;
 
-Your OTP for VaultX account registration is: {otp}
 
-This OTP is valid for 5 minutes only.
-
-If you did not request this, please ignore this email.
-
-Best regards,
-VaultX Team";
-                mail.IsBodyHtml = false;
-
-                SmtpClient smtp = new SmtpClient(smtpHost, smtpPort);
-                smtp.Credentials = new NetworkCredential(smtpEmail, smtpPassword);
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs");
                 smtp.EnableSsl = true;
                 smtp.Send(mail);
             }
@@ -218,10 +231,14 @@ VALUES
                     cmd.Parameters.AddWithValue("@PostalCode", TextBox5.Text.Trim());
                     cmd.Parameters.AddWithValue("@Profession", TextBox6.Text.Trim());
                     cmd.Parameters.AddWithValue("@MonthlyEarnings", string.IsNullOrEmpty(TextBox7.Text.Trim()) ? 0 : Convert.ToDecimal(TextBox7.Text.Trim()));
+<<<<<<< HEAD
 
                     // Hash the password before storing
                     string hashedPassword = PasswordHelper.HashPassword(hfPassword.Value);
                     cmd.Parameters.AddWithValue("@Password", hashedPassword);
+=======
+                    cmd.Parameters.AddWithValue("@Password", hfPassword.Value);
+>>>>>>> master
 
                     cmd.ExecuteNonQuery();
                     conn.Close();

@@ -150,6 +150,52 @@
                 <asp:Button ID="btnNewTransfer" runat="server" Text="New Transfer" CssClass="btn btn-primary" 
                     OnClick="btnNewTransfer_Click" CausesValidation="false" />
             </asp:Panel>
+
+
+
+
+
+
+
+
+
+            <!-- OTP Verification Panel -->
+
+<!-- OTP Modal -->
+<div class="modal-overlay" id="otpModal" style="display: none;">
+    <div class="modal-content">
+        <h3>Confirm Transfer</h3>
+        <p>An OTP has been sent to your registered email. Please enter it below to confirm the transfer.</p>
+
+        <div class="form-group">
+            <label for="<%= txtOtp.ClientID %>"><i class="fas fa-key"></i> OTP</label>
+            <asp:TextBox ID="txtOtp" runat="server" CssClass="form-control" Placeholder="Enter OTP"></asp:TextBox>
+        </div>
+
+        <div class="form-actions">
+            <asp:Button ID="btnVerifyOtp" runat="server" Text="Verify OTP" CssClass="btn ver btn-primary" OnClick="btnVerifyOtp_Click" />
+            <asp:Button ID="btnResendOtp" runat="server" Text="Resend OTP" CssClass="btn res btn-secondary" OnClick="btnResendOtp_Click" CausesValidation="false" />
+        </div>
+
+        <div class="modal-footer">
+            <asp:Label ID="lblOtpTimer" runat="server" CssClass="otp-timer"></asp:Label>
+            <button type="button" class="btn btn-secondary" onclick="closeOtpModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+
+<asp:HiddenField ID="hfTransferOtp" runat="server" />
+
+
+
+
+
+
+
+
+
         </div>
     </div>
 
@@ -180,3 +226,5 @@
 
     <!-- No embedded script needed anymore - everything is in fundtransfer.js -->
 </asp:Content>
+
+

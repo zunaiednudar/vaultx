@@ -11,7 +11,7 @@ namespace vaultx
 {
 
 
-    public partial class ForgetPassword
+    public partial class Admin_Accounts
     {
 
         /// <summary>
@@ -24,138 +24,138 @@ namespace vaultx
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// pnlEmail control.
+        /// txtAccountNumberCreate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlEmail;
+        protected global::System.Web.UI.WebControls.TextBox txtAccountNumberCreate;
 
         /// <summary>
-        /// txtEmail control.
+        /// ddlAccountTypeCreate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmail;
+        protected global::System.Web.UI.WebControls.DropDownList ddlAccountTypeCreate;
 
         /// <summary>
-        /// btnSendOtp control.
+        /// txtAccountHolderCreate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSendOtp;
+        protected global::System.Web.UI.WebControls.TextBox txtAccountHolderCreate;
 
         /// <summary>
-        /// pnlOtp control.
+        /// txtAccountBalanceCreate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlOtp;
+        protected global::System.Web.UI.WebControls.TextBox txtAccountBalanceCreate;
 
         /// <summary>
-        /// txtOtp control.
+        /// txtNomineeNameCreate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtOtp;
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeNameCreate;
 
         /// <summary>
-        /// btnVerifyOtp control.
+        /// txtNomineeNIDCreate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnVerifyOtp;
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeNIDCreate;
 
         /// <summary>
-        /// pnlReset control.
+        /// fuNomineeCreate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlReset;
+        protected global::System.Web.UI.WebControls.FileUpload fuNomineeCreate;
 
         /// <summary>
-        /// txtNewPassword control.
+        /// btnCreateAccount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNewPassword;
+        protected global::System.Web.UI.WebControls.Button btnCreateAccount;
 
         /// <summary>
-        /// rfvNewPassword control.
+        /// txtAccountNumber control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvNewPassword;
+        protected global::System.Web.UI.WebControls.TextBox txtAccountNumber;
 
         /// <summary>
-        /// revNewPassword control.
+        /// txtAccountType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revNewPassword;
+        protected global::System.Web.UI.WebControls.TextBox txtAccountType;
 
         /// <summary>
-        /// txtConfirmPassword control.
+        /// txtAccountHolder control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtConfirmPassword;
+        protected global::System.Web.UI.WebControls.TextBox txtAccountHolder;
 
         /// <summary>
-        /// cvConfirmPassword control.
+        /// txtAccountBalance control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CompareValidator cvConfirmPassword;
+        protected global::System.Web.UI.WebControls.TextBox txtAccountBalance;
 
         /// <summary>
-        /// btnResetPassword control.
+        /// txtNomineeName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnResetPassword;
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeName;
 
         /// <summary>
-        /// wrongotp control.
+        /// txtNomineeNID control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel wrongotp;
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeNID;
 
         /// <summary>
-        /// pnlSuccess control.
+        /// fuNomineeUpdate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlSuccess;
+        protected global::System.Web.UI.WebControls.FileUpload fuNomineeUpdate;
     }
 }

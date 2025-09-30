@@ -150,17 +150,17 @@
 </div>
 
                         <div class="form-group">
-    <i class="fa fa-map-marker-alt"></i>
+  <i class="fa fa-envelope" aria-hidden="true"></i>
     <asp:TextBox ID="TextBox5" runat="server" CssClass="form-control"  placeholder="Postal Code"></asp:TextBox>
 </div>
 
                         <div class="form-group">
-    <i class="fa fa-map-marker-alt"></i>
+   <i class="fa fa-suitcase" aria-hidden="true"></i>
     <asp:TextBox ID="TextBox6" runat="server" CssClass="form-control"  placeholder="Profession"></asp:TextBox>
 </div>
 
                         <div class="form-group">
-    <i class="fa fa-map-marker-alt"></i>
+  <i class="fa fa-money" aria-hidden="true"></i>
     <asp:TextBox ID="TextBox7" runat="server" CssClass="form-control"  placeholder="Monthly Earning"></asp:TextBox>
 </div>
                         <div style="display:flex; gap:10px;">
@@ -168,12 +168,6 @@
                         <asp:Button ID="btnNext2" runat="server" Text="Next →" CssClass="btn btn-primary" OnClientClick="nextStep(2); return false;" />
                             </div>
                         </asp:Panel>
-
-
-
-
-
-
 
 
 
@@ -189,15 +183,43 @@
 </div>
 
 
+<div class="form-group ">
+  <i class="fa fa-lock" style="position:absolute; top:10px; left:12px; pointer-events:none; transform:none; color:#aaa; font-size:1rem;"></i>
+    <asp:TextBox 
+        ID="txtPassword" 
+        runat="server" 
+        CssClass="form-control" 
+        TextMode="Password" 
+        placeholder="Password">
+      
+    </asp:TextBox>
+      
+   
+    <asp:RequiredFieldValidator 
+        ID="rfvPassword" 
+        runat="server" 
+        ControlToValidate="txtPassword"
+        ErrorMessage="Password is required" 
+        ForeColor="Red" 
+        Display="Dynamic" 
+        ValidationGroup="Step3" />
 
-                    <div class="form-group">
-        <i class="fa fa-lock"></i>
-        <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Password"></asp:TextBox>
-        <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ControlToValidate="txtPassword"
-            ErrorMessage="Password is required" ForeColor="Red" Display="Dynamic" ValidationGroup="Step3" />
-    </div>
+  
+    <asp:RegularExpressionValidator 
+        ID="revPassword" 
+        runat="server" 
+        ControlToValidate="txtPassword"
+        ErrorMessage="Password must be at least 8 characters long and include uppercase, lowercase, number, and special character." 
+        ForeColor="Red" 
+        Display="Dynamic" 
+        ValidationGroup="Step3"
+        ValidationExpression="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$">
+    </asp:RegularExpressionValidator>
+
+</div>
+
                    <div class="form-group">
-        <i class="fa fa-lock"></i>
+    <i class="fa fa-lock" style="position:absolute; top:10px; left:12px; pointer-events:none; transform:none; color:#aaa; font-size:1rem;"></i>
         <asp:TextBox ID="txtConfirmPassword" runat="server" CssClass="form-control" TextMode="Password" placeholder="Confirm Password"></asp:TextBox>
         <asp:HiddenField ID="hfPassword" runat="server" />
 
