@@ -434,6 +434,213 @@ namespace vaultx
             }
         }
 
+        [WebMethod]
+        public static string GetUserAccounts(string uid)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                        SELECT AID, AccountType, Balance, CreatedAt, NomineeName, NomineeNID
+                        FROM dbo.Accounts 
+                        WHERE UID = @UID
+                        ORDER BY AID";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@UID", Convert.ToInt32(uid));
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    StringBuilder json = new StringBuilder();
+                    json.Append("[");
+
+                    bool first = true;
+                    while (reader.Read())
+                    {
+                        if (!first) json.Append(",");
+
+                        string nomineeName = reader["NomineeName"] != DBNull.Value
+                            ? EscapeJsonString(reader["NomineeName"].ToString())
+                            : "";
+
+                        string nomineeNID = reader["NomineeNID"] != DBNull.Value
+                            ? EscapeJsonString(reader["NomineeNID"].ToString())
+                            : "";
+
+                        json.AppendFormat(@"{{
+                            ""aid"": {0},
+                            ""accountType"": ""{1}"",
+                            ""balance"": {2},
+                            ""createdAt"": ""{3:yyyy-MM-dd}"",
+                            ""nomineeName"": ""{4}"",
+                            ""nomineeNid"": ""{5}""
+                        }}",
+                        reader["AID"],
+                        reader["AccountType"],
+                        reader["Balance"],
+                        reader["CreatedAt"],
+                        nomineeName,
+                        nomineeNID);
+
+                        first = false;
+                    }
+
+                    json.Append("]");
+                    return json.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                return "[]";
+            }
+        }
+
+        [WebMethod]
+        public static string AddAccount(string uid, string accountType, string balance, string nomineeName, string nomineeNID)
+        {
+            try
+            {
+                if (!IsValidAccountType(accountType))
+                {
+                    return "Error: Invalid account type. Must be 'Student', 'Savings', or 'Current'.";
+                }
+
+                // Check if user already has an account of this type
+                using (SqlConnection checkConn = new SqlConnection(connectionString))
+                {
+                    checkConn.Open();
+                    string checkQuery = "SELECT COUNT(*) FROM dbo.Accounts WHERE UID = @UID AND AccountType = @AccountType";
+                    SqlCommand checkCmd = new SqlCommand(checkQuery, checkConn);
+                    checkCmd.Parameters.AddWithValue("@UID", Convert.ToInt32(uid));
+                    checkCmd.Parameters.AddWithValue("@AccountType", accountType);
+                    int count = (int)checkCmd.ExecuteScalar();
+
+                    if (count > 0)
+                    {
+                        return "Error: User already has an account of this type.";
+                    }
+                }
+
+                decimal balanceValue = 0;
+                if (!string.IsNullOrEmpty(balance))
+                {
+                    if (!decimal.TryParse(balance, out balanceValue) || balanceValue < 0)
+                    {
+                        return "Error: Balance must be a non-negative number.";
+                    }
+                }
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // Get next AID
+                    string getMaxAIDQuery = "SELECT ISNULL(MAX(AID), 99999) FROM dbo.Accounts";
+                    SqlCommand cmdMax = new SqlCommand(getMaxAIDQuery, conn);
+                    long newAID = (long)cmdMax.ExecuteScalar() + 1;
+
+                    string query = @"
+                        INSERT INTO dbo.Accounts
+                        (AID, UID, AccountType, NomineeName, NomineeNID, Balance, CreatedAt)
+                        VALUES
+                        (@AID, @UID, @AccountType, @NomineeName, @NomineeNID, @Balance, GETDATE())";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@AID", newAID);
+                    cmd.Parameters.AddWithValue("@UID", Convert.ToInt32(uid));
+                    cmd.Parameters.AddWithValue("@AccountType", accountType);
+                    cmd.Parameters.AddWithValue("@NomineeName", string.IsNullOrEmpty(nomineeName) ? DBNull.Value : (object)nomineeName);
+                    cmd.Parameters.AddWithValue("@NomineeNID", string.IsNullOrEmpty(nomineeNID) ? DBNull.Value : (object)nomineeNID);
+                    cmd.Parameters.AddWithValue("@Balance", balanceValue);
+
+                    cmd.ExecuteNonQuery();
+                }
+                return "success";
+            }
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+
+        [WebMethod]
+        public static string UpdateAccount(string aid, string balance, string nomineeName, string nomineeNID)
+        {
+            try
+            {
+                decimal balanceValue = 0;
+                if (!string.IsNullOrEmpty(balance))
+                {
+                    if (!decimal.TryParse(balance, out balanceValue) || balanceValue < 0)
+                    {
+                        return "Error: Balance must be a non-negative number.";
+                    }
+                }
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = @"
+                        UPDATE dbo.Accounts SET 
+                            Balance = @Balance,
+                            NomineeName = @NomineeName,
+                            NomineeNID = @NomineeNID
+                        WHERE AID = @AID";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@AID", Convert.ToInt64(aid));
+                    cmd.Parameters.AddWithValue("@Balance", balanceValue);
+                    cmd.Parameters.AddWithValue("@NomineeName", string.IsNullOrEmpty(nomineeName) ? DBNull.Value : (object)nomineeName);
+                    cmd.Parameters.AddWithValue("@NomineeNID", string.IsNullOrEmpty(nomineeNID) ? DBNull.Value : (object)nomineeNID);
+
+                    cmd.ExecuteNonQuery();
+                }
+                return "success";
+            }
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+
+        [WebMethod]
+        public static string DeleteAccount(string aid)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // First delete associated transactions
+                    string deleteTransactionsQuery = @"
+                        DELETE FROM dbo.Transactions 
+                        WHERE FromAID = @AID OR ToAID = @AID";
+                    SqlCommand cmdTrans = new SqlCommand(deleteTransactionsQuery, conn);
+                    cmdTrans.Parameters.AddWithValue("@AID", Convert.ToInt64(aid));
+                    cmdTrans.ExecuteNonQuery();
+
+                    // Then delete the account
+                    string deleteAccountQuery = "DELETE FROM dbo.Accounts WHERE AID = @AID";
+                    SqlCommand cmdAcc = new SqlCommand(deleteAccountQuery, conn);
+                    cmdAcc.Parameters.AddWithValue("@AID", Convert.ToInt64(aid));
+                    cmdAcc.ExecuteNonQuery();
+                }
+                return "success";
+            }
+            catch (Exception ex)
+            {
+                return "Error: " + ex.Message;
+            }
+        }
+
+        private static bool IsValidAccountType(string accountType)
+        {
+            return accountType == "Student" || accountType == "Savings" || accountType == "Current";
+        }
+
         private bool IsEmailExists(string email)
         {
             try

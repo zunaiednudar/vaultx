@@ -247,18 +247,124 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" 
-                    onclick="window.location.href='Admin_Accounts.aspx';">
-                    Account Details
-                </button>
-
+                <button type="button" class="btn btn-primary" onclick="showAccountsModal()">Account Details</button>
                 <button type="button" class="btn btn-primary" onclick="loadTransactions()">Transaction Details</button>
                 <button type="button" id="btnEnableUpdate" class="btn btn-warning" onclick="enableEditStep()">Enable Update</button>
                 <button type="button" id="btnUpdate" class="btn btn-primary" style="display:none;" onclick="updateUser()">Update</button>
-
                 <button type="button" class="btn btn-danger" onclick="deleteUser()">Delete</button>
-                
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Account Details Modal -->
+<div class="modal fade" id="accountDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fa fa-university"></i> Account Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-end mb-3">
+                    <button type="button" class="btn btn-success" onclick="showAddAccountModal()">
+                        <i class="fa fa-plus"></i> Add New Account
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>Account ID</th>
+                                <th>Account Type</th>
+                                <th>Balance</th>
+                                <th>Created Date</th>
+                                <th>Nominee Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accountsTableBody">
+                            <!-- Accounts will be loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Account Modal -->
+<div class="modal fade" id="addAccountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fa fa-plus-circle"></i> Add New Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Account Type</label>
+                    <select id="accountType" class="form-select">
+                        <option value="Student">Student</option>
+                        <option value="Savings">Savings</option>
+                        <option value="Current">Current</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Initial Balance</label>
+                    <input type="number" id="initialBalance" class="form-control" value="0" min="0" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nominee Name</label>
+                    <input type="text" id="nomineeName" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nominee NID</label>
+                    <input type="text" id="nomineeNID" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="addAccount()">Add Account</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Account Modal -->
+<div class="modal fade" id="editAccountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title"><i class="fa fa-edit"></i> Edit Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editAccountId">
+                <div class="mb-3">
+                    <label class="form-label">Account Type</label>
+                    <input type="text" id="editAccountType" class="form-control" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Balance</label>
+                    <input type="number" id="editBalance" class="form-control" min="0" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nominee Name</label>
+                    <input type="text" id="editNomineeName" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nominee NID</label>
+                    <input type="text" id="editNomineeNID" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="updateAccount()">Update Account</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
@@ -409,6 +515,172 @@
                 alert("Error loading transactions: " + error.statusText);
             }
         });
+    }
+
+    // Account management functions
+    function showAccountsModal() {
+        if (!currentUID) return;
+
+        // Load accounts for this user
+        loadUserAccounts(currentUID);
+
+        // Close user details modal and open accounts modal
+        bootstrap.Modal.getInstance(document.getElementById('userDetailsModal')).hide();
+        new bootstrap.Modal(document.getElementById('accountDetailsModal')).show();
+    }
+
+    function loadUserAccounts(userId) {
+        $.ajax({
+            type: "POST",
+            url: "Admin.aspx/GetUserAccounts",
+            data: JSON.stringify({ uid: userId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                const accounts = JSON.parse(response.d);
+                const tbody = document.getElementById('accountsTableBody');
+                tbody.innerHTML = '';
+
+                if (accounts.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No accounts found</td></tr>';
+                } else {
+                    accounts.forEach(acc => {
+                        const row = `<tr>
+                            <td>${acc.aid}</td>
+                            <td>${acc.accountType}</td>
+                            <td>৳ ${parseFloat(acc.balance).toFixed(2)}</td>
+                            <td>${new Date(acc.createdAt).toLocaleDateString()}</td>
+                            <td>${acc.nomineeName || ''}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-warning" onclick="showEditAccountModal(${acc.aid}, '${acc.accountType}', ${acc.balance}, '${acc.nomineeName || ''}', '${acc.nomineeNid || ''}')">
+                                    <i class="fa fa-edit"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger ms-1" onclick="deleteAccount(${acc.aid})">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                        tbody.insertAdjacentHTML('beforeend', row);
+                    });
+                }
+            },
+            error: function (error) {
+                alert("Error loading accounts: " + error.statusText);
+            }
+        });
+    }
+
+    function showAddAccountModal() {
+        // Reset form
+        document.getElementById('accountType').value = 'Savings';
+        document.getElementById('initialBalance').value = '0';
+        document.getElementById('nomineeName').value = '';
+        document.getElementById('nomineeNID').value = '';
+
+        // Close accounts modal and open add account modal
+        bootstrap.Modal.getInstance(document.getElementById('accountDetailsModal')).hide();
+        new bootstrap.Modal(document.getElementById('addAccountModal')).show();
+    }
+
+    function addAccount() {
+        if (!currentUID) return;
+
+        const accountData = {
+            uid: currentUID,
+            accountType: document.getElementById('accountType').value,
+            balance: document.getElementById('initialBalance').value,
+            nomineeName: document.getElementById('nomineeName').value,
+            nomineeNID: document.getElementById('nomineeNID').value
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "Admin.aspx/AddAccount",
+            data: JSON.stringify(accountData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response.d === "success") {
+                    alert("Account added successfully!");
+                    // Close add account modal
+                    bootstrap.Modal.getInstance(document.getElementById('addAccountModal')).hide();
+                    // Reopen accounts modal and refresh accounts
+                    showAccountsModal();
+                } else {
+                    alert(response.d);
+                }
+            },
+            error: function (error) {
+                alert("Error adding account: " + error.statusText);
+            }
+        });
+    }
+
+    function showEditAccountModal(aid, accountType, balance, nomineeName, nomineeNID) {
+        document.getElementById('editAccountId').value = aid;
+        document.getElementById('editAccountType').value = accountType;
+        document.getElementById('editBalance').value = balance;
+        document.getElementById('editNomineeName').value = nomineeName;
+        document.getElementById('editNomineeNID').value = nomineeNID;
+
+        // Close accounts modal and open edit account modal
+        bootstrap.Modal.getInstance(document.getElementById('accountDetailsModal')).hide();
+        new bootstrap.Modal(document.getElementById('editAccountModal')).show();
+    }
+
+    function updateAccount() {
+        const accountData = {
+            aid: document.getElementById('editAccountId').value,
+            balance: document.getElementById('editBalance').value,
+            nomineeName: document.getElementById('editNomineeName').value,
+            nomineeNID: document.getElementById('editNomineeNID').value
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "Admin.aspx/UpdateAccount",
+            data: JSON.stringify(accountData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response.d === "success") {
+                    alert("Account updated successfully!");
+                    // Close edit account modal
+                    bootstrap.Modal.getInstance(document.getElementById('editAccountModal')).hide();
+                    // Reopen accounts modal and refresh accounts
+                    showAccountsModal();
+                } else {
+                    alert(response.d);
+                }
+            },
+            error: function (error) {
+                alert("Error updating account: " + error.statusText);
+            }
+        });
+    }
+
+    function deleteAccount(aid) {
+        if (confirm("Are you sure you want to delete this account? This will also delete all associated transactions.")) {
+            $.ajax({
+                type: "POST",
+                url: "Admin.aspx/DeleteAccount",
+                data: JSON.stringify({ aid: aid }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    if (response.d === "success") {
+                        alert("Account deleted successfully!");
+                        // Refresh accounts
+                        loadUserAccounts(currentUID);
+                    } else {
+                        alert(response.d);
+                    }
+                },
+                error: function (error) {
+                    alert("Error deleting account: " + error.statusText);
+                }
+            });
+        }
     }
 
     // Alias for backward compatibility
