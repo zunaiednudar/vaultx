@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
+using System.Runtime.InteropServices;
 using System.Web;
 
 namespace vaultx
@@ -16,92 +17,25 @@ namespace vaultx
 
         protected void btnRegister_Click(object sender, EventArgs e)
         {
-<<<<<<< HEAD
-            // Validate password strength
-            string password = txtPassword.Text.Trim();
-            if (!PasswordHelper.IsPasswordStrong(password))
-            {
-                ClientScript.RegisterStartupScript(this.GetType(), "WeakPassword",
-                    "alert('Password must be at least 8 characters and contain uppercase, lowercase, number, and special character.');", true);
-                return;
-            }
-
-            hfPassword.Value = password;
-=======
->>>>>>> master
 
             hfPassword.Value = txtPassword.Text.Trim();
 
-<<<<<<< HEAD
-            // Validate required fields
-            if (string.IsNullOrWhiteSpace(txtFirstName.Text) ||
-                string.IsNullOrWhiteSpace(txtLastName.Text) ||
-                string.IsNullOrWhiteSpace(txtEmail.Text) ||
-                string.IsNullOrWhiteSpace(txtPhone.Text) ||
-                string.IsNullOrWhiteSpace(txtNID.Text))
-            {
-                ClientScript.RegisterStartupScript(this.GetType(), "MissingFields", "alert('Please fill all required fields.');", true);
-                return;
-            }
-
-            // Validate email format
-            if (!IsValidEmail(txtEmail.Text.Trim()))
-            {
-                ClientScript.RegisterStartupScript(this.GetType(), "InvalidEmail", "alert('Please enter a valid email address.');", true);
-                return;
-            }
-
-            // Check if email already exists
-            if (IsEmailExists(txtEmail.Text.Trim()))
-            {
-                ClientScript.RegisterStartupScript(this.GetType(), "EmailExists", "alert('This email is already registered.');", true);
-                return;
-            }
-=======
->>>>>>> master
 
             string profileImage = null;
 
 
             if (fuProfileImage.HasFile)
             {
-<<<<<<< HEAD
-                // Validate file type
-                string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
-                string fileExtension = Path.GetExtension(fuProfileImage.PostedFile.FileName).ToLower();
-
-                if (!Array.Exists(allowedExtensions, ext => ext == fileExtension))
-                {
-                    ClientScript.RegisterStartupScript(this.GetType(), "InvalidFile", "alert('Only JPG, JPEG, PNG, and GIF files are allowed.');", true);
-                    return;
-                }
-
-                // Validate file size (max 5MB)
-                if (fuProfileImage.PostedFile.ContentLength > 5 * 1024 * 1024)
-                {
-                    ClientScript.RegisterStartupScript(this.GetType(), "FileTooLarge", "alert('File size must be less than 5MB.');", true);
-                    return;
-                }
-
-                // Generate unique filename to prevent conflicts and save
-                string imagesFolder = Server.MapPath("~/images/profile_img/");
-                if (!Directory.Exists(imagesFolder))
-                    Directory.CreateDirectory(imagesFolder);
-
-                string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
-                string savePath = Path.Combine(imagesFolder, uniqueFileName);
-=======
                 string fileName = Path.GetFileName(fuProfileImage.PostedFile.FileName);
                 string savePath = Server.MapPath("~/images/profile_img/") + fileName;
 
 
                 if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
                     Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
->>>>>>> master
 
                 fuProfileImage.SaveAs(savePath);
 
-                profileImage = "~/images/profile_img/" + uniqueFileName;
+                profileImage = "~/images/profile_img/" + fileName;
 
                 hfProfileImagePath.Value = profileImage;
             }
@@ -168,9 +102,7 @@ namespace vaultx
             }
             catch (Exception ex)
             {
-                // don't rethrow raw exception into page lifecycle; log and show friendly message if needed
-                // For now rethrowing preserves original behavior but with clearer message
-                throw new Exception("OTP Email failed: " + ex.Message, ex);
+                throw new Exception("OTP Email failed: " + ex.Message);
             }
         }
 
@@ -231,14 +163,7 @@ VALUES
                     cmd.Parameters.AddWithValue("@PostalCode", TextBox5.Text.Trim());
                     cmd.Parameters.AddWithValue("@Profession", TextBox6.Text.Trim());
                     cmd.Parameters.AddWithValue("@MonthlyEarnings", string.IsNullOrEmpty(TextBox7.Text.Trim()) ? 0 : Convert.ToDecimal(TextBox7.Text.Trim()));
-<<<<<<< HEAD
-
-                    // Hash the password before storing
-                    string hashedPassword = PasswordHelper.HashPassword(hfPassword.Value);
-                    cmd.Parameters.AddWithValue("@Password", hashedPassword);
-=======
                     cmd.Parameters.AddWithValue("@Password", hfPassword.Value);
->>>>>>> master
 
                     cmd.ExecuteNonQuery();
                     conn.Close();
