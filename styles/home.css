@@ -1,9 +1,4 @@
-/* Home.css - Styles for the Home Page with Enhanced Animations */
-/* Uses CSS variables from global.css for consistency */
-
-/* =========================
-   Keyframe Animations
-   ========================= */
+﻿
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -243,14 +238,16 @@
 }
 
     .about__text strong {
-        color: var(--color-bg-primary, #FF6B6B);
+        color: black;
         transition: all 0.3s ease;
         position: relative;
+        font-size:25px;
     }
 
         .about__text strong:hover {
             color: var(--color-hover, #FF9F40);
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            font-size:27px;
         }
 
 /* =========================
@@ -352,7 +349,7 @@
 }
 
 .card:hover .card__title {
-    color: var(--color-bg-primary, #FF6B6B);
+    color: dodgerblue;
     transform: scale(1.05);
 }
 
@@ -507,7 +504,7 @@
 }
 
 .contact__panel:hover .contact__panel-title {
-    color: #fff;
+    color: dodgerblue;
     transform: scale(1.05);
 }
 

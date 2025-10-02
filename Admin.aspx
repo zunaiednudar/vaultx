@@ -19,8 +19,74 @@
     <style>
      * {
     font-family: var(--font-stack);
+  
+ 
 }
 
+
+
+.admin-banner {
+    position: relative;
+    width: 100%;
+   height:300px;
+    max-height: 500px;
+    text-align: center;
+    margin-bottom: 40px;
+    overflow: hidden;
+
+    border-radius: 5px;
+}
+
+.admin-banner__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+}
+
+.admin-banner__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  
+    z-index: 1;
+}
+
+.admin-banner__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    z-index: 2;
+    text-align: center;
+    padding: 0 15px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.admin-banner__title {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    margin: 0;
+    letter-spacing:15px;
+
+    font-weight: 700;
+    text-wrap: nowrap;
+}
+
+.admin-banner__subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    margin-top: 10px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+      
+     
 
             .card {
         cursor: pointer;
@@ -28,15 +94,28 @@
         border-radius: 12px;
         text-align: center;
         padding: 40px 20px;
-        background: linear-gradient(135deg, #4ECDC4, #5567FC);
+           background-color:dodgerblue;
         color: #fff;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 200px;
+         
+
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
+
+        .mb-3 {
+            text-align: center;
+            font-size: 40px;
+            font-weight:bold;
+            letter-spacing:10px;
+            color:white;
+            padding: 5px;
+            background-color: var(--color-bg-secondary);
+            border-radius:5px;
+        }
 
     .card:hover {
         transform: translateY(-5px);
@@ -49,10 +128,23 @@
     }
 
     .card p {
-        font-size: 1rem;
+        font-size: 1.3rem;
         opacity: 0.9;
     }
-
+    .cls{
+        background-color:gray;
+    }
+    .cls:hover{
+                background-color:dimgrey;
+    }
+    
+    tr{
+          font-size: clamp(14px, 2vw, 20px); 
+    }
+    .btn{
+        font-size:clamp(14px, 2vw, 20px); 
+ 
+    }
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .card {
@@ -63,6 +155,7 @@
         .card h4 {
             font-size: 1.5rem;
         }
+
 
         .card p {
             font-size: 0.95rem;
@@ -75,6 +168,9 @@
             padding: 25px 10px;
         }
 
+        #phn {
+            display: none;
+        }
         .card h4 {
             font-size: 1.3rem;
         }
@@ -82,16 +178,24 @@
         .card p {
             font-size: 0.9rem;
         }
+       
     }
 
 
-        body { background-color: #f4f6f9;  }
+        body { background-color: #f4f6f9;
+                margin-bottom:30px;
+        }
         
         .modal-lg { max-width: 900px; }
         #usersList { display: none; }
         .modal-header { background-color: #007BFF; color: #fff; }
-        .btn-gradient { background: linear-gradient(90deg,#4ECDC4,#55EFC4); border: none; color: #fff; }
-        .btn-gradient:hover { opacity: 0.9; }
+        
+       .modal-body{
+           font-size:20px;
+       }
+       .form-control{
+           font-size:20px;
+       }
         .table-hover tbody tr:hover { background-color: rgba(0,123,255,0.1); cursor: pointer; }
         .form-control:focus { border-color: #007BFF; box-shadow: 0 0 5px rgba(0,123,255,.3); }
         .profile-img { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #007BFF; }
@@ -99,6 +203,17 @@
 </head>
 <body>
 <form id="form1" runat="server">
+       <!-- Banner -->
+       <!-- Banner -->
+    <section class="admin-banner">
+        <img src="images/admin.jpg" class="admin-banner__image" />
+        <div class="admin-banner__overlay" aria-hidden="true"></div>
+        <div class="admin-banner__content">
+            <h1 class="admin-banner__title">ADMIN PANEL</h1>
+           
+        </div>
+    </section>
+
 
 <div class="container mt-5">
     <div class="row g-4">
@@ -125,7 +240,7 @@
 
     <!-- Users List -->
     <div class="row mt-4" id="usersList">
-        <h3 class="mb-3">Users</h3>
+        <h3 class="mb-3">USERS</h3>
         <table class="table table-striped table-hover">
             <thead class="table-primary">
                 <tr>
@@ -133,7 +248,7 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
-                    <th>Phone</th>
+                    <th id="phn">Phone</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -143,7 +258,7 @@
                     <td>John</td>
                     <td>Doe</td>
                     <td>john@example.com</td>
-                    <td>1234567890</td>
+                    <td id="phn">1234567890</td>
                     <td><button type="button" class="btn btn-sm btn-primary">More Details</button></td>
                 </tr>
                 <tr onclick="showUserDetails('2','Jane','Smith','Father Smith','Mother Jane','15-05-1992','9876543210987','jane@example.com','0987654321','Chattogram','Chattogram','Pahartali','Street 5','4000','Teacher','40000','images/default.png')">
@@ -151,7 +266,7 @@
                     <td>Jane</td>
                     <td>Smith</td>
                     <td>jane@example.com</td>
-                    <td>0987654321</td>
+                    <td id="phn">0987654321</td>
                     <td><button type="button" class="btn btn-sm btn-primary">More Details</button></td>
                 </tr>
             </tbody>
@@ -192,8 +307,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <asp:Button ID="btnAddUser" runat="server" Text="Add User" CssClass="btn btn-success btn-gradient" />
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <asp:Button ID="btnAddUser" runat="server" Text="Add User" CssClass="btn btn-primary" />
+        <button type="button" class="btn btn-primary cls" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -204,7 +319,7 @@
 <div class="modal fade" id="transactionDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-info text-white">
+            <div class="modal-header  text-white">
                 <h5 class="modal-title"><i class="fa fa-history"></i> Transaction History</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -242,7 +357,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="text-center mb-3">
+                <div class="text-center">
                     <img id="imgProfile" class="profile-img" src="images/default.png" alt="Profile Picture" />
                     <div class="mt-2">
                         <label class="btn btn-sm btn-outline-primary mb-0">

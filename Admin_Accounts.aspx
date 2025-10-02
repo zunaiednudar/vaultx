@@ -17,21 +17,89 @@
     font-family: var(--font-stack);
 }
 
+.admin-banner {
+    position: relative;
+    width: 100%;
+   height:300px;
+    max-height: 500px;
+    text-align: center;
+    margin-bottom: 40px;
+    overflow: hidden;
 
+    border-radius: 5px;
+}
 
+.admin-banner__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+}
+
+.admin-banner__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  
+    z-index: 1;
+}
+
+.admin-banner__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    z-index: 2;
+    text-align: center;
+    padding: 0 15px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+}
+   tr{
+         font-size: clamp(14px, 2vw, 20px); 
+   }
+      .btn{
+       font-size:clamp(14px, 2vw, 20px); 
+
+   }
+
+.admin-banner__title {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    margin: 0;
+    letter-spacing:15px;
+
+    font-weight: 700;
+    text-wrap: nowrap;
+}
+
+.admin-banner__subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    margin-top: 10px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+    
             .card {
         cursor: pointer;
         transition: transform 0.3s, box-shadow 0.3s;
         border-radius: 12px;
         text-align: center;
         padding: 40px 20px;
-        background: linear-gradient(135deg, #4ECDC4, #5567FC);
+           background-color:dodgerblue;
         color: #fff;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 200px;
+         
+
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
@@ -45,10 +113,10 @@
         margin-bottom: 10px;
     }
 
-    .card p {
-        font-size: 1rem;
-        opacity: 0.9;
-    }
+      .card p {
+       font-size: 1.3rem;
+       opacity: 0.9;
+   }
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
@@ -82,18 +150,35 @@
     }
 
 
-
+      .mb-3 {
+      text-align: center;
+      font-size: 40px;
+      font-weight:bold;
+      letter-spacing:10px;
+      color:white;
+      padding: 5px;
+      background-color: var(--color-bg-secondary);
+      border-radius:5px;
+  }
 
 
         body { background-color: #f4f6f9;
+                 margin-bottom:30px;
 
         }
 
+             
+       .modal-body{
+           font-size:20px;
+       }
         .modal-lg { max-width: 900px; }
         #accountsList { display: none; }
         .modal-header { background-color: #007BFF; color: #fff; }
         .btn-gradient { background: linear-gradient(90deg,#4ECDC4,#55EFC4); border: none; color: #fff; }
         .btn-gradient:hover { opacity: 0.9; }
+          .form-control{
+      font-size:20px;
+  }
         .table-hover tbody tr:hover { background-color: rgba(0,123,255,0.1); cursor: pointer; }
         .form-control:focus { border-color: #007BFF; box-shadow: 0 0 5px rgba(0,123,255,.3); }
         .profile-img { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 2px solid #007BFF; }
@@ -102,6 +187,21 @@
 </head>
 <body>
 <form id="form1" runat="server">
+
+
+
+      <section class="admin-banner">
+      <img src="images/admin.jpg" class="admin-banner__image" />
+      <div class="admin-banner__overlay" aria-hidden="true"></div>
+      <div class="admin-banner__content">
+          <h1 class="admin-banner__title">ADMIN PANEL</h1>
+         
+      </div>
+  </section>
+
+
+
+
 <div class="container mt-5">
 
     <!-- Top Cards -->
@@ -191,7 +291,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <asp:Button ID="btnCreateAccount" runat="server" Text="Create Account" CssClass="btn btn-success btn-gradient" />
+                <asp:Button ID="btnCreateAccount" runat="server" Text="Create Account" CssClass="btn btn-primary" />
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
