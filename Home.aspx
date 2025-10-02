@@ -444,10 +444,10 @@
         </div>
     </section>
 
-    <!-- ACCOUNT TYPES SECTION - NEW MODERN DESIGN -->
+    <!-- ACCOUNT TYPES SECTION -->
     <section class="account-types" aria-labelledby="account-types-title">
         <div class="container">
-            <h2 id="account-types-title" class="section-title">Choose Your Account Type</h2>
+            <h2 id="account-types-title" class="section-title">Account Types</h2>
 
             <div class="account-grid" role="list">
                 <!-- Savings Account -->
@@ -467,9 +467,6 @@
                             <li>Premium customer support</li>
                             <li>Mobile banking & online access</li>
                         </ul>
-                        <div class="account-card__buttons">
-                            <a href="Register.aspx" class="account-btn account-btn--primary">Open Account</a>
-                        </div>
                     </div>
                 </article>
 
@@ -490,9 +487,6 @@
                             <li>Overdraft facility available</li>
                             <li>Checkbook & demand drafts</li>
                         </ul>
-                        <div class="account-card__buttons">
-                            <a href="Register.aspx" class="account-btn account-btn--primary">Open Account</a>
-                        </div>
                     </div>
                 </article>
 
@@ -513,9 +507,6 @@
                             <li>Student discounts & offers</li>
                             <li>Mobile banking access</li>
                         </ul>
-                        <div class="account-card__buttons">
-                            <a href="Register.aspx" class="account-btn account-btn--primary">Open Account</a>
-                        </div>
                     </div>
                 </article>
             </div>
