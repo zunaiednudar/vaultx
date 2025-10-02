@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Admin.aspx.cs" Inherits="vaultx.Admin" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,85 +6,196 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Panel - Manage Users</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
+ 
+    <link rel="stylesheet" href="styles/global.css?v=<%= DateTime.Now.Ticks %>" />
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <style>
-        .card {
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border-radius: 12px;
+     * {
+    font-family: var(--font-stack);
+  
+ 
+}
+
+
+
+.admin-banner {
+    position: relative;
+    width: 100%;
+   height:300px;
+    max-height: 500px;
+    text-align: center;
+    margin-bottom: 40px;
+    overflow: hidden;
+
+    border-radius: 5px;
+}
+
+.admin-banner__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    border-radius: var(--radius);
+    box-shadow: var(--box-shadow);
+}
+
+.admin-banner__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  
+    z-index: 1;
+}
+
+.admin-banner__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    z-index: 2;
+    text-align: center;
+    padding: 0 15px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.admin-banner__title {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    margin: 0;
+    letter-spacing:15px;
+
+    font-weight: 700;
+    text-wrap: nowrap;
+}
+
+.admin-banner__subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    margin-top: 10px;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+      
+     
+
+            .card {
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        border-radius: 12px;
+        text-align: center;
+        padding: 40px 20px;
+           background-color:dodgerblue;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+         
+
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+        .mb-3 {
             text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, #4ECDC4, #5567FC);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-size: 40px;
+            font-weight:bold;
+            letter-spacing:10px;
+            color:white;
+            padding: 5px;
+            background-color: var(--color-bg-secondary);
+            border-radius:5px;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .card h4 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .card p {
+        font-size: 1.3rem;
+        opacity: 0.9;
+    }
+    .cls{
+        background-color:gray;
+    }
+    .cls:hover{
+                background-color:dimgrey;
+    }
+    
+    tr{
+          font-size: clamp(14px, 2vw, 20px); 
+    }
+    .btn{
+        font-size:clamp(14px, 2vw, 20px); 
+ 
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .card {
+            height: 180px;
+            padding: 30px 15px;
         }
 
         .card h4 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+
+        .card p {
+            font-size: 0.95rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card {
+            height: 160px;
+            padding: 25px 10px;
+        }
+
+        #phn {
+            display: none;
+        }
+        .card h4 {
+            font-size: 1.3rem;
         }
 
         .card p {
-            font-size: 1rem;
-            opacity: 0.9;
+            font-size: 0.9rem;
         }
+       
+    }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .card {
-                height: 180px;
-                padding: 30px 15px;
-            }
 
-            .card h4 {
-                font-size: 1.5rem;
-            }
-
-            .card p {
-                font-size: 0.95rem;
-            }
+        body { background-color: #f4f6f9;
+                margin-bottom:30px;
         }
-
-        @media (max-width: 576px) {
-            .card {
-                height: 160px;
-                padding: 25px 10px;
-            }
-
-            .card h4 {
-                font-size: 1.3rem;
-            }
-
-            .card p {
-                font-size: 0.9rem;
-            }
-        }
-
-
-        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
         .modal-lg { max-width: 900px; }
         #usersList { display: none; }
         .modal-header { background-color: #007BFF; color: #fff; }
-        .btn-gradient { background: linear-gradient(90deg,#4ECDC4,#55EFC4); border: none; color: #fff; }
-        .btn-gradient:hover { opacity: 0.9; }
+        
+       .modal-body{
+           font-size:20px;
+       }
+       .form-control{
+           font-size:20px;
+       }
         .table-hover tbody tr:hover { background-color: rgba(0,123,255,0.1); cursor: pointer; }
         .form-control:focus { border-color: #007BFF; box-shadow: 0 0 5px rgba(0,123,255,.3); }
         .profile-img { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #007BFF; }
@@ -92,6 +203,17 @@
 </head>
 <body>
 <form id="form1" runat="server">
+       <!-- Banner -->
+       <!-- Banner -->
+    <section class="admin-banner">
+        <img src="images/admin.jpg" class="admin-banner__image" />
+        <div class="admin-banner__overlay" aria-hidden="true"></div>
+        <div class="admin-banner__content">
+            <h1 class="admin-banner__title">ADMIN PANEL</h1>
+           
+        </div>
+    </section>
+
 
 <div class="container mt-5">
     <div class="row g-4">
@@ -118,7 +240,7 @@
 
     <!-- Users List -->
     <div class="row mt-4" id="usersList">
-        <h3 class="mb-3">Users</h3>
+        <h3 class="mb-3">USERS</h3>
         <table class="table table-striped table-hover">
             <thead class="table-primary">
                 <tr>
@@ -126,12 +248,27 @@
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
-                    <th>Phone</th>
+                    <th id="phn">Phone</th>
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody id="usersTableBody">
-                <!-- Users will be loaded dynamically -->
+            <tbody>
+                <tr onclick="showUserDetails('1','John','Doe','Father John','Mother Doe','01-01-1990','1234567890123','john@example.com','1234567890','Dhaka','Dhaka','Dhanmondi','Road 1','1205','Engineer','50000','images/default.png')">
+                    <td>1</td>
+                    <td>John</td>
+                    <td>Doe</td>
+                    <td>john@example.com</td>
+                    <td id="phn">1234567890</td>
+                    <td><button type="button" class="btn btn-sm btn-primary">More Details</button></td>
+                </tr>
+                <tr onclick="showUserDetails('2','Jane','Smith','Father Smith','Mother Jane','15-05-1992','9876543210987','jane@example.com','0987654321','Chattogram','Chattogram','Pahartali','Street 5','4000','Teacher','40000','images/default.png')">
+                    <td>2</td>
+                    <td>Jane</td>
+                    <td>Smith</td>
+                    <td>jane@example.com</td>
+                    <td id="phn">0987654321</td>
+                    <td><button type="button" class="btn btn-sm btn-primary">More Details</button></td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -170,19 +307,19 @@
         </div>
       </div>
       <div class="modal-footer">
-        <asp:Button ID="btnAddUser" runat="server" Text="Add User" CssClass="btn btn-success btn-gradient" OnClick="btnAddUser_Click" />
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <asp:Button ID="btnAddUser" runat="server" Text="Add User" CssClass="btn btn-primary" />
+        <button type="button" class="btn btn-primary cls" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
 
-<!-- Transaction Details Modal -->
+    <!-- Transaction Details Modal -->
 <div class="modal fade" id="transactionDetailsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-info text-white">
+            <div class="modal-header  text-white">
                 <h5 class="modal-title"><i class="fa fa-history"></i> Transaction History</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -220,7 +357,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="text-center mb-3">
+                <div class="text-center">
                     <img id="imgProfile" class="profile-img" src="images/default.png" alt="Profile Picture" />
                     <div class="mt-2">
                         <label class="btn btn-sm btn-outline-primary mb-0">
@@ -247,131 +384,23 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="showAccountsModal()">Account Details</button>
-                <button type="button" class="btn btn-primary" onclick="loadTransactions()">Transaction Details</button>
-                <button type="button" id="btnEnableUpdate" class="btn btn-warning" onclick="enableEditStep()">Enable Update</button>
-                <button type="button" id="btnUpdate" class="btn btn-primary" style="display:none;" onclick="updateUser()">Update</button>
-                <button type="button" class="btn btn-danger" onclick="deleteUser()">Delete</button>
+                       <button type="button" class="btn btn-primary" 
+        onclick="window.location.href='Admin_Accounts.aspx';">
+    Account Details
+</button>
+
+                        <button type="button" class="btn btn-primary" onclick="transaction()">Transaction Details</button>
+              <button type="button" id="btnEnableUpdate" class="btn btn-warning" onclick="enableEditStep()">Enable Update</button>
+                <button type="button" id="btnUpdate" class="btn btn-primary" style="display:none;" onclick="">Update</button>
+
+                <button type="button" class="btn btn-danger" onclick="">Delete</button>
+              
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Account Details Modal -->
-<div class="modal fade" id="accountDetailsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="fa fa-university"></i> Account Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="d-flex justify-content-end mb-3">
-                    <button type="button" class="btn btn-success" onclick="showAddAccountModal()">
-                        <i class="fa fa-plus"></i> Add New Account
-                    </button>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead class="table-secondary">
-                            <tr>
-                                <th>Account ID</th>
-                                <th>Account Type</th>
-                                <th>Balance</th>
-                                <th>Created Date</th>
-                                <th>Nominee Name</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="accountsTableBody">
-                            <!-- Accounts will be loaded dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Add Account Modal -->
-<div class="modal fade" id="addAccountModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title"><i class="fa fa-plus-circle"></i> Add New Account</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label">Account Type</label>
-                    <select id="accountType" class="form-select">
-                        <option value="Student">Student</option>
-                        <option value="Savings">Savings</option>
-                        <option value="Current">Current</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Initial Balance</label>
-                    <input type="number" id="initialBalance" class="form-control" value="0" min="0" step="0.01">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Nominee Name</label>
-                    <input type="text" id="nomineeName" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Nominee NID</label>
-                    <input type="text" id="nomineeNID" class="form-control">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="addAccount()">Add Account</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Edit Account Modal -->
-<div class="modal fade" id="editAccountModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title"><i class="fa fa-edit"></i> Edit Account</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="editAccountId">
-                <div class="mb-3">
-                    <label class="form-label">Account Type</label>
-                    <input type="text" id="editAccountType" class="form-control" readonly>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Balance</label>
-                    <input type="number" id="editBalance" class="form-control" min="0" step="0.01">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Nominee Name</label>
-                    <input type="text" id="editNomineeName" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Nominee NID</label>
-                    <input type="text" id="editNomineeNID" class="form-control">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="updateAccount()">Update Account</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- jQuery for AJAX -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap JS & Flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -379,10 +408,7 @@
 <script>
     flatpickr("#<%= txtAddDOB.ClientID %>", { dateFormat: "d-m-Y", altInput: true, altFormat: "d-m-Y", allowInput: true });
 
-    let currentUID = null;
-
     function showUserDetails(uid, first, last, father, mother, dob, nid, email, phone, division, district, upazilla, address, postal, profession, earnings, profile) {
-        currentUID = uid;
         document.getElementById('<%= txtFirstName.ClientID %>').value = first;
         document.getElementById('<%= txtLastName.ClientID %>').value = last;
         document.getElementById('<%= txtFather.ClientID %>').value = father;
@@ -408,284 +434,54 @@
         document.getElementById('btnEnableUpdate').style.display = 'none';
         document.getElementById('btnUpdate').style.display = 'inline-block';
     }
-    
-    function updateUser() {
-        if (!currentUID) return;
+    function transaction() {
+        // Close any other modals that might be open
+        const userModalEl = document.getElementById('userDetailsModal');
+        const userModal = bootstrap.Modal.getInstance(userModalEl);
+        if (userModal) {
+            userModal.hide();
+        }
 
-        const userData = {
-            uid: currentUID,
-            firstName: document.getElementById('<%= txtFirstName.ClientID %>').value,
-            lastName: document.getElementById('<%= txtLastName.ClientID %>').value,
-            fatherName: document.getElementById('<%= txtFather.ClientID %>').value,
-            motherName: document.getElementById('<%= txtMother.ClientID %>').value,
-            dob: document.getElementById('<%= txtDOB.ClientID %>').value,
-            nid: document.getElementById('<%= txtNID.ClientID %>').value,
-            email: document.getElementById('<%= txtEmail.ClientID %>').value,
-            phone: document.getElementById('<%= txtPhone.ClientID %>').value,
-            division: document.getElementById('<%= txtDivision.ClientID %>').value,
-            district: document.getElementById('<%= txtDistrict.ClientID %>').value,
-            upazilla: document.getElementById('<%= txtUpazilla.ClientID %>').value,
-            address: document.getElementById('<%= txtAddress.ClientID %>').value,
-            postal: document.getElementById('<%= txtPostal.ClientID %>').value,
-            profession: document.getElementById('<%= txtProfession.ClientID %>').value,
-            earnings: document.getElementById('<%= txtEarnings.ClientID %>').value
-        };
+        const addUserModalEl = document.getElementById('addUserModal');
+        const addUserModal = bootstrap.Modal.getInstance(addUserModalEl);
+        if (addUserModal) {
+            addUserModal.hide();
+        }
 
-        $.ajax({
-            type: "POST",
-            url: "Admin.aspx/UpdateUser",
-            data: JSON.stringify(userData),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (response.d === "success") {
-                    alert("User updated successfully!");
-                    location.reload();
-                } else {
-                    alert(response.d);
-                }
-            },
-            error: function (error) {
-                alert("Error updating user: " + error.statusText);
-            }
+        // Example static data for demo, replace with server-side data
+        const transactions = [
+            { tid: 'TX1001', date: '2025-09-28', amount: 5000, type: 'Credit', from: '12345', to: '67890', ref: 'Salary' },
+            { tid: 'TX1002', date: '2025-09-27', amount: 1500, type: 'Debit', from: '12345', to: '98765', ref: 'Bill Payment' }
+        ];
+
+        const tbody = document.getElementById('transactionHistoryBody');
+        tbody.innerHTML = ''; // Clear previous rows
+
+        transactions.forEach(tx => {
+            const row = `<tr>
+            <td>${tx.tid}</td>
+            <td>${tx.date}</td>
+            <td>৳ ${tx.amount.toFixed(2)}</td>
+            <td>${tx.type}</td>
+            <td>${tx.from}</td>
+            <td>${tx.to}</td>
+            <td>${tx.ref}</td>
+        </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
         });
+
+        // Open the transaction modal
+        new bootstrap.Modal(document.getElementById('transactionDetailsModal')).show();
     }
+
+
+
 
     function deleteUser() {
-        if (!currentUID) return;
-
-        if (confirm("Are you sure you want to delete this user? This will also delete all associated accounts and transactions.")) {
-            $.ajax({
-                type: "POST",
-                url: "Admin.aspx/DeleteUser",
-                data: JSON.stringify({ uid: currentUID }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    if (response.d === "success") {
-                        alert("User deleted successfully!");
-                        location.reload();
-                    } else {
-                        alert(response.d);
-                    }
-                },
-                error: function (error) {
-                    alert("Error deleting user: " + error.statusText);
-                }
-            });
+        if (confirm("Are you sure you want to delete this user?")) {
+            alert("User deleted successfully.");
+            document.getElementById('userDetailsModal').querySelector('.btn-close').click();
         }
-    }
-
-    function loadTransactions() {
-        if (!currentUID) return;
-
-        $.ajax({
-            type: "POST",
-            url: "Admin.aspx/GetUserTransactions",
-            data: JSON.stringify({ uid: currentUID }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                const transactions = JSON.parse(response.d);
-                const tbody = document.getElementById('transactionHistoryBody');
-                tbody.innerHTML = '';
-
-                if (transactions.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">No transactions found</td></tr>';
-                } else {
-                    transactions.forEach(tx => {
-                        const row = `<tr>
-                            <td>${tx.tid}</td>
-                            <td>${new Date(tx.date).toLocaleDateString()}</td>
-                            <td>৳ ${parseFloat(tx.amount).toFixed(2)}</td>
-                            <td>${tx.type}</td>
-                            <td>${tx.from}</td>
-                            <td>${tx.to}</td>
-                            <td>${tx.ref || ''}</td>
-                        </tr>`;
-                        tbody.insertAdjacentHTML('beforeend', row);
-                    });
-                }
-
-                // Close user modal and open transaction modal
-                bootstrap.Modal.getInstance(document.getElementById('userDetailsModal')).hide();
-                new bootstrap.Modal(document.getElementById('transactionDetailsModal')).show();
-            },
-            error: function (error) {
-                alert("Error loading transactions: " + error.statusText);
-            }
-        });
-    }
-
-    // Account management functions
-    function showAccountsModal() {
-        if (!currentUID) return;
-
-        // Load accounts for this user
-        loadUserAccounts(currentUID);
-
-        // Close user details modal and open accounts modal
-        bootstrap.Modal.getInstance(document.getElementById('userDetailsModal')).hide();
-        new bootstrap.Modal(document.getElementById('accountDetailsModal')).show();
-    }
-
-    function loadUserAccounts(userId) {
-        $.ajax({
-            type: "POST",
-            url: "Admin.aspx/GetUserAccounts",
-            data: JSON.stringify({ uid: userId }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                const accounts = JSON.parse(response.d);
-                const tbody = document.getElementById('accountsTableBody');
-                tbody.innerHTML = '';
-
-                if (accounts.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No accounts found</td></tr>';
-                } else {
-                    accounts.forEach(acc => {
-                        const row = `<tr>
-                            <td>${acc.aid}</td>
-                            <td>${acc.accountType}</td>
-                            <td>৳ ${parseFloat(acc.balance).toFixed(2)}</td>
-                            <td>${new Date(acc.createdAt).toLocaleDateString()}</td>
-                            <td>${acc.nomineeName || ''}</td>
-                            <td>
-                                <button type="button" class="btn btn-sm btn-warning" onclick="showEditAccountModal(${acc.aid}, '${acc.accountType}', ${acc.balance}, '${acc.nomineeName || ''}', '${acc.nomineeNid || ''}')">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-danger ms-1" onclick="deleteAccount(${acc.aid})">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>`;
-                        tbody.insertAdjacentHTML('beforeend', row);
-                    });
-                }
-            },
-            error: function (error) {
-                alert("Error loading accounts: " + error.statusText);
-            }
-        });
-    }
-
-    function showAddAccountModal() {
-        // Reset form
-        document.getElementById('accountType').value = 'Savings';
-        document.getElementById('initialBalance').value = '0';
-        document.getElementById('nomineeName').value = '';
-        document.getElementById('nomineeNID').value = '';
-
-        // Close accounts modal and open add account modal
-        bootstrap.Modal.getInstance(document.getElementById('accountDetailsModal')).hide();
-        new bootstrap.Modal(document.getElementById('addAccountModal')).show();
-    }
-
-    function addAccount() {
-        if (!currentUID) return;
-
-        const accountData = {
-            uid: currentUID,
-            accountType: document.getElementById('accountType').value,
-            balance: document.getElementById('initialBalance').value,
-            nomineeName: document.getElementById('nomineeName').value,
-            nomineeNID: document.getElementById('nomineeNID').value
-        };
-
-        $.ajax({
-            type: "POST",
-            url: "Admin.aspx/AddAccount",
-            data: JSON.stringify(accountData),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (response.d === "success") {
-                    alert("Account added successfully!");
-                    // Close add account modal
-                    bootstrap.Modal.getInstance(document.getElementById('addAccountModal')).hide();
-                    // Reopen accounts modal and refresh accounts
-                    showAccountsModal();
-                } else {
-                    alert(response.d);
-                }
-            },
-            error: function (error) {
-                alert("Error adding account: " + error.statusText);
-            }
-        });
-    }
-
-    function showEditAccountModal(aid, accountType, balance, nomineeName, nomineeNID) {
-        document.getElementById('editAccountId').value = aid;
-        document.getElementById('editAccountType').value = accountType;
-        document.getElementById('editBalance').value = balance;
-        document.getElementById('editNomineeName').value = nomineeName;
-        document.getElementById('editNomineeNID').value = nomineeNID;
-
-        // Close accounts modal and open edit account modal
-        bootstrap.Modal.getInstance(document.getElementById('accountDetailsModal')).hide();
-        new bootstrap.Modal(document.getElementById('editAccountModal')).show();
-    }
-
-    function updateAccount() {
-        const accountData = {
-            aid: document.getElementById('editAccountId').value,
-            balance: document.getElementById('editBalance').value,
-            nomineeName: document.getElementById('editNomineeName').value,
-            nomineeNID: document.getElementById('editNomineeNID').value
-        };
-
-        $.ajax({
-            type: "POST",
-            url: "Admin.aspx/UpdateAccount",
-            data: JSON.stringify(accountData),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (response.d === "success") {
-                    alert("Account updated successfully!");
-                    // Close edit account modal
-                    bootstrap.Modal.getInstance(document.getElementById('editAccountModal')).hide();
-                    // Reopen accounts modal and refresh accounts
-                    showAccountsModal();
-                } else {
-                    alert(response.d);
-                }
-            },
-            error: function (error) {
-                alert("Error updating account: " + error.statusText);
-            }
-        });
-    }
-
-    function deleteAccount(aid) {
-        if (confirm("Are you sure you want to delete this account? This will also delete all associated transactions.")) {
-            $.ajax({
-                type: "POST",
-                url: "Admin.aspx/DeleteAccount",
-                data: JSON.stringify({ aid: aid }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    if (response.d === "success") {
-                        alert("Account deleted successfully!");
-                        // Refresh accounts
-                        loadUserAccounts(currentUID);
-                    } else {
-                        alert(response.d);
-                    }
-                },
-                error: function (error) {
-                    alert("Error deleting account: " + error.statusText);
-                }
-            });
-        }
-    }
-
-    // Alias for backward compatibility
-    function transaction() {
-        loadTransactions();
     }
 </script>
 </form>
