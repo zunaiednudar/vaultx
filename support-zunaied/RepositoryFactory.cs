@@ -9,12 +9,12 @@ namespace vaultx.support_zunaied
 {
     public class RepositoryFactory
     {
-        public static IAccountRepository CreateAccountRepository()
+        public IAccountRepository CreateAccountRepository()
         {
             return new AccountRepository();
         }
 
-        public static ITransactionRepository CreateTransactionRepository()
+        public ITransactionRepository CreateTransactionRepository()
         {
             return new TransactionRepository();
         }
