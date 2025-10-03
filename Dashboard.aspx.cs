@@ -32,8 +32,8 @@ namespace vaultx
         {
             var accounts = new List<dynamic>();
 
-            IAccountRepository accountRepository = RepositoryFactory.CreateAccountRepository();
-            // IAccountRepository accountRepository = new AccountRepository();
+            // IAccountRepository accountRepository = RepositoryFactoryR.CreateAccountRepository();
+            IAccountRepository accountRepository = new AccountRepository();
             accounts = accountRepository.BindAccountsFunction(Convert.ToInt32(Session["UID"]));
 
             //using (SqlConnection connection = new SqlConnection(connectionString))
