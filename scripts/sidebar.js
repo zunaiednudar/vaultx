@@ -1,8 +1,4 @@
-﻿
-
-
-document.addEventListener('DOMContentLoaded', () => {
-
+﻿document.addEventListener('DOMContentLoaded', () => {
     const isLoggedIn = sessionStorage.getItem('VaultXLoggedIn') === 'true';
 
     const topMenu = document.getElementById('topMenu');
@@ -12,42 +8,85 @@ document.addEventListener('DOMContentLoaded', () => {
     bottomMenu.innerHTML = '';
 
     function createMenuItem(text, url, iconClass) {
-
         const li = document.createElement('li');
         const a = document.createElement('a');
-
-
-
         a.href = url;
         a.innerHTML = `<i class="${iconClass}"></i> ${text}`;
         li.appendChild(a);
         return li;
     }
 
-    if (isLoggedIn) {
+    const currentPage = window.location.pathname.split('/').pop();
+
+    // ✅ Special case for Admin.aspx
+    if (currentPage === "Admin.aspx") {
+        topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
+        topMenu.appendChild(createMenuItem('Admin Panel', 'Admin.aspx', 'fas fa-user-shield'));
+
+        const logoutLi = document.createElement('li');
+        const logoutA = document.createElement('a');
+        logoutA.href = '#';
+        logoutA.innerHTML = `<i class="fas fa-sign-out-alt"></i> Logout`;
+
+        // Direct logout for Admin Panel → redirects to Home.aspx
+        logoutA.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // Create centered message overlay
+            const msg = document.createElement('div');
+            msg.innerText = "Logging out...";
+            msg.style.position = 'fixed';
+            msg.style.top = '50%';
+            msg.style.left = '50%';
+            msg.style.transform = 'translate(-50%, -50%)';
+            msg.style.background = '#333';
+            msg.style.color = '#fff';
+            msg.style.fontSize = '20px';
+            msg.style.padding = '20px 40px';
+            msg.style.borderRadius = '10px';
+            msg.style.zIndex = '9999';
+            msg.style.textAlign = 'center';
+            msg.style.boxShadow = '0 0 15px rgba(0,0,0,0.3)';
+            document.body.appendChild(msg);
+
+            // Wait 1.5 seconds then log out
+            setTimeout(() => {
+                sessionStorage.removeItem('VaultXLoggedIn');
+                window.location = 'Home.aspx';
+            }, 1500);
+        });
+
+
+        logoutLi.appendChild(logoutA);
+        bottomMenu.appendChild(logoutLi);
+
+    } else if (isLoggedIn) {
+        // Logged-in user menu
         topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
         topMenu.appendChild(createMenuItem('Dashboard', 'Dashboard.aspx', 'fas fa-tachometer-alt'));
         topMenu.appendChild(createMenuItem('Fund Transfer', 'FundTransfer.aspx', 'fas fa-exchange-alt'));
         topMenu.appendChild(createMenuItem('Profile', 'Profile.aspx', 'fas fa-user'));
         topMenu.appendChild(createMenuItem('Terms & Conditions', 'Terms.aspx', 'fas fa-file-contract'));
         topMenu.appendChild(createMenuItem('FAQ', 'FAQ.aspx', 'fas fa-question-circle'));
+
         const logoutLi = document.createElement('li');
         const logoutA = document.createElement('a');
-        logoutA.href = '#'; 
+        logoutA.href = '#';
         logoutA.innerHTML = `<i class="fas fa-sign-out-alt"></i> Logout`;
-        logoutA.addEventListener('click', showLogoutModal);
+        logoutA.addEventListener('click', showLogoutModal); // modal for other pages
         logoutLi.appendChild(logoutA);
         bottomMenu.appendChild(logoutLi);
-     
-    } else {
 
+    } else {
+        // Guest menu
         topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
         topMenu.appendChild(createMenuItem('Terms & Conditions', 'Terms.aspx', 'fas fa-file-contract'));
         topMenu.appendChild(createMenuItem('FAQ', 'FAQ.aspx', 'fas fa-question-circle'));
         bottomMenu.appendChild(createMenuItem('Login', 'Login.aspx', 'fas fa-sign-in-alt'));
         bottomMenu.appendChild(createMenuItem('Register', 'Register.aspx', 'fas fa-user-plus'));
     }
-    const currentPage = window.location.pathname.split('/').pop(); 
+
+    // Highlight the active menu item
     document.querySelectorAll('.site-sidebar a').forEach(a => {
         if (a.getAttribute('href') === currentPage) {
             a.classList.add('active');
@@ -55,8 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-logoutItem.querySelector('a').addEventListener('click', showLogoutModal);
-bottomMenu.appendChild(logoutItem);
+// ✅ Logout Modal Controls (for non-admin pages)
 function showLogoutModal(e) {
     e.preventDefault();
     document.getElementById('logoutModal').style.display = 'flex';
@@ -64,16 +102,14 @@ function showLogoutModal(e) {
 
 function confirmLogout() {
     sessionStorage.removeItem('VaultXLoggedIn');
-    window.location = 'Logout.aspx?confirm=true'; 
+    window.location = 'Home.aspx'; // redirect to Home.aspx
 }
 
 function cancelLogout() {
     document.getElementById('logoutModal').style.display = 'none';
 }
 
-
-
-
+// ✅ Sidebar Toggle Controls
 function toggleSidebar(event) {
     if (event) event.preventDefault();
 
@@ -91,11 +127,6 @@ function toggleSidebar(event) {
         document.removeEventListener('keydown', escCloseSidebar);
     }
 }
-const hamburger = document.querySelector('.hamburger');
-const sidebar = document.querySelector('.site-sidebar');
-const body = document.body;
-
-
 
 function closeOnOutsideClick(e) {
     const sidebar = document.querySelector('.site-sidebar');
@@ -116,5 +147,3 @@ function escCloseSidebar(e) {
         document.body.classList.remove('sidebar-open');
     }
 }
-
-
