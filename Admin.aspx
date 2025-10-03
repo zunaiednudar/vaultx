@@ -1,5 +1,6 @@
 ﻿
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Admin.aspx.cs" Inherits="vaultx.Admin" %>
+<%@ Register Src="Sidebar.ascx" TagName="Sidebar" TagPrefix="uc" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +13,7 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
- 
+   <link rel="stylesheet" href="styles/sidebar.css?v=<%= DateTime.Now.Ticks %>" />
     <link rel="stylesheet" href="styles/global.css?v=<%= DateTime.Now.Ticks %>" />
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -263,6 +264,21 @@
 </head>
 <body>
 <form id="form1" runat="server">
+
+
+
+    
+            <uc:Sidebar ID="Sidebar1" runat="server" />
+
+   <!-- Hamburger button -->
+   <button type="button" class="hamburger" onclick="toggleSidebar(event)" aria-label="Toggle sidebar">
+       <span class="bar bar1"></span>
+       <span class="bar bar2"></span>
+       <span class="bar bar3"></span>
+   </button>
+
+
+
 
      <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true">
     </asp:ScriptManager>
@@ -583,7 +599,7 @@
 <!-- Bootstrap JS & Flatpickr -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+      <script src='<%= ResolveUrl("scripts/sidebar.js") %>?v=<%= DateTime.Now.Ticks %>'></script>
 <script>
     flatpickr("#<%= txtAddDOB.ClientID %>", { dateFormat: "d-m-Y", altInput: true, altFormat: "d-m-Y", allowInput: true });
 

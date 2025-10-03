@@ -4,60 +4,148 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
-using System.Runtime.InteropServices;
 using System.Web;
 
 namespace vaultx
 {
+    #region Email Sending (Factory Pattern)
+
+    public interface IEmailSender
+    {
+        void Send(string toEmail, string subject, string body);
+    }
+
+    public class SmtpEmailSender : IEmailSender
+    {
+        private readonly string _smtpHost;
+        private readonly int _smtpPort;
+        private readonly string _username;
+        private readonly string _password;
+
+        public SmtpEmailSender(string smtpHost, int smtpPort, string username, string password)
+        {
+            _smtpHost = smtpHost;
+            _smtpPort = smtpPort;
+            _username = username;
+            _password = password;
+        }
+
+        public void Send(string toEmail, string subject, string body)
+        {
+            MailMessage mail = new MailMessage
+            {
+                From = new MailAddress(_username),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
+            mail.To.Add(toEmail);
+
+            SmtpClient smtp = new SmtpClient(_smtpHost, _smtpPort)
+            {
+                Credentials = new NetworkCredential(_username, _password),
+                EnableSsl = true
+            };
+            smtp.Send(mail);
+        }
+    }
+
+    public static class EmailSenderFactory
+    {
+        public static IEmailSender CreateSmtpSender()
+        {
+            return new SmtpEmailSender(
+                "smtp.gmail.com",
+                587,
+                "diptochy430@gmail.com",
+                "xvlrzedqehmtrzbs" // In production, use secure storage for passwords
+            );
+        }
+    }
+
+    #endregion
+
+    #region Database Connection (Singleton Pattern)
+
+    public sealed class Database
+    {
+        private static Database _instance = null;
+        private static readonly object _lock = new object();
+        private readonly string _connectionString;
+
+        private Database()
+        {
+            _connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
+        }
+
+        public static Database Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_lock)
+                    {
+                        if (_instance == null)
+                            _instance = new Database();
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        public SqlConnection GetConnection()
+        {
+            return new SqlConnection(_connectionString);
+        }
+    }
+
+    #endregion
+
     public partial class Register : System.Web.UI.Page
     {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-        }
+        protected void Page_Load(object sender, EventArgs e) { }
 
         protected void btnRegister_Click(object sender, EventArgs e)
         {
-
             hfPassword.Value = txtPassword.Text.Trim();
 
-
             string profileImage = null;
-
-
             if (fuProfileImage.HasFile)
             {
                 string fileName = Path.GetFileName(fuProfileImage.PostedFile.FileName);
-                string savePath = Server.MapPath("~/images/profile_img/") + fileName;
+                string savePath = Server.MapPath("~/images/profiles/") + fileName;
 
-
-                if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
-                    Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
+                if (!Directory.Exists(Server.MapPath("~/images/profiles/")))
+                    Directory.CreateDirectory(Server.MapPath("~/images/profiles/"));
 
                 fuProfileImage.SaveAs(savePath);
-
-                profileImage = "images/profile_img/" + fileName;
-
+                profileImage = "images/profiles/" + fileName;
                 hfProfileImagePath.Value = profileImage;
             }
 
-
-
+            // Generate OTP
             Random rnd = new Random();
             string otp = rnd.Next(100000, 999999).ToString();
 
-            // Store OTP in cookie
-            HttpCookie otpCookie = new HttpCookie("UserOtp");
-            otpCookie.Value = otp;
-            otpCookie.Expires = DateTime.Now.AddMinutes(5);
-            Response.Cookies.Add(otpCookie);
+            // Store OTP & Email in cookies
+            Response.Cookies.Add(new HttpCookie("UserOtp") { Value = otp, Expires = DateTime.Now.AddMinutes(5) });
+            Response.Cookies.Add(new HttpCookie("UserEmail") { Value = txtEmail.Text.Trim(), Expires = DateTime.Now.AddMinutes(5) });
 
-            HttpCookie emailCookie = new HttpCookie("UserEmail");
-            emailCookie.Value = txtEmail.Text.Trim();
-            emailCookie.Expires = DateTime.Now.AddMinutes(5);
-            Response.Cookies.Add(emailCookie);
-
-            // Send OTP
-            SendOtpEmail(txtEmail.Text.Trim(), otp);
+            // Send OTP using Factory Pattern
+            IEmailSender emailSender = EmailSenderFactory.CreateSmtpSender();
+            string emailBody = $@"
+<html>
+  <body style='font-family:Arial,sans-serif; color:#333;'>
+    <h2 style='color:#4ECDC4;'>VaultX Account Verification</h2>
+    <p>Dear User,</p>
+    <p>Thank you for registering with <strong>VaultX</strong>. To complete your registration, please use the following <strong>One-Time Password (OTP)</strong>:</p>
+    <p style='font-size:1.5rem; font-weight:bold; color:#FF6B6B;'>{otp}</p>
+    <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
+    <p>Best regards,<br/><strong>The VaultX Team</strong></p>
+  </body>
+</html>";
+            emailSender.Send(txtEmail.Text.Trim(), "VaultX Account Verification – OTP", emailBody);
 
             // Show OTP panel
             string script = @"document.getElementById('regForm').style.display='none';
@@ -72,40 +160,6 @@ namespace vaultx
             ClientScript.RegisterStartupScript(this.GetType(), "ShowOtpForm", script, true);
         }
 
-        private void SendOtpEmail(string toEmail, string otp)
-        {
-            try
-            {
-                MailMessage mail = new MailMessage();
-                mail.From = new MailAddress("yourmail@example.com");
-                mail.To.Add(toEmail);
-                mail.Subject = "VaultX Account Verification – Your One-Time Password (OTP)";
-                mail.Body = $@"
-<html>
-  <body style='font-family:Arial,sans-serif; color:#333;'>
-    <h2 style='color:#4ECDC4;'>VaultX Account Verification</h2>
-    <p>Dear User,</p>
-    <p>Thank you for registering with <strong>VaultX</strong>. To complete your registration, please use the following <strong>One-Time Password (OTP)</strong>:</p>
-    <p style='font-size:1.5rem; font-weight:bold; color:#FF6B6B;'>{otp}</p>
-    <p>This OTP is valid for the next 10 minutes. Please do not share it with anyone.</p>
-    <p>Best regards,<br/><strong>The VaultX Team</strong></p>
-  </body>
-</html>
-";
-                mail.IsBodyHtml = true;
-
-
-                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs");
-                smtp.EnableSsl = true;
-                smtp.Send(mail);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("OTP Email failed: " + ex.Message);
-            }
-        }
-
         protected void btnVerifyOtp_Click(object sender, EventArgs e)
         {
             string enteredOtp = hfEnteredOtp.Value;
@@ -114,22 +168,17 @@ namespace vaultx
 
             if (otpCookie == null || emailCookie == null)
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "OtpExpired", "alert('OTP expired. Please register again.'); window.location='Register.aspx';", true);
+                ClientScript.RegisterStartupScript(this.GetType(), "OtpExpired",
+                    "alert('OTP expired. Please register again.'); window.location='Register.aspx';", true);
                 return;
             }
 
             if (enteredOtp == otpCookie.Value)
             {
-
                 string profileImagePath = hfProfileImagePath.Value;
 
-
-                string connStr = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
-                using (SqlConnection conn = new SqlConnection(connStr))
+                using (SqlConnection conn = Database.Instance.GetConnection())
                 {
-
-
-
                     conn.Open();
                     string getMaxUIDQuery = "SELECT ISNULL(MAX(UID), 999) FROM dbo.Users";
                     SqlCommand cmdMax = new SqlCommand(getMaxUIDQuery, conn);
@@ -153,9 +202,7 @@ VALUES
                     cmd.Parameters.AddWithValue("@NID", txtNID.Text.Trim());
                     cmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
                     cmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim());
-
                     cmd.Parameters.AddWithValue("@ProfileImage", (object)profileImagePath ?? DBNull.Value);
-
                     cmd.Parameters.AddWithValue("@Division", ddlDivision.SelectedValue);
                     cmd.Parameters.AddWithValue("@District", hfDistrict.Value);
                     cmd.Parameters.AddWithValue("@Upazilla", TextBox3.Text.Trim());
@@ -180,9 +227,8 @@ VALUES
                 pnlStep2.Visible = false;
                 pnlStep1.Visible = false;
                 areg.Visible = false;
-                string script = @"setTimeout(function() {
-                          window.location='Login.aspx';
-                      }, 3000);";
+
+                string script = @"setTimeout(function() { window.location='Login.aspx'; }, 3000);";
                 ClientScript.RegisterStartupScript(this.GetType(), "RedirectAfterSuccess", script, true);
             }
             else
