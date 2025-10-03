@@ -174,11 +174,20 @@
      <asp:Panel ID="pnlStep3" runat="server" class="step-panel" style="display:none;">
 
          <div class="form-group">
-    <i class="fa fa-image"></i>
+   
              <asp:Label ID="Label1" runat="server" CssClass="upimg" Text="Upload Profile Image"></asp:Label>
              
-    <asp:FileUpload ID="fuProfileImage" runat="server" CssClass="form-control" />
+    <asp:FileUpload ID="fuProfileImage" runat="server" CssClass="file-upload-button" onchange="previewImage(this)" />
              <asp:HiddenField ID="hfProfileImagePath" runat="server" />
+
+                         <!-- File name display -->
+            <asp:Label ID="lblFileName" runat="server" CssClass="file-name-label"></asp:Label>
+
+            <!-- Image preview -->
+            <asp:Image ID="imgPreview" runat="server" CssClass="img-preview" Style="max-width: 200px; display: none;" />
+
+
+         
 
 </div>
 
@@ -295,13 +304,13 @@
                 var currentPanel = document.getElementById('pnlStep' + currentStep);
                 if (!currentPanel)
                     return;
-               
+
                 var inputs = currentPanel.querySelectorAll('input, select, textarea');
                 for (var i = 0; i < inputs.length; i++) {
                     if (!inputs[i].checkValidity()) {
-                       
+
                         inputs[i].reportValidity();
-                        return; 
+                        return;
                     }
                 }
 
@@ -311,7 +320,7 @@
                     p.style.display = 'none';
                 });
 
-                
+
                 var nextPanel = document.getElementById('pnlStep' + (currentStep + 1));
                 if (nextPanel) {
                     nextPanel.style.display = 'block';
@@ -319,19 +328,32 @@
             }
 
 
+
+
+            function previewImage(input) {
+                const file = input.files[0];
+                if (file) {
+                    document.getElementById('<%= lblFileName.ClientID %>').innerText = file.name;
+
+                const imgPreview = document.getElementById('<%= imgPreview.ClientID %>');
+                imgPreview.src = URL.createObjectURL(file);
+                imgPreview.style.display = "block";
+            }
+        }
+
             function preStep(currentStep) {
-               
+
                 var panels = document.querySelectorAll('[id^="pnlStep"]');
                 panels.forEach(function (p) {
                     p.style.display = 'none';
                 });
 
-                
+
                 var prePanel = document.getElementById('pnlStep' + (currentStep - 1));
                 if (prePanel) {
                     prePanel.style.display = 'block';
                 } else {
-                    
+
                     var firstPanel = document.getElementById('pnlStep1');
                     if (firstPanel) firstPanel.style.display = 'block';
                 }

@@ -35,7 +35,7 @@ namespace vaultx
 
                 fuProfileImage.SaveAs(savePath);
 
-                profileImage = "~/images/profile_img/" + fileName;
+                profileImage = "images/profile_img/" + fileName;
 
                 hfProfileImagePath.Value = profileImage;
             }
