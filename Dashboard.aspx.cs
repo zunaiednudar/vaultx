@@ -14,7 +14,7 @@ namespace vaultx
 {
     public partial class Dashboard : System.Web.UI.Page
     {
-        private string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
+        // private string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
