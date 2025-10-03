@@ -152,7 +152,7 @@ namespace vaultx
                             Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
 
                         fuAddProfile.SaveAs(savePath);
-                        profileImagePath = "~/images/profile_img/" + uniqueFileName;
+                        profileImagePath = "images/profile_img/" + uniqueFileName;
                     }
                     else
                     {
