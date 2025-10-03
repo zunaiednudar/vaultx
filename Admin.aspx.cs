@@ -146,13 +146,13 @@ namespace vaultx
                     if (extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".gif")
                     {
                         string uniqueFileName = Guid.NewGuid().ToString() + extension;
-                        string savePath = Server.MapPath("~/images/profile_img/") + uniqueFileName;
+                        string savePath = Server.MapPath("~/images/profiles/") + uniqueFileName;
 
-                        if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
-                            Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
+                        if (!Directory.Exists(Server.MapPath("~/images/profiles/")))
+                            Directory.CreateDirectory(Server.MapPath("~/images/profiles/"));
 
                         fuAddProfile.SaveAs(savePath);
-                        profileImagePath = "images/profile_img/" + uniqueFileName;
+                        profileImagePath = "images/profiles/" + uniqueFileName;
                     }
                     else
                     {

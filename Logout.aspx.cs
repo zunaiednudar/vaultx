@@ -3,36 +3,69 @@ using System.Web;
 
 namespace vaultx
 {
+    // Subject interface
+    public interface ILogout
+    {
+        void Execute(HttpContext context);
+    }
+
+    // Real logout implementation
+    public class RealLogout : ILogout
+    {
+        public void Execute(HttpContext context)
+        {
+            // Clear session
+            context.Session.Clear();
+            context.Session.Abandon();
+
+            // Clear cookie if exists
+            if (context.Request.Cookies["VaultXUser"] != null)
+            {
+                HttpCookie cookie = new HttpCookie("VaultXUser");
+                cookie.Expires = DateTime.Now.AddDays(-1);
+                context.Response.Cookies.Add(cookie);
+            }
+
+            // Clear JS sessionStorage login flag
+            context.Response.Write("<script>sessionStorage.removeItem('VaultXLoggedIn');</script>");
+
+            // Redirect to home page
+            context.Response.Redirect("Home.aspx");
+        }
+    }
+
+    // Proxy class
+    public class LogoutProxy : ILogout
+    {
+        private readonly ILogout _realLogout;
+
+        public LogoutProxy()
+        {
+            _realLogout = new RealLogout();
+        }
+
+        public void Execute(HttpContext context)
+        {
+            // Only allow logout if "confirm=true" is passed
+            if (context.Request.QueryString["confirm"] == "true")
+            {
+                _realLogout.Execute(context);
+            }
+            else
+            {
+                // Redirect to home if logout not confirmed
+                context.Response.Redirect("Home.aspx");
+            }
+        }
+    }
+
+    // Page code-behind
     public partial class Logout : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Only perform logout if confirm=true is passed from modal JS
-            if (Request.QueryString["confirm"] == "true")
-            {
-                // Clear session
-                Session.Clear();
-                Session.Abandon();
-
-                // Clear cookie if exists
-                if (Request.Cookies["VaultXUser"] != null)
-                {
-                    HttpCookie cookie = new HttpCookie("VaultXUser");
-                    cookie.Expires = DateTime.Now.AddDays(-1);
-                    Response.Cookies.Add(cookie);
-                }
-
-                // Clear JS sessionStorage login flag
-                Response.Write("<script>sessionStorage.removeItem('VaultXLoggedIn');</script>");
-
-                // Redirect back to home (or login page)
-                Response.Redirect("Home.aspx");
-            }
-            else
-            {
-                // If someone opens Logout.aspx directly, just go Home
-                Response.Redirect("Home.aspx");
-            }
+            ILogout logout = new LogoutProxy();
+            logout.Execute(HttpContext.Current);
         }
     }
 }
