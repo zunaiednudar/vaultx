@@ -80,8 +80,8 @@ namespace vaultx
 
             // Fetch user’s existing accounts
             // DataTable userAccounts = GetUserAccounts(uid);
-            // IAccountRepository accountRepository = RepositoryFactory.CreateAccountRepository();
-            IAccountRepository accountRepository = new AccountRepository();
+            IAccountRepository accountRepository = RepositoryFactory.CreateAccountRepository();
+            // IAccountRepository accountRepository = new AccountRepository();
             DataTable userAccounts = accountRepository.GetUserAccounts(uid);
             List<string> userTypes = userAccounts.AsEnumerable()
                                                  .Select(r => r.Field<string>("AccountType"))
@@ -122,8 +122,8 @@ namespace vaultx
         {
             var transactions = new List<dynamic>();
 
-            // ITransactionRepository transactionRepository = RepositoryFactory.CreateTransactionRepository();
-            ITransactionRepository transactionRepository = new TransactionRepository();
+            ITransactionRepository transactionRepository = RepositoryFactory.CreateTransactionRepository();
+            // ITransactionRepository transactionRepository = new TransactionRepository();
             transactions = transactionRepository.BindTransactionsFunction(Convert.ToInt32(Session["UID"]));
 
             //using (SqlConnection connection = new SqlConnection(connectionString))
@@ -201,8 +201,8 @@ namespace vaultx
             // int uid = 1; // Replace with Session UID if needed
             int uid = Convert.ToInt32(Session["UID"]);
             // DataTable userAccounts = GetUserAccounts(uid);
-            // IAccountRepository accountRepository = RepositoryFactory.CreateAccountRepository();
-            IAccountRepository accountRepository = new AccountRepository();
+            IAccountRepository accountRepository = RepositoryFactory.CreateAccountRepository();
+            // IAccountRepository accountRepository = new AccountRepository();
             DataTable userAccounts = accountRepository.GetUserAccounts(uid);
             if (userAccounts.AsEnumerable().Any(r => r.Field<string>("AccountType") == selectedType))
             {
