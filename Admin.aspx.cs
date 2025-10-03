@@ -7,6 +7,7 @@ using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Globalization;
+using System.Web;
 
 namespace vaultx
 {
@@ -151,7 +152,7 @@ namespace vaultx
                             Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
 
                         fuAddProfile.SaveAs(savePath);
-                        profileImagePath = "images/profile_img/" + uniqueFileName;
+                        profileImagePath = "~/images/profile_img/" + uniqueFileName;
                     }
                     else
                     {
@@ -443,7 +444,7 @@ namespace vaultx
                 {
                     conn.Open();
                     string query = @"
-                        SELECT AID, AccountType, Balance, CreatedAt, NomineeName, NomineeNID
+                        SELECT AID, AccountType, Balance, CreatedAt, NomineeName, NomineeNID, NomineeImage
                         FROM dbo.Accounts 
                         WHERE UID = @UID
                         ORDER BY AID";
@@ -468,20 +469,26 @@ namespace vaultx
                             ? EscapeJsonString(reader["NomineeNID"].ToString())
                             : "";
 
+                        string nomineeImage = reader["NomineeImage"] != DBNull.Value
+                            ? EscapeJsonString(reader["NomineeImage"].ToString())
+                            : "";
+
                         json.AppendFormat(@"{{
                             ""aid"": {0},
                             ""accountType"": ""{1}"",
                             ""balance"": {2},
                             ""createdAt"": ""{3:yyyy-MM-dd}"",
                             ""nomineeName"": ""{4}"",
-                            ""nomineeNid"": ""{5}""
+                            ""nomineeNid"": ""{5}"",
+                            ""nomineeImage"": ""{6}""
                         }}",
                         reader["AID"],
                         reader["AccountType"],
                         reader["Balance"],
                         reader["CreatedAt"],
                         nomineeName,
-                        nomineeNID);
+                        nomineeNID,
+                        nomineeImage);
 
                         first = false;
                     }
@@ -497,10 +504,13 @@ namespace vaultx
         }
 
         [WebMethod]
+        [System.Web.Script.Services.ScriptMethod(ResponseFormat = System.Web.Script.Services.ResponseFormat.Json)]
         public static string AddAccount(string uid, string accountType, string balance, string nomineeName, string nomineeNID)
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"AddAccount called: uid={uid}, type={accountType}, balance={balance}");
+
                 if (!IsValidAccountType(accountType))
                 {
                     return "Error: Invalid account type. Must be 'Student', 'Savings', or 'Current'.";
@@ -541,10 +551,10 @@ namespace vaultx
                     long newAID = (long)cmdMax.ExecuteScalar() + 1;
 
                     string query = @"
-                        INSERT INTO dbo.Accounts
-                        (AID, UID, AccountType, NomineeName, NomineeNID, Balance, CreatedAt)
-                        VALUES
-                        (@AID, @UID, @AccountType, @NomineeName, @NomineeNID, @Balance, GETDATE())";
+                INSERT INTO dbo.Accounts
+                (AID, UID, AccountType, NomineeName, NomineeNID, Balance, CreatedAt)
+                VALUES
+                (@AID, @UID, @AccountType, @NomineeName, @NomineeNID, @Balance, GETDATE())";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@AID", newAID);
@@ -555,11 +565,14 @@ namespace vaultx
                     cmd.Parameters.AddWithValue("@Balance", balanceValue);
 
                     cmd.ExecuteNonQuery();
+
+                    System.Diagnostics.Debug.WriteLine("Account added successfully with AID: " + newAID);
                 }
                 return "success";
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine("AddAccount Error: " + ex.ToString());
                 return "Error: " + ex.Message;
             }
         }
