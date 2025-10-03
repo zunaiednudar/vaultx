@@ -8,12 +8,13 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using vaultx.support_zunaied;
 
 namespace vaultx
 {
     public partial class AccountDetails : System.Web.UI.Page
     {
-        private string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
+        // private string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
 
         protected int AccountID => Convert.ToInt32(Request.QueryString["aid"] ?? "0");
 
@@ -35,7 +36,7 @@ namespace vaultx
         private void PopulateYearDropdown(string accountNumber)
         {
             int createdYear = DateTime.Now.Year;
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = DatabaseConnection.getInstance().GetConnection())
             {
                 string query = "SELECT CreatedAt FROM Accounts WHERE AID = @AID";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -57,7 +58,7 @@ namespace vaultx
 
         private void LoadAccountInfo(string accountNumber)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = DatabaseConnection.getInstance().GetConnection())
             {
                 string query = @"SELECT A.AID, A.AccountType, A.Balance, A.CreatedAt, U.FirstName, U.LastName
                                  FROM Accounts A
@@ -85,7 +86,7 @@ namespace vaultx
         private void LoadTransactions(string accountNumber)
         {
             var transactions = new List<dynamic>();
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = DatabaseConnection.getInstance().GetConnection())
             {
                 string query = @"SELECT T.FromAID, T.ToAID, T.Amount, T.Reference, T.Date
                                  FROM Transactions T
@@ -120,7 +121,7 @@ namespace vaultx
 
         private void LoadNomineeDetails(string accountNumber)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = DatabaseConnection.getInstance().GetConnection())
             {
                 string query = "SELECT NomineeName, NomineeNID, NomineeImage FROM Accounts WHERE AID = @AccountID";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -154,7 +155,7 @@ namespace vaultx
 
             string dbPath = "~/images/nominees/" + fileName;
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = DatabaseConnection.getInstance().GetConnection())
             {
                 string query = "UPDATE Accounts SET NomineeImage = @NomineeImage WHERE AID = @AccountID";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -177,7 +178,7 @@ namespace vaultx
             int selectedYear = Convert.ToInt32(ddlYears.SelectedValue);
 
             DataTable dt = new DataTable();
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = DatabaseConnection.getInstance().GetConnection())
             {
                 string query = @"SELECT FromAID as [From], ToAID as [To], Amount, Reference, Date
                                  FROM Transactions

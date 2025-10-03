@@ -16,7 +16,8 @@
     <AssemblyName>vaultx</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>
+    </Use64BitIISExpress>
     <IISExpressSSLPort>44387</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -191,6 +192,12 @@
     <Compile Include="Sidebar.ascx.designer.cs">
       <DependentUpon>Sidebar.ascx</DependentUpon>
     </Compile>
+    <Compile Include="support-zunaied\AccountRepository.cs" />
+    <Compile Include="support-zunaied\DatabaseConnection.cs" />
+    <Compile Include="support-zunaied\IAccountRepository.cs" />
+    <Compile Include="support-zunaied\ITransactionRepository.cs" />
+    <Compile Include="support-zunaied\RepositoryFactory.cs" />
+    <Compile Include="support-zunaied\TransactionRepository.cs" />
     <Compile Include="Terms.aspx.cs">
       <DependentUpon>Terms.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
