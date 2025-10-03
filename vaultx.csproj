@@ -193,6 +193,12 @@
     <Compile Include="Sidebar.ascx.designer.cs">
       <DependentUpon>Sidebar.ascx</DependentUpon>
     </Compile>
+    <Compile Include="support-zunaied\AccountRepository.cs" />
+    <Compile Include="support-zunaied\DatabaseConnection.cs" />
+    <Compile Include="support-zunaied\IAccountRepository.cs" />
+    <Compile Include="support-zunaied\ITransactionRepository.cs" />
+    <Compile Include="support-zunaied\RepositoryFactory.cs" />
+    <Compile Include="support-zunaied\TransactionRepository.cs" />
     <Compile Include="Terms.aspx.cs">
       <DependentUpon>Terms.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
