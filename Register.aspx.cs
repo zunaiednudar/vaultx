@@ -27,15 +27,15 @@ namespace vaultx
             if (fuProfileImage.HasFile)
             {
                 string fileName = Path.GetFileName(fuProfileImage.PostedFile.FileName);
-                string savePath = Server.MapPath("~/images/profile_img/") + fileName;
+                string savePath = Server.MapPath("~/images/profiles/") + fileName;
 
 
-                if (!Directory.Exists(Server.MapPath("~/images/profile_img/")))
-                    Directory.CreateDirectory(Server.MapPath("~/images/profile_img/"));
+                if (!Directory.Exists(Server.MapPath("~/images/profiles/")))
+                    Directory.CreateDirectory(Server.MapPath("~/images/profiles/"));
 
                 fuProfileImage.SaveAs(savePath);
 
-                profileImage = "images/profile_img/" + fileName;
+                profileImage = "images/profiles/" + fileName;
 
                 hfProfileImagePath.Value = profileImage;
             }
