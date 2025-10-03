@@ -36,7 +36,6 @@
         text-align: right;
     }
 
-
 .account-info .btn-action {
     display: inline-block;
     width: 100%;
@@ -56,6 +55,7 @@
         transform: scale(1.03);
     }
 
+/* Modal */
 .modal {
     position: fixed;
     top: 0;
@@ -63,7 +63,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);
-    display: none; /* hidden by default */
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 9999;
@@ -111,12 +111,12 @@
     animation: fadeUp 0.5s ease both;
 }
 
-.nominee-section > h2 {
-    font-size: var(--font-sz-lg);
-    margin-bottom: 15px;
-    text-align: center;
-    color: var(--color-font-primary);
-}
+    .nominee-section > h2 {
+        font-size: var(--font-sz-lg);
+        margin-bottom: 15px;
+        text-align: center;
+        color: var(--color-font-primary);
+    }
 
 .nominee-info {
     display: flex;
@@ -130,7 +130,6 @@
 
 .nominee-photo {
     width: 100%;
-/*    flex: 0 0 120px;*/
     display: flex;
     justify-content: center;
     align-items: center;
@@ -141,12 +140,74 @@
     height: 300px;
     max-width: 100%;
     max-height: 100%;
-/*    object-fit: cover;*/
     border-radius: 8px;
     border: 1px solid var(--color-bg-tertiary);
     box-shadow: var(--box-shadow);
 }
 
+/* Upload Section (Image + Button) */
+.upload-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Hide default file input */
+.hidden-file {
+    display: none;
+}
+
+/* Custom Choose File Button */
+.btn-choose-file {
+    flex: 1;
+    padding: 10px 15px;
+    font-size: var(--font-sz-md);
+    color: var(--color-font-primary);
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-choose-file:hover {
+        background-color: var(--color-bg-secondary);
+        transform: scale(1.03);
+    }
+
+/* Upload Button */
+.btn-upload {
+    padding: 10px 15px;
+    font-size: var(--font-sz-md);
+    color: var(--color-font-primary);
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .btn-upload:hover {
+        background-color: var(--color-bg-secondary);
+        transform: scale(1.03);
+    }
+
+/* Display selected file name */
+.file-name-label {
+    margin-top: 5px;
+    font-size: var(--font-sz-sm);
+    color: var(--color-font-tertiary);
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 .nominee-data {
     height: 100%;
@@ -156,14 +217,12 @@
 .nominee-row {
     width: 100%;
     margin-bottom: 10px;
-/*    font-size: var(--font-sz-sm);*/
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     color: var(--color-font-primary);
 }
-
 
 /* Transactions Section */
 .transactions-section {
@@ -232,7 +291,6 @@
 
     .transactions-list .transaction-item.header .txn-amount {
         flex: 1 1 auto;
-        /*        width: 10%;*/
         flex-shrink: 0;
         text-align: right;
     }
@@ -265,7 +323,6 @@
 
 .txn-amount {
     flex: 1 1 auto;
-    /*    min-width: 10%;*/
     flex-shrink: 0;
     font-weight: bold;
     text-align: right;
@@ -275,10 +332,6 @@
     width: 30%;
     margin: 0 10px;
     text-align: justify;
-    /*    white-space: nowrap;*/
-    /*    overflow-y: hidden;
-    overflow-x: scroll;*/
-/*    text-overflow: ellipsis;*/
 }
 
 .txn-date {
@@ -303,8 +356,6 @@
 
 /* Responsive Adjustments */
 @media screen and (max-width: 1280px) {
-
-    /* Account Info Section */
     .account-info-section {
         padding: 15px;
     }
@@ -318,7 +369,6 @@
         padding: 7px 12px;
     }
 
-    /* Transactions Section */
     .transactions-section {
         padding: 15px;
     }
@@ -326,56 +376,21 @@
     .transactions-list .transaction-item,
     .transactions-list .transaction-item.header {
         display: flex;
-        flex-wrap: nowrap; /* keep in one row */
+        flex-wrap: nowrap;
         gap: 5px;
         padding: 8px;
         font-size: var(--font-sz-sm);
     }
 
-    /* Hide less important columns */
     .transaction-item .txn-type,
     .transaction-item.header .txn-type,
     .transaction-item .txn-reference,
     .transaction-item.header .txn-reference {
         display: none;
     }
-
-    /* Set column widths like dashboard style */
-    .transaction-item .txn-faid,
-    .transaction-item.header .txn-faid,
-    .transaction-item .txn-taid,
-    .transaction-item.header .txn-taid {
-        flex: 0 0 25%;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        font-size: var(--font-sz-sm);
-    }
-
-    .transaction-item .txn-amount,
-    .transaction-item.header .txn-amount {
-        flex: 1 1 auto;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        font-size: var(--font-sz-sm);
-    }
-
-
-    .transaction-item .txn-date,
-    .transaction-item.header .txn-date {
-        flex: 0 0 25%;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        font-size: var(--font-sz-sm);
-    }
 }
 
-
 @media screen and (max-width: 768px) {
-
-    /* Account Info Section */
     .account-info-section p {
         font-size: var(--font-sz-sm);
     }
@@ -402,58 +417,14 @@
         height: 80px;
     }
 
-    /* Transactions Section */
-    .transactions-section h2 {
+    .btn-choose-file,
+    .btn-upload {
+        width: 100%;
         font-size: var(--font-sz-sm);
+        padding: 8px 12px;
     }
 
-    .transactions-list .transaction-item,
-    .transactions-list .transaction-item.header {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 5px;
-        padding: 8px;
+    .file-name-label {
         font-size: var(--font-sz-vsm);
-    }
-
-    /* Columns */
-    .transaction-item .txn-faid,
-    .transaction-item.header .txn-faid,
-    .transaction-item .txn-taid,
-    .transaction-item.header .txn-taid {
-        flex: 0 0 25%;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        font-size: var(--font-sz-vsm);
-    }
-
-    .transaction-item .txn-amount,
-    .transaction-item.header .txn-amount {
-        flex: 1 1 auto;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        font-size: var(--font-sz-vsm);
-    }
-
-    .transaction-item .txn-date,
-    .transaction-item.header .txn-date {
-        flex: 0 0 25%;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        font-size: var(--font-sz-vsm);
-    }
-
-    /* Hide less important columns */
-    .transaction-item .txn-type,
-    .transaction-item.header .txn-type,
-    .transaction-item .txn-reference,
-    .transaction-item.header .txn-reference {
-        display: none;
     }
 }
-
-
-

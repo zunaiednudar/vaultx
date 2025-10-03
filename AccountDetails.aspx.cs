@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using static vaultx.Dashboard;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.IO;
 
 namespace vaultx
 {
@@ -16,7 +15,6 @@ namespace vaultx
     {
         private string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
 
-        // For demo, we select account ID via query string
         protected int AccountID => Convert.ToInt32(Request.QueryString["aid"] ?? "0");
 
         protected void Page_Load(object sender, EventArgs e)
@@ -36,7 +34,7 @@ namespace vaultx
 
         private void PopulateYearDropdown(string accountNumber)
         {
-            int createdYear = DateTime.Now.Year; // Default fallback
+            int createdYear = DateTime.Now.Year;
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = "SELECT CreatedAt FROM Accounts WHERE AID = @AID";
@@ -46,12 +44,10 @@ namespace vaultx
                     conn.Open();
                     object result = cmd.ExecuteScalar();
                     if (result != null)
-                    {
                         createdYear = Convert.ToDateTime(result).Year;
-                    }
+
                     ddlYears.Items.Clear();
-                    int currentYear = DateTime.Now.Year;
-                    for (int year = currentYear; year >= createdYear; year--)
+                    for (int year = DateTime.Now.Year; year >= createdYear; year--)
                     {
                         ddlYears.Items.Add(new System.Web.UI.WebControls.ListItem(year.ToString(), year.ToString()));
                     }
@@ -89,7 +85,6 @@ namespace vaultx
         private void LoadTransactions(string accountNumber)
         {
             var transactions = new List<dynamic>();
-
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = @"SELECT T.FromAID, T.ToAID, T.Amount, T.Reference, T.Date
@@ -109,7 +104,7 @@ namespace vaultx
                             {
                                 FromAccountNumber = reader["FromAID"].ToString(),
                                 ToAccountNumber = reader["ToAID"].ToString(),
-                                TransactionType = reader["FromAID"].ToString() == accountNumber.ToString() ? "Debit" : "Credit",
+                                TransactionType = reader["FromAID"].ToString() == accountNumber ? "Debit" : "Credit",
                                 Amount = Convert.ToDecimal(reader["Amount"]),
                                 Reference = reader["Reference"].ToString(),
                                 Date = Convert.ToDateTime(reader["Date"])
@@ -123,11 +118,64 @@ namespace vaultx
             rptAccountTransactions.DataBind();
         }
 
+        private void LoadNomineeDetails(string accountNumber)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "SELECT NomineeName, NomineeNID, NomineeImage FROM Accounts WHERE AID = @AccountID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@AccountID", accountNumber);
+                    conn.Open();
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            lblNomineeName.Text = reader["NomineeName"].ToString();
+                            lblNomineeNID.Text = reader["NomineeNID"].ToString();
+                            imgNominee.ImageUrl = reader["NomineeImage"].ToString();
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void btnUploadNominee_Click(object sender, EventArgs e)
+        {
+            if (!fuNominee.HasFile) return;
+
+            string folderPath = Server.MapPath("~/images/nominees/");
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(fuNominee.FileName);
+            string savePath = Path.Combine(folderPath, fileName);
+            fuNominee.SaveAs(savePath);
+
+            string dbPath = "~/images/nominees/" + fileName;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                string query = "UPDATE Accounts SET NomineeImage = @NomineeImage WHERE AID = @AccountID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@NomineeImage", dbPath);
+                    cmd.Parameters.AddWithValue("@AccountID", Request.QueryString["account"]);
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            imgNominee.ImageUrl = dbPath;
+            // lblFileName.Text = fuNominee.FileName; // Display selected file name
+        }
+
         protected void btnDownloadStatement_Click(object sender, EventArgs e)
         {
             string accountNumber = Request.QueryString["account"];
-            if (ddlYears.SelectedValue == null) return;
+            if (string.IsNullOrEmpty(ddlYears.SelectedValue)) return;
             int selectedYear = Convert.ToInt32(ddlYears.SelectedValue);
+
             DataTable dt = new DataTable();
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -145,38 +193,12 @@ namespace vaultx
                 }
             }
 
-            // Export CSV
-            // Response.Clear();
-            // Response.Buffer = true;
-            // Response.AddHeader("content-disposition", $"attachment;filename=Statement_{accountNumber}.csv");
-            // Response.Charset = "";
-            // Response.ContentType = "application/text";
-
-            // for (int i = 0; i < dt.Columns.Count; i++)
-            // {
-            //     Response.Write(dt.Columns[i]);
-            //     if (i < dt.Columns.Count - 1) Response.Write(",");
-            // }
-            // Response.Write("\n");
-
-            // foreach (DataRow row in dt.Rows)
-            // {
-            //      for (int i = 0; i < dt.Columns.Count; i++)
-            //     {
-            //         Response.Write(row[i].ToString());
-            //         if (i < dt.Columns.Count - 1) Response.Write(",");
-            //     }
-            //     Response.Write("\n");
-            // }
-            // Response.Flush();
-            // Response.End();
-            // Create PDF document
+            // Create PDF
             Document pdfDoc = new Document(PageSize.A4, 25, 25, 30, 30);
             MemoryStream memoryStream = new MemoryStream();
             PdfWriter.GetInstance(pdfDoc, memoryStream);
             pdfDoc.Open();
 
-            // Title
             Paragraph title = new Paragraph($"Account Statement - {accountNumber}")
             {
                 Alignment = Element.ALIGN_CENTER,
@@ -184,11 +206,7 @@ namespace vaultx
             };
             pdfDoc.Add(title);
 
-            // Table
-            PdfPTable table = new PdfPTable(dt.Columns.Count);
-            table.WidthPercentage = 100;
-
-            // Headers
+            PdfPTable table = new PdfPTable(dt.Columns.Count) { WidthPercentage = 100 };
             foreach (DataColumn column in dt.Columns)
             {
                 PdfPCell cell = new PdfPCell(new Phrase(column.ColumnName))
@@ -199,7 +217,6 @@ namespace vaultx
                 table.AddCell(cell);
             }
 
-            // Data rows
             foreach (DataRow row in dt.Rows)
             {
                 foreach (DataColumn column in dt.Columns)
@@ -218,7 +235,6 @@ namespace vaultx
             byte[] bytes = memoryStream.ToArray();
             memoryStream.Close();
 
-            // Send PDF to browser
             Response.Clear();
             Response.ContentType = "application/pdf";
             Response.AddHeader("content-disposition", $"attachment;filename=Statement_{accountNumber}.pdf");
@@ -227,25 +243,5 @@ namespace vaultx
             Response.Flush();
             Response.End();
         }
-
-        private void LoadNomineeDetails(string accountId)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "SELECT NomineeName, NomineeNID, NomineeImage FROM Accounts WHERE AID = @AccountID";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@AccountID", accountId);
-
-                conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
-                {
-                    lblNomineeName.Text = reader["NomineeName"].ToString();
-                    lblNomineeNID.Text = reader["NomineeNID"].ToString();
-                    imgNominee.ImageUrl = reader["NomineeImage"].ToString(); // stored path "~/images/nominees/..."
-                }
-            }
-        }
-
     }
 }

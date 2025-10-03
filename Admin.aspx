@@ -1,4 +1,5 @@
-﻿﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Admin.aspx.cs" Inherits="vaultx.Admin" %>
+﻿
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Admin.aspx.cs" Inherits="vaultx.Admin" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,8 +23,6 @@
   
  
 }
-
-
 
 .admin-banner {
     position: relative;
@@ -106,17 +105,7 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
-        .mb-3 {
-            font-family:var(--font-stack);
-            text-align: center;
-            font-size: 40px;
-            font-weight:bold;
-            letter-spacing:10px;
-            color:white;
-            padding: 5px;
-            background-color: var(--color-bg-secondary);
-            border-radius:5px;
-        }
+       
 
     .card:hover {
         transform: translateY(-5px);
@@ -139,9 +128,10 @@
                 background-color:dimgrey;
     }
     
-    tr{
+    #usersTableBody{
           font-size: clamp(14px, 2vw, 20px); 
     }
+
     .btn{
         font-size:clamp(14px, 2vw, 20px); 
  
@@ -181,6 +171,66 @@
     }
 
 
+    
+
+.file-upload-button {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 7px;
+    margin-top:5px;
+    font-size: var(--font-sz-md);
+    color: var(--color-font-primary);
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius);
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .file-upload-button:hover {
+        background-color: var(--color-bg-secondary);
+        transform: scale(1.03);
+    }
+
+    .file-upload-button::-webkit-file-upload-button {
+        visibility: hidden;
+    }
+
+    .file-upload-button::before {
+        content: "Choose File";
+        display: inline-block;
+        width: 100%;
+        padding: 5px;
+        background-color: var(--color-bg-tertiary);
+        color: var(--color-font-primary);
+        border-radius: var(--radius);
+        text-align: center;
+        cursor: pointer;
+        font-size: var(--font-sz-md);
+    }
+
+    .file-upload-button:hover::before {
+        background-color: var(--color-bg-secondary);
+        transform: scale(1.03);
+    }
+
+.file-name-label {
+    display: block;
+    margin-top: 5px;
+    font-style: italic;
+    color: #555;
+}
+
+.img-preview {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 3px;
+}
+
+
         body { background-color: #f4f6f9;
                 margin-bottom:30px;
         }
@@ -190,18 +240,32 @@
         .modal-header { background-color: #007BFF; color: #fff; }
         
        .modal-body{
-           font-size:20px;
+           font-size:16px;
        }
        .form-control{
-           font-size:20px;
+           font-size:16px;
        }
         .table-hover tbody tr:hover { background-color: rgba(0,123,255,0.1); cursor: pointer; }
         .form-control:focus { border-color: #007BFF; box-shadow: 0 0 5px rgba(0,123,255,.3); }
         .profile-img { width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #007BFF; }
+        
+        .nominee-img { 
+            width: 50px; 
+            height: 50px; 
+            object-fit: cover; 
+            border-radius: 4px; 
+            border: 1px solid #ddd;
+        }
     </style>
+
+
+
 </head>
 <body>
 <form id="form1" runat="server">
+
+     <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true">
+    </asp:ScriptManager>
        <!-- Banner -->
        <!-- Banner -->
     <section class="admin-banner">
@@ -239,7 +303,7 @@
 
     <!-- Users List -->
 <div class="row mt-4" id="usersList">
-    <h3 class="mb-3">USERS</h3>
+    
     <div class="table-responsive">
         <table class="table table-striped table-hover">
             <thead class="table-primary">
@@ -287,8 +351,16 @@
             <div class="col-md-6"><label>Monthly Earning</label><asp:TextBox ID="txtAddEarnings" runat="server" CssClass="form-control"></asp:TextBox></div>
             <div class="col-md-6"><label>Password</label><asp:TextBox ID="txtAddPassword" runat="server" CssClass="form-control" TextMode="Password"></asp:TextBox></div>
             <div class="col-md-6">
-                <label>Profile Picture</label>
-                <asp:FileUpload ID="fuAddProfile" runat="server" CssClass="form-control"/>
+            
+    <label class="form-label">Profile Image</label>
+    <asp:FileUpload ID="fuAddProfile" runat="server" CssClass="file-upload-button" onchange="previewImageAdmin(this)" />
+    <asp:Label ID="lblFileNameA" runat="server" CssClass="text-muted"></asp:Label>
+    <asp:Image ID="imgPreviewA" runat="server" CssClass="img-preview" Style="max-width:150px; display:none;" />
+
+
+   
+
+       
             </div>
         </div>
       </div>
@@ -349,11 +421,7 @@
             <div class="modal-body">
                 <div class="text-center">
                     <img id="imgProfile" class="profile-img" src="images/default.png" alt="Profile Picture" />
-                    <div class="mt-2">
-                        <label class="btn btn-sm btn-outline-primary mb-0">
-                            Change Picture <asp:FileUpload ID="fuProfile" runat="server" CssClass="d-none"/>
-                        </label>
-                    </div>
+                  
                 </div>
                 <div class="row g-3">
                     <div class="col-md-6"><label>First Name</label><asp:TextBox ID="txtFirstName" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox></div>
@@ -408,6 +476,7 @@
                                 <th>Balance</th>
                                 <th>Created Date</th>
                                 <th>Nominee Name</th>
+                             
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -424,12 +493,11 @@
     </div>
 </div>
 
-
 <!-- Add Account Modal -->
 <div class="modal fade" id="addAccountModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-success text-white">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title"><i class="fa fa-plus-circle"></i> Add New Account</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -446,6 +514,15 @@
                     <label class="form-label">Initial Balance</label>
                     <input type="number" id="initialBalance" class="form-control" value="0" min="0" step="0.01">
                 </div>
+
+                <!-- Nominee Image Upload 
+                <div class="mb-3">
+                    <label class="form-label">Nominee Image</label>
+                    <input type="file" id="nomineeImage" class="form-control file-upload-button" accept="image/*" onchange="previewNomineeImage(this)">
+                    <div id="nomineeImagePreview" class="img-preview" style="max-width:150px; display:none; margin-top:10px;"></div>
+                </div>
+                    -->
+
                 <div class="mb-3">
                     <label class="form-label">Nominee Name</label>
                     <input type="text" id="nomineeName" class="form-control">
@@ -473,6 +550,9 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="editAccountId">
+                
+               
+                
                 <div class="mb-3">
                     <label class="form-label">Account Type</label>
                     <input type="text" id="editAccountType" class="form-control" readonly>
@@ -645,6 +725,8 @@
         });
     }
 
+   
+
     // Account management functions
     function showAccountsModal() {
         if (!currentUID) return;
@@ -670,7 +752,7 @@
                 tbody.innerHTML = '';
 
                 if (accounts.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No accounts found</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">No accounts found</td></tr>';
                 } else {
                     accounts.forEach(acc => {
                         const row = `<tr>
@@ -679,8 +761,9 @@
                             <td>৳ ${parseFloat(acc.balance).toFixed(2)}</td>
                             <td>${new Date(acc.createdAt).toLocaleDateString()}</td>
                             <td>${acc.nomineeName || ''}</td>
+                
                             <td>
-                                <button type="button" class="btn btn-sm btn-warning" onclick="showEditAccountModal(${acc.aid}, '${acc.accountType}', ${acc.balance}, '${acc.nomineeName || ''}', '${acc.nomineeNid || ''}')">
+                                <button type="button" class="btn btn-sm btn-warning" onclick="showEditAccountModal(${acc.aid}, '${acc.accountType}', ${acc.balance}, '${acc.nomineeName || ''}', '${acc.nomineeNid || ''}', '${acc.nomineeImage || ''}')">
                                     <i class="fa fa-edit"></i>
                                 </button>
                                 <button type="button" class="btn btn-sm btn-danger ms-1" onclick="deleteAccount(${acc.aid})">
@@ -704,6 +787,7 @@
         document.getElementById('initialBalance').value = '0';
         document.getElementById('nomineeName').value = '';
         document.getElementById('nomineeNID').value = '';
+ 
 
         // Close accounts modal and open add account modal
         bootstrap.Modal.getInstance(document.getElementById('accountDetailsModal')).hide();
@@ -711,15 +795,25 @@
     }
 
     function addAccount() {
-        if (!currentUID) return;
+        if (!currentUID) {
+            alert("No user selected!");
+            return;
+        }
+
+        const accountType = document.getElementById('accountType').value;
+        const balance = document.getElementById('initialBalance').value;
+        const nomineeName = document.getElementById('nomineeName').value;
+        const nomineeNID = document.getElementById('nomineeNID').value;
 
         const accountData = {
             uid: currentUID,
-            accountType: document.getElementById('accountType').value,
-            balance: document.getElementById('initialBalance').value,
-            nomineeName: document.getElementById('nomineeName').value,
-            nomineeNID: document.getElementById('nomineeNID').value
+            accountType: accountType,
+            balance: balance,
+            nomineeName: nomineeName,
+            nomineeNID: nomineeNID
         };
+
+        console.log("Sending account data:", accountData);
 
         $.ajax({
             type: "POST",
@@ -728,41 +822,49 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
+                console.log("Response:", response);
                 if (response.d === "success") {
                     alert("Account added successfully!");
-                    // Close add account modal
                     bootstrap.Modal.getInstance(document.getElementById('addAccountModal')).hide();
-                    // Reopen accounts modal and refresh accounts
                     showAccountsModal();
                 } else {
-                    alert(response.d);
+                    alert("Error: " + response.d);
                 }
             },
-            error: function (error) {
-                alert("Error adding account: " + error.statusText);
+            error: function (xhr, status, error) {
+                console.log("AJAX Error:", xhr.responseText);
+                alert("Error adding account. Check console for details.");
             }
         });
     }
 
-    function showEditAccountModal(aid, accountType, balance, nomineeName, nomineeNID) {
+    function showEditAccountModal(aid, accountType, balance, nomineeName, nomineeNID, nomineeImage) {
         document.getElementById('editAccountId').value = aid;
         document.getElementById('editAccountType').value = accountType;
         document.getElementById('editBalance').value = balance;
-        document.getElementById('editNomineeName').value = nomineeName;
-        document.getElementById('editNomineeNID').value = nomineeNID;
+        document.getElementById('editNomineeName').value = nomineeName || '';
+        document.getElementById('editNomineeNID').value = nomineeNID || '';
+        
+      
 
-        // Close accounts modal and open edit account modal
         bootstrap.Modal.getInstance(document.getElementById('accountDetailsModal')).hide();
         new bootstrap.Modal(document.getElementById('editAccountModal')).show();
     }
 
     function updateAccount() {
+        const accountId = document.getElementById('editAccountId').value;
+        const balance = document.getElementById('editBalance').value;
+        const nomineeName = document.getElementById('editNomineeName').value;
+        const nomineeNID = document.getElementById('editNomineeNID').value;
+
         const accountData = {
-            aid: document.getElementById('editAccountId').value,
-            balance: document.getElementById('editBalance').value,
-            nomineeName: document.getElementById('editNomineeName').value,
-            nomineeNID: document.getElementById('editNomineeNID').value
+            aid: accountId,
+            balance: balance,
+            nomineeName: nomineeName,
+            nomineeNID: nomineeNID
         };
+
+        console.log("Updating account:", accountData);
 
         $.ajax({
             type: "POST",
@@ -771,18 +873,19 @@
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
+                console.log("Update response:", response);
+
                 if (response.d === "success") {
                     alert("Account updated successfully!");
-                    // Close edit account modal
                     bootstrap.Modal.getInstance(document.getElementById('editAccountModal')).hide();
-                    // Reopen accounts modal and refresh accounts
                     showAccountsModal();
                 } else {
-                    alert(response.d);
+                    alert("Error: " + response.d);
                 }
             },
-            error: function (error) {
-                alert("Error updating account: " + error.statusText);
+            error: function (xhr, status, error) {
+                console.log("AJAX Error:", xhr.responseText);
+                alert("Error updating account: " + error);
             }
         });
     }
@@ -811,6 +914,16 @@
         }
     }
 
+    function previewImageAdmin(input) {
+        const file = input.files[0];
+        if (file) {
+            document.getElementById('<%= lblFileNameA.ClientID %>').innerText = file.name;
+            const imgPreviewA = document.getElementById('<%= imgPreviewA.ClientID %>');
+            imgPreviewA.src = URL.createObjectURL(file);
+            imgPreviewA.style.display = "block";
+        }
+    }
+
     // Alias for backward compatibility
     function transaction() {
         loadTransactions();
@@ -819,3 +932,4 @@
 </form>
 </body>
 </html>
+
