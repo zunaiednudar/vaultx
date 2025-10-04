@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace vaultx.support_zunaied
+namespace vaultx
 {
-    public class RepositoryFactory
+    public class RepositoryFactoryZ
     {
         public static IAccountRepository CreateAccountRepository()
         {

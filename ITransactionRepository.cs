@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace vaultx.support_zunaied
+namespace vaultx
 {
     public interface ITransactionRepository
     {

@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
-namespace vaultx.support_zunaied
+namespace vaultx
 {
     public class DatabaseConnection
     {

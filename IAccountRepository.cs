@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 
-namespace vaultx.support_zunaied
+namespace vaultx
 {
     public interface IAccountRepository
     {
