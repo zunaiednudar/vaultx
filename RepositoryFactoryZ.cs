@@ -7,7 +7,7 @@ using System.Web;
 
 namespace vaultx
 {
-    public class RepositoryFactory
+    public class RepositoryFactoryZ
     {
         public static IAccountRepository CreateAccountRepository()
         {

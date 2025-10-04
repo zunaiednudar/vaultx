@@ -196,7 +196,7 @@
     <Compile Include="DatabaseConnection.cs" />
     <Compile Include="IAccountRepository.cs" />
     <Compile Include="ITransactionRepository.cs" />
-    <Compile Include="RepositoryFactory.cs" />
+    <Compile Include="RepositoryFactoryZ.cs" />
     <Compile Include="TransactionRepository.cs" />
     <Compile Include="Terms.aspx.cs">
       <DependentUpon>Terms.aspx</DependentUpon>
