@@ -113,16 +113,6 @@ namespace vaultx
             var conn = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
             return new UserRepository(conn);
         }
-
-        internal static support_zunaied.IAccountRepository CreateAccountRepository()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal static support_zunaied.ITransactionRepository CreateTransactionRepository()
-        {
-            throw new NotImplementedException();
-        }
     }
 
     // Factory: returns an IUserRepository so consumers depend on the interface; swap implementations by changing this method.
