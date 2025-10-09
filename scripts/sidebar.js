@@ -4,6 +4,9 @@
     const topMenu = document.getElementById('topMenu');
     const bottomMenu = document.getElementById('bottomMenu');
 
+    // Safety: if topMenu or bottomMenu not found, bail out
+    if (!topMenu || !bottomMenu) return;
+
     topMenu.innerHTML = '';
     bottomMenu.innerHTML = '';
 
@@ -16,12 +19,22 @@
         return li;
     }
 
+    // helper to check if a link with the same href already exists in the sidebar
+    function menuHas(href) {
+        try {
+            // check both top and bottom menus for existing href
+            return !!document.querySelector(`.site-sidebar a[href="${href}"]`);
+        } catch (e) {
+            return false;
+        }
+    }
+
     const currentPage = window.location.pathname.split('/').pop();
 
     // ✅ Special case for Admin.aspx
     if (currentPage === "Admin.aspx") {
-        topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
-        topMenu.appendChild(createMenuItem('Admin Panel', 'Admin.aspx', 'fas fa-user-shield'));
+        if (!menuHas('Home.aspx')) topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
+        if (!menuHas('Admin.aspx')) topMenu.appendChild(createMenuItem('Admin Panel', 'Admin.aspx', 'fas fa-user-shield'));
 
         const logoutLi = document.createElement('li');
         const logoutA = document.createElement('a');
@@ -62,12 +75,12 @@
 
     } else if (isLoggedIn) {
         // Logged-in user menu
-        topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
-        topMenu.appendChild(createMenuItem('Dashboard', 'Dashboard.aspx', 'fas fa-tachometer-alt'));
-        topMenu.appendChild(createMenuItem('Fund Transfer', 'FundTransfer.aspx', 'fas fa-exchange-alt'));
-        topMenu.appendChild(createMenuItem('Profile', 'Profile.aspx', 'fas fa-user'));
-        topMenu.appendChild(createMenuItem('Terms & Conditions', 'Terms.aspx', 'fas fa-file-contract'));
-        topMenu.appendChild(createMenuItem('FAQ', 'FAQ.aspx', 'fas fa-question-circle'));
+        if (!menuHas('Home.aspx')) topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
+        if (!menuHas('Dashboard.aspx')) topMenu.appendChild(createMenuItem('Dashboard', 'Dashboard.aspx', 'fas fa-tachometer-alt'));
+        if (!menuHas('FundTransfer.aspx')) topMenu.appendChild(createMenuItem('Fund Transfer', 'FundTransfer.aspx', 'fas fa-exchange-alt'));
+        if (!menuHas('Profile.aspx')) topMenu.appendChild(createMenuItem('Profile', 'Profile.aspx', 'fas fa-user'));
+        if (!menuHas('Terms.aspx')) topMenu.appendChild(createMenuItem('Terms & Conditions', 'Terms.aspx', 'fas fa-file-contract'));
+        if (!menuHas('FAQ.aspx')) topMenu.appendChild(createMenuItem('FAQ', 'FAQ.aspx', 'fas fa-question-circle'));
 
         const logoutLi = document.createElement('li');
         const logoutA = document.createElement('a');
@@ -79,11 +92,11 @@
 
     } else {
         // Guest menu
-        topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
-        topMenu.appendChild(createMenuItem('Terms & Conditions', 'Terms.aspx', 'fas fa-file-contract'));
-        topMenu.appendChild(createMenuItem('FAQ', 'FAQ.aspx', 'fas fa-question-circle'));
-        bottomMenu.appendChild(createMenuItem('Login', 'Login.aspx', 'fas fa-sign-in-alt'));
-        bottomMenu.appendChild(createMenuItem('Register', 'Register.aspx', 'fas fa-user-plus'));
+        if (!menuHas('Home.aspx')) topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
+        if (!menuHas('Terms.aspx')) topMenu.appendChild(createMenuItem('Terms & Conditions', 'Terms.aspx', 'fas fa-file-contract'));
+        if (!menuHas('FAQ.aspx')) topMenu.appendChild(createMenuItem('FAQ', 'FAQ.aspx', 'fas fa-question-circle'));
+        if (!menuHas('Login.aspx')) bottomMenu.appendChild(createMenuItem('Login', 'Login.aspx', 'fas fa-sign-in-alt'));
+        if (!menuHas('Register.aspx')) bottomMenu.appendChild(createMenuItem('Register', 'Register.aspx', 'fas fa-user-plus'));
     }
 
     // Highlight the active menu item
