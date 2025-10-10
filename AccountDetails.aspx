@@ -1,9 +1,7 @@
 ﻿<%@ Page Title="AccountDetails" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AccountDetails.aspx.cs" Inherits="vaultx.AccountDetails" %>
-
 <asp:Content ID="AccountDetailsHead" ContentPlaceHolderID="SiteHead" runat="server">
     <link rel="stylesheet" href="styles/accountdetails.css" type="text/css" />
 </asp:Content>
-
 <asp:Content ID="AccountDetailsMainContent" ContentPlaceHolderID="SiteMainContent" runat="server">
     <!-- Upper Section: Account Info -->
     <section class="account-info-section">
@@ -28,7 +26,6 @@
             <asp:Button ID="btnDownloadStatement" runat="server" Text="Download Statement" CssClass="btn-action" OnClientClick="openYearModal(); return false;" />
         </div>
     </section>
-
     <!-- Middle Section: Nominee Details -->
     <section class="nominee-section">
         <h2>Nominee Details</h2>
@@ -36,24 +33,19 @@
             <div class="nominee-photo">
                 <asp:Image ID="imgNominee" runat="server" CssClass="nominee-img" />
             </div>
-
             <!-- Custom File Upload + Upload button -->
             <div class="file-upload-wrapper">
                 <!-- Hidden FileUpload -->
                 <asp:FileUpload ID="fuNominee" runat="server" CssClass="hidden-file" />
-
                 <!-- Custom Choose File Button -->
                 <button type="button" class="btn-choose-file" onclick="document.getElementById('<%= fuNominee.ClientID %>').click();">
                     Choose File
                 </button>
-
                 <!-- Upload Button -->
                 <asp:Button ID="btnUploadNominee" runat="server" Text="Upload" CssClass="btn-upload" OnClick="btnUploadNominee_Click" />
             </div>
-
             <!-- Optional file name display -->
             <span id="selectedFileName" class="file-name-label"></span>
-
             <div class="nominee-data">
                 <div class="nominee-row">
                     <strong>Name:</strong>
@@ -66,7 +58,6 @@
             </div>
         </div>
     </section>
-
     <!-- Lower Section: Transactions -->
     <section class="transactions-section">
         <h2>Transactions</h2>
@@ -93,7 +84,6 @@
             </asp:Repeater>
         </div>
     </section>
-
     <!-- Year Selection Modal -->
     <asp:Panel ID="pnlYearModal" runat="server" CssClass="modal hide">
         <div class="modal-content">
@@ -103,8 +93,7 @@
             <asp:Button ID="btnDownloadPDF" runat="server" Text="Download PDF" CssClass="btn-action" OnClick="btnDownloadStatement_Click" />
         </div>
     </asp:Panel>
-
-    <!-- JS Scripts -->
+    <!-- JavaScript -->
     <script type="text/javascript">
         window.onload = function () {
             const modal = document.getElementById('<%= pnlYearModal.ClientID %>');
@@ -117,7 +106,6 @@
                 document.body.style.overflow = '';
             };
         };
-
         // Display chosen file name
         var fileInput = document.getElementById("<%= fuNominee.ClientID %>");
         var fileNameLabel = document.getElementById("selectedFileName");

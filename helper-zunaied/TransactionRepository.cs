@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
-using System.Web.Util;
-
-namespace vaultx
+namespace vaultx.HelperZunaied
 {
     public class TransactionRepository : ITransactionRepository
     {
@@ -21,12 +16,10 @@ namespace vaultx
                                 WHERE A.UID = @UID
                                 ORDER BY T.Date DESC
                                 ";
-
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@UID", uid);
                     connection.Open();
-
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

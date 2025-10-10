@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
-
-namespace vaultx
+namespace vaultx.HelperZunaied
 {
     public class AccountRepository : IAccountRepository
     {
@@ -20,12 +17,10 @@ namespace vaultx
                                 WHERE UID = @UID
                                 ORDER BY CreatedAt ASC
                                 ";
-
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@UID", uid);
                     connection.Open();
-
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -63,7 +58,6 @@ namespace vaultx
             using (SqlConnection connection = DatabaseConnection.getInstance().GetConnection())
             {
                 string query = "SELECT ISNULL(MAX(CAST(AID AS INT)), 100000) FROM Accounts";
-
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     connection.Open();
@@ -80,7 +74,6 @@ namespace vaultx
                     INSERT INTO Accounts (AID, AccountType, Balance, UID, NomineeName, NomineeNID, NomineeImage)
                     VALUES (@AID, @AccountType, @Balance, @UID, @NomineeName, @NomineeNID, @NomineeImage)
                 ";
-
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@AID", aid.ToString());
