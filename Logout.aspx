@@ -5,6 +5,7 @@
 <head runat="server">
     <title>Logging Out...</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--CSS files-->
         <link rel="stylesheet" href="styles/global.css?v=<%= DateTime.Now.Ticks %>" />
         <link rel="stylesheet" href="styles/logout.css?v=<%= DateTime.Now.Ticks %>" />
 </head>

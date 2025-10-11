@@ -124,11 +124,11 @@ namespace vaultx
                 hfProfileImagePath.Value = profileImage;
             }
 
-            // Generate OTP
+           
             Random rnd = new Random();
             string otp = rnd.Next(100000, 999999).ToString();
 
-            // Store OTP & Email in cookies
+           
             Response.Cookies.Add(new HttpCookie("UserOtp") { Value = otp, Expires = DateTime.Now.AddMinutes(5) });
             Response.Cookies.Add(new HttpCookie("UserEmail") { Value = txtEmail.Text.Trim(), Expires = DateTime.Now.AddMinutes(5) });
 
@@ -216,7 +216,7 @@ VALUES
                     conn.Close();
                 }
 
-                // Clear OTP cookies
+                
                 otpCookie.Expires = DateTime.Now.AddDays(-1);
                 emailCookie.Expires = DateTime.Now.AddDays(-1);
                 Response.Cookies.Add(otpCookie);

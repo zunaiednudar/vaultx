@@ -146,6 +146,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+        
+    <Compile Include="helper-dipta\InputValidator.cs" />
+    <Compile Include="helper-dipta\PasswordHelper.cs" />
     <Compile Include="helper\InputValidator.cs" />
     <Compile Include="helper\PasswordHelper.cs" />
     <Compile Include="Home.aspx.cs">
