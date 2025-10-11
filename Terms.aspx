@@ -6,7 +6,7 @@
 </asp:Content>
 
 <asp:Content ID="TermsContent" ContentPlaceHolderID="SiteMainContent" runat="server">
-    <!-- Banner Section -->
+
     <section class="terms-banner" role="banner" aria-label="VaultX Bank Terms Banner">
         <img src="images/terms.png" alt="VaultX Bank Terms Banner" class="terms-banner__image" />
         <div class="terms-banner__overlay" aria-hidden="true"></div>
@@ -18,7 +18,6 @@
         </div>
     </section>
 
-    <!-- Terms Content -->
     <div class="terms-content">
         <p id="wcl">
             Welcome to VaultX Bank. By using our services, you agree to comply with the following terms and conditions. Please read carefully. These terms are designed to ensure your safety, protect your rights, and clarify responsibilities when using VaultX Bank's services.

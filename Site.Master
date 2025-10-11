@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="styles/global.css?v=<%= DateTime.Now.Ticks %>" />
     <link rel="stylesheet" href="styles/sidebar.css?v=<%= DateTime.Now.Ticks %>" />
         <link rel="stylesheet" href="styles/logout.css?v=<%= DateTime.Now.Ticks %>" />
-    <!--Google Fonts-->
+  
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet" />
@@ -19,7 +19,7 @@
 
     <title>VaultX</title>
 
-    <!--This is where each page will inject its unique head content-->
+   
     <asp:ContentPlaceHolder ID="SiteHead" runat="server">
     </asp:ContentPlaceHolder>
 </head>

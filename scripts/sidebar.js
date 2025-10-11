@@ -31,7 +31,7 @@
 
     const currentPage = window.location.pathname.split('/').pop();
 
-    // ✅ Special case for Admin.aspx
+    
     if (currentPage === "Admin.aspx") {
         if (!menuHas('Home.aspx')) topMenu.appendChild(createMenuItem('Home', 'Home.aspx', 'fas fa-home'));
         if (!menuHas('Admin.aspx')) topMenu.appendChild(createMenuItem('Admin Panel', 'Admin.aspx', 'fas fa-user-shield'));
@@ -41,11 +41,11 @@
         logoutA.href = '#';
         logoutA.innerHTML = `<i class="fas fa-sign-out-alt"></i> Logout`;
 
-        // Direct logout for Admin Panel → redirects to Home.aspx
+  
         logoutA.addEventListener('click', (e) => {
             e.preventDefault();
 
-            // Create centered message overlay
+            
             const msg = document.createElement('div');
             msg.innerText = "Logging out...";
             msg.style.position = 'fixed';
@@ -62,7 +62,7 @@
             msg.style.boxShadow = '0 0 15px rgba(0,0,0,0.3)';
             document.body.appendChild(msg);
 
-            // Wait 1.5 seconds then log out
+           
             setTimeout(() => {
                 sessionStorage.removeItem('VaultXLoggedIn');
                 window.location = 'Home.aspx';
@@ -99,7 +99,7 @@
         if (!menuHas('Register.aspx')) bottomMenu.appendChild(createMenuItem('Register', 'Register.aspx', 'fas fa-user-plus'));
     }
 
-    // Highlight the active menu item
+   
     document.querySelectorAll('.site-sidebar a').forEach(a => {
         if (a.getAttribute('href') === currentPage) {
             a.classList.add('active');
@@ -107,7 +107,7 @@
     });
 });
 
-// ✅ Logout Modal Controls (for non-admin pages)
+
 function showLogoutModal(e) {
     e.preventDefault();
     document.getElementById('logoutModal').style.display = 'flex';
@@ -115,14 +115,14 @@ function showLogoutModal(e) {
 
 function confirmLogout() {
     sessionStorage.removeItem('VaultXLoggedIn');
-    window.location = 'Home.aspx'; // redirect to Home.aspx
+    window.location = 'Home.aspx'; 
 }
 
 function cancelLogout() {
     document.getElementById('logoutModal').style.display = 'none';
 }
 
-// ✅ Sidebar Toggle Controls
+
 function toggleSidebar(event) {
     if (event) event.preventDefault();
 

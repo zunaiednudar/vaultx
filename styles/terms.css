@@ -1,4 +1,4 @@
-﻿/* Reset and Font */
+﻿
 * {
     margin: 0;
     padding: 0;
@@ -6,13 +6,13 @@
     font-family: var(--font-stack);
 }
 
-/* Body */
+
 body {
     background-color: hsl(210, 100%, 80%);
     color: var(--color-font-primary);
 }
 
-/* Banner */
+
 .terms-banner {
     position: relative;
     width: 100%;
@@ -73,7 +73,7 @@ body {
     line-height: 1.4;
 }
 
-/* Terms Content Full Width */
+
 .terms-content {
     width: 100%;
     max-width: 100%;
@@ -104,7 +104,7 @@ body {
                 font-size: 1.25rem;
             }
 
-/* Responsive */
+
 @media (max-width: 992px) {
     .terms-content {
         padding: 25px 40px;
