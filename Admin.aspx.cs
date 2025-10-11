@@ -17,10 +17,57 @@ namespace vaultx
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Check if admin is logged in
+            if (Session["AdminID"] == null || Session["IsAdmin"] == null)
+            {
+                Response.Redirect("AdminLogin.aspx");
+                return;
+            }
+
             if (!IsPostBack)
             {
                 LoadUsersFromDatabase();
             }
+        }
+
+        // Helper method to log management actions
+        private static void LogManagementAction(int uid, int adminId, string actionDetails)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                        INSERT INTO dbo.Management (UID, AdminID, ActionDetails, ActionDate)
+                        VALUES (@UID, @AdminID, @ActionDetails, GETDATE())";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@UID", uid);
+                    cmd.Parameters.AddWithValue("@AdminID", adminId);
+                    cmd.Parameters.AddWithValue("@ActionDetails", actionDetails);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Error logging management action: " + ex.Message);
+            }
+        }
+
+        // Get current admin ID from session
+        private static int GetCurrentAdminID()
+        {
+            try
+            {
+                if (HttpContext.Current.Session["AdminID"] != null)
+                {
+                    return Convert.ToInt32(HttpContext.Current.Session["AdminID"]);
+                }
+            }
+            catch { }
+            return 101; // Default admin ID if session is not available
         }
 
         private void LoadUsersFromDatabase()
@@ -161,6 +208,8 @@ namespace vaultx
                     }
                 }
 
+                int newUID = 0;
+
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -168,7 +217,7 @@ namespace vaultx
                     // Get next UID
                     string getMaxUIDQuery = "SELECT ISNULL(MAX(UID), 999) FROM dbo.Users";
                     SqlCommand cmdMax = new SqlCommand(getMaxUIDQuery, conn);
-                    int newUID = (int)cmdMax.ExecuteScalar() + 1;
+                    newUID = (int)cmdMax.ExecuteScalar() + 1;
 
                     string query = @"
                         INSERT INTO dbo.Users
@@ -226,6 +275,10 @@ namespace vaultx
 
                     cmd.ExecuteNonQuery();
                 }
+
+                // Log management action
+                int adminId = GetCurrentAdminID();
+                LogManagementAction(newUID, adminId, $"Created new user: {txtAddFirstName.Text} {txtAddLastName.Text} (Email: {txtAddEmail.Text})");
 
                 ShowMessage("User added successfully!", "success");
                 ClearAddUserForm();
@@ -319,6 +372,10 @@ namespace vaultx
                     cmd.Parameters.AddWithValue("@MonthlyEarnings", earningsValue);
 
                     cmd.ExecuteNonQuery();
+
+                    // Log management action
+                    int adminId = GetCurrentAdminID();
+                    LogManagementAction(Convert.ToInt32(uid), adminId, $"Updated user: {firstName} {lastName}");
                 }
                 return "success";
             }
@@ -353,11 +410,27 @@ namespace vaultx
                     cmdAcc.Parameters.AddWithValue("@UID", Convert.ToInt32(uid));
                     cmdAcc.ExecuteNonQuery();
 
+                    // Get user name before deleting
+                    string getUserNameQuery = "SELECT FirstName, LastName FROM dbo.Users WHERE UID = @UID";
+                    SqlCommand cmdGetName = new SqlCommand(getUserNameQuery, conn);
+                    cmdGetName.Parameters.AddWithValue("@UID", Convert.ToInt32(uid));
+                    SqlDataReader reader = cmdGetName.ExecuteReader();
+                    string userName = "";
+                    if (reader.Read())
+                    {
+                        userName = $"{reader["FirstName"]} {reader["LastName"]}";
+                    }
+                    reader.Close();
+
                     // Finally delete the user
                     string deleteUserQuery = "DELETE FROM dbo.Users WHERE UID = @UID";
                     SqlCommand cmdUser = new SqlCommand(deleteUserQuery, conn);
                     cmdUser.Parameters.AddWithValue("@UID", Convert.ToInt32(uid));
                     cmdUser.ExecuteNonQuery();
+
+                    // Log management action
+                    int adminId = GetCurrentAdminID();
+                    LogManagementAction(Convert.ToInt32(uid), adminId, $"Deleted user: {userName}");
                 }
                 return "success";
             }
@@ -541,6 +614,8 @@ namespace vaultx
                     }
                 }
 
+                long newAID = 0;
+
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
@@ -548,7 +623,7 @@ namespace vaultx
                     // Get next AID
                     string getMaxAIDQuery = "SELECT ISNULL(MAX(AID), 99999) FROM dbo.Accounts";
                     SqlCommand cmdMax = new SqlCommand(getMaxAIDQuery, conn);
-                    long newAID = (long)cmdMax.ExecuteScalar() + 1;
+                    newAID = (long)cmdMax.ExecuteScalar() + 1;
 
                     string query = @"
                 INSERT INTO dbo.Accounts
@@ -567,6 +642,10 @@ namespace vaultx
                     cmd.ExecuteNonQuery();
 
                     System.Diagnostics.Debug.WriteLine("Account added successfully with AID: " + newAID);
+
+                    // Log management action
+                    int adminId = GetCurrentAdminID();
+                    LogManagementAction(Convert.ToInt32(uid), adminId, $"Created {accountType} account (AID: {newAID}) with initial balance ৳{balanceValue}");
                 }
                 return "success";
             }
@@ -591,9 +670,24 @@ namespace vaultx
                     }
                 }
 
+                int uid = 0;
+                string accountType = "";
+
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
+
+                    // Get UID and AccountType before update
+                    string getInfoQuery = "SELECT UID, AccountType FROM dbo.Accounts WHERE AID = @AID";
+                    SqlCommand getInfoCmd = new SqlCommand(getInfoQuery, conn);
+                    getInfoCmd.Parameters.AddWithValue("@AID", Convert.ToInt64(aid));
+                    SqlDataReader reader = getInfoCmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        uid = Convert.ToInt32(reader["UID"]);
+                        accountType = reader["AccountType"].ToString();
+                    }
+                    reader.Close();
 
                     string query = @"
                         UPDATE dbo.Accounts SET 
@@ -609,6 +703,10 @@ namespace vaultx
                     cmd.Parameters.AddWithValue("@NomineeNID", string.IsNullOrEmpty(nomineeNID) ? DBNull.Value : (object)nomineeNID);
 
                     cmd.ExecuteNonQuery();
+
+                    // Log management action
+                    int adminId = GetCurrentAdminID();
+                    LogManagementAction(uid, adminId, $"Updated {accountType} account (AID: {aid}) - New balance: ৳{balanceValue}");
                 }
                 return "success";
             }
@@ -623,9 +721,24 @@ namespace vaultx
         {
             try
             {
+                int uid = 0;
+                string accountType = "";
+
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
+
+                    // Get UID and AccountType before delete
+                    string getInfoQuery = "SELECT UID, AccountType FROM dbo.Accounts WHERE AID = @AID";
+                    SqlCommand getInfoCmd = new SqlCommand(getInfoQuery, conn);
+                    getInfoCmd.Parameters.AddWithValue("@AID", Convert.ToInt64(aid));
+                    SqlDataReader reader = getInfoCmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        uid = Convert.ToInt32(reader["UID"]);
+                        accountType = reader["AccountType"].ToString();
+                    }
+                    reader.Close();
 
                     // First delete associated transactions
                     string deleteTransactionsQuery = @"
@@ -640,12 +753,92 @@ namespace vaultx
                     SqlCommand cmdAcc = new SqlCommand(deleteAccountQuery, conn);
                     cmdAcc.Parameters.AddWithValue("@AID", Convert.ToInt64(aid));
                     cmdAcc.ExecuteNonQuery();
+
+                    // Log management action
+                    int adminId = GetCurrentAdminID();
+                    LogManagementAction(uid, adminId, $"Deleted {accountType} account (AID: {aid})");
                 }
                 return "success";
             }
             catch (Exception ex)
             {
                 return "Error: " + ex.Message;
+            }
+        }
+
+        [WebMethod]
+        public static string GetManagementHistory()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = @"
+                        SELECT 
+                            m.MID,
+                            m.UID,
+                            m.AdminID,
+                            m.ActionDetails,
+                            m.ActionDate,
+                            u.FirstName + ' ' + u.LastName AS UserName,
+                            a.Name AS AdminName
+                        FROM dbo.Management m
+                        LEFT JOIN dbo.Users u ON m.UID = u.UID
+                        LEFT JOIN dbo.Admin a ON m.AdminID = a.AdminID
+                        ORDER BY m.ActionDate DESC, m.MID DESC";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    StringBuilder json = new StringBuilder();
+                    json.Append("[");
+
+                    bool first = true;
+                    while (reader.Read())
+                    {
+                        if (!first) json.Append(",");
+
+                        string userName = reader["UserName"] != DBNull.Value
+                            ? EscapeJsonString(reader["UserName"].ToString())
+                            : "Unknown User";
+
+                        string adminName = reader["AdminName"] != DBNull.Value
+                            ? EscapeJsonString(reader["AdminName"].ToString())
+                            : "Unknown Admin";
+
+                        string actionDetails = reader["ActionDetails"] != DBNull.Value
+                            ? EscapeJsonString(reader["ActionDetails"].ToString())
+                            : "";
+
+                        json.AppendFormat(@"{{
+                            ""mid"": {0},
+                            ""uid"": {1},
+                            ""adminId"": {2},
+                            ""actionDetails"": ""{3}"",
+                            ""actionDate"": ""{4:yyyy-MM-dd HH:mm:ss}"",
+                            ""userName"": ""{5}"",
+                            ""adminName"": ""{6}""
+                        }}",
+                        reader["MID"],
+                        reader["UID"],
+                        reader["AdminID"],
+                        actionDetails,
+                        reader["ActionDate"],
+                        userName,
+                        adminName);
+
+                        first = false;
+                    }
+
+                    json.Append("]");
+                    return json.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GetManagementHistory Error: " + ex.Message);
+                return "[]";
             }
         }
 

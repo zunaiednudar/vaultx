@@ -295,27 +295,37 @@
 
 
 <div class="container mt-5">
-    <div class="row g-4">
-        <!-- Add User Card -->
-        <div class="col-md-6">
-            <div class="card text-center" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                <div class="card-body">
-                    <h4 class="card-title"><i class="fa fa-user-plus"></i> Add User</h4>
-                    <p class="card-text">Click here to add a new user</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Show Users Card -->
-        <div class="col-md-6">
-            <div class="card text-center" onclick="document.getElementById('usersList').style.display='block'">
-                <div class="card-body">
-                    <h4 class="card-title"><i class="fa fa-users"></i> Show Users</h4>
-                    <p class="card-text">Click here to view all users</p>
-                </div>
+<div class="row g-4">
+    <!-- Add User Card -->
+    <div class="col-md-4">
+        <div class="card text-center" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            <div class="card-body">
+                <h4 class="card-title"><i class="fa fa-user-plus"></i> Add User</h4>
+                <p class="card-text">Click here to add a new user</p>
             </div>
         </div>
     </div>
+
+    <!-- Show Users Card -->
+    <div class="col-md-4">
+        <div class="card text-center" onclick="document.getElementById('usersList').style.display='block'">
+            <div class="card-body">
+                <h4 class="card-title"><i class="fa fa-users"></i> Show Users</h4>
+                <p class="card-text">Click here to view all users</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management History Card -->
+    <div class="col-md-4">
+        <div class="card text-center" onclick="showManagementHistory()">
+            <div class="card-body">
+                <h4 class="card-title"><i class="fa fa-clipboard-list"></i> Management History</h4>
+                <p class="card-text">View all management actions</p>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Users List -->
 <div class="row mt-4" id="usersList">
@@ -593,6 +603,41 @@
         </div>
     </div>
 </div>
+
+<!-- Management History Modal -->
+<div class="modal fade" id="managementHistoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fa fa-clipboard-list"></i> Management History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>MID</th>
+                                <th>UID</th>
+                                <th>User Name</th>
+                                <th>Admin Name</th>
+                                <th>Action Details</th>
+                                <th>Action Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="managementHistoryBody">
+                            <!-- Management history rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- jQuery for AJAX -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -940,12 +985,48 @@
         }
     }
 
+    // Show management history
+    function showManagementHistory() {
+        $.ajax({
+            type: "POST",
+            url: "Admin.aspx/GetManagementHistory",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                const history = JSON.parse(response.d);
+                const tbody = document.getElementById('managementHistoryBody');
+                tbody.innerHTML = '';
+
+                if (history.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No management actions found</td></tr>';
+                } else {
+                    history.forEach(item => {
+                        const row = `<tr>
+                            <td>${item.mid}</td>
+                            <td>${item.uid}</td>
+                            <td>${item.userName}</td>
+                            <td>${item.adminName}</td>
+                            <td>${item.actionDetails}</td>
+                            <td>${new Date(item.actionDate).toLocaleString()}</td>
+                        </tr>`;
+                        tbody.insertAdjacentHTML('beforeend', row);
+                    });
+                }
+
+                new bootstrap.Modal(document.getElementById('managementHistoryModal')).show();
+            },
+            error: function (error) {
+                alert("Error loading management history: " + error.statusText);
+            }
+        });
+    }
+
     // Alias for backward compatibility
     function transaction() {
         loadTransactions();
     }
+
 </script>
 </form>
 </body>
 </html>
-
