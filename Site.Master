@@ -200,7 +200,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; <%= DateTime.Now.Year %> VaultX Bank. All rights reserved.</p>
+                <p>&copy; <%= DateTime.Now.Year %> VaultX Bank. Developed by Dipta, Turzo and Rifat. All rights reserved.</p>
             </div>
         </footer>
 

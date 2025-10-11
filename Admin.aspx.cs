@@ -786,7 +786,7 @@ namespace vaultx
                         FROM dbo.Management m
                         LEFT JOIN dbo.Users u ON m.UID = u.UID
                         LEFT JOIN dbo.Admin a ON m.AdminID = a.AdminID
-                        ORDER BY m.ActionDate DESC";
+                        ORDER BY m.ActionDate DESC, m.MID DESC";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
                     SqlDataReader reader = cmd.ExecuteReader();

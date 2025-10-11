@@ -295,37 +295,37 @@
 
 
 <div class="container mt-5">
-    <div class="row g-4">
-        <!-- Add User Card -->
-        <div class="col-md-6">
-            <div class="card text-center" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                <div class="card-body">
-                    <h4 class="card-title"><i class="fa fa-user-plus"></i> Add User</h4>
-                    <p class="card-text">Click here to add a new user</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Show Users Card -->
-        <div class="col-md-6">
-            <div class="card text-center" onclick="document.getElementById('usersList').style.display='block'">
-                <div class="card-body">
-                    <h4 class="card-title"><i class="fa fa-users"></i> Show Users</h4>
-                    <p class="card-text">Click here to view all users</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Management History Card -->
-        <div class="col-md-6">
-            <div class="card text-center" onclick="showManagementHistory()">
-                <div class="card-body">
-                    <h4 class="card-title"><i class="fa fa-clipboard-list"></i> Management History</h4>
-                    <p class="card-text">View all management actions</p>
-                </div>
+<div class="row g-4">
+    <!-- Add User Card -->
+    <div class="col-md-4">
+        <div class="card text-center" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            <div class="card-body">
+                <h4 class="card-title"><i class="fa fa-user-plus"></i> Add User</h4>
+                <p class="card-text">Click here to add a new user</p>
             </div>
         </div>
     </div>
+
+    <!-- Show Users Card -->
+    <div class="col-md-4">
+        <div class="card text-center" onclick="document.getElementById('usersList').style.display='block'">
+            <div class="card-body">
+                <h4 class="card-title"><i class="fa fa-users"></i> Show Users</h4>
+                <p class="card-text">Click here to view all users</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management History Card -->
+    <div class="col-md-4">
+        <div class="card text-center" onclick="showManagementHistory()">
+            <div class="card-body">
+                <h4 class="card-title"><i class="fa fa-clipboard-list"></i> Management History</h4>
+                <p class="card-text">View all management actions</p>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Users List -->
 <div class="row mt-4" id="usersList">
