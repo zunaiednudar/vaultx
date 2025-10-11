@@ -78,7 +78,6 @@
     <Content Include="AdminLogin.aspx" />
     <Content Include="FAQ.aspx" />
     <Content Include="AccountDetails.aspx" />
-    <Content Include="Footer.ascx" />
     <Content Include="ForgetPassword.aspx" />
     <Content Include="FundTransfer.aspx" />
     <Content Include="Dashboard.aspx" />
@@ -130,10 +129,6 @@
     <Compile Include="AccountDetails.aspx.designer.cs">
       <DependentUpon>AccountDetails.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Footer.ascx.cs">
-      <DependentUpon>Footer.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="ForgetPassword.aspx.cs">
       <DependentUpon>ForgetPassword.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -158,8 +153,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="helper-dipta\InputValidator.cs" />
-    <Compile Include="helper-dipta\PasswordHelper.cs" />
     <Compile Include="helper\InputValidator.cs" />
     <Compile Include="helper\PasswordHelper.cs" />
     <Compile Include="Home.aspx.cs">
