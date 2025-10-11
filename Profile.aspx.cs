@@ -6,9 +6,17 @@ using System.Web.UI;
 
 namespace vaultx
 {
+    /*
+        Profile.aspx.cs
+        Purpose: Server-side logic for the profile page. 
+        Changes: Extra explanatory comments added to make intent and flow clearer for future maintainers.
+        No behavior changes were made.
+    */
+
     // Minimal DTO used by the repository and the page.
     public class User
     {
+        // Unique identifier for the user (UID)
         public string UID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -39,11 +47,18 @@ namespace vaultx
     {
         private readonly string _connectionString;
 
+        /// <summary>
+        /// Create a repository using a given connection string.
+        /// Throws ArgumentNullException if connectionString is null.
+        /// </summary>
         public UserRepository(string connectionString)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
 
+        /// <summary>
+        /// Reads a user by UID. Returns null if user is not found.
+        /// </summary>
         public User GetByUid(string uid)
         {
             if (string.IsNullOrWhiteSpace(uid)) return null;
@@ -87,6 +102,10 @@ namespace vaultx
             }
         }
 
+        /// <summary>
+        /// Updates the ProfileImage path for a user in the database.
+        /// Throws if uid or dbRelativePath are invalid.
+        /// </summary>
         public void UpdateProfileImage(string uid, string dbRelativePath)
         {
             if (string.IsNullOrWhiteSpace(uid)) throw new ArgumentNullException(nameof(uid));
@@ -107,6 +126,10 @@ namespace vaultx
 
     public static class RepositoryFactory
     {
+        /// <summary>
+        /// Centralized factory method so callers depend on the IUserRepository interface.
+        /// If you need a mock or alternative implementation, change this method only.
+        /// </summary>
         public static IUserRepository CreateUserRepository()
         {
             // creation logic centralized here
@@ -121,6 +144,11 @@ namespace vaultx
     {
         // The page now asks the factory for an IUserRepository when needed.
         // This keeps the page free from direct ADO.NET construction and makes it easy to swap implementations.
+
+        /// <summary>
+        /// Page_Load: loads and binds profile data on first load.
+        /// Important: redirects to Login.aspx if session UID is missing or user not found.
+        /// </summary>
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -144,6 +172,7 @@ namespace vaultx
                         return;
                     }
 
+                    // Bind values to controls (null-safe)
                     lblFullName.Text = (user.FirstName ?? "") + " " + (user.LastName ?? "");
                     lblProfession.Text = user.Profession ?? "";
                     lblFathersName.Text = user.FathersName ?? "";
@@ -164,13 +193,20 @@ namespace vaultx
                 }
                 catch (Exception ex)
                 {
+                    // Surface a helpful message to the page during development.
+                    // For production, consider logging and showing a friendly error page instead.
                     Response.Write("Error loading profile: " + ex.Message);
                 }
             }
         }
 
+        /// <summary>
+        /// Handles saving of the profile photo posted from the FileUpload server control.
+        /// Validates file extension and size, saves to disk and updates DB via repository.
+        /// </summary>
         protected void btnUploadProfile_Click(object sender, EventArgs e)
         {
+            // If no file, nothing to do
             if (!fuProfilePhoto.HasFile) return;
 
             var userId = Convert.ToString(Session["UID"]);
@@ -182,6 +218,7 @@ namespace vaultx
 
             try
             {
+                // Validate extension
                 string fileExtension = Path.GetExtension(fuProfilePhoto.FileName).ToLower();
                 string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
                 bool isValidType = false;
@@ -200,12 +237,14 @@ namespace vaultx
                     return;
                 }
 
+                // Validate file size (5MB)
                 if (fuProfilePhoto.PostedFile.ContentLength > 5 * 1024 * 1024)
                 {
                     ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('File size must be less than 5MB.');", true);
                     return;
                 }
 
+                // Save to disk
                 string folderPath = Server.MapPath("~/images/profiles/");
                 if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
@@ -219,8 +258,10 @@ namespace vaultx
                 var repo = RepositoryFactory.CreateUserRepository();
                 repo.UpdateProfileImage(userId, dbPath);
 
+                // Update UI
                 imgProfile.ImageUrl = dbPath;
 
+                // Show success via client script (ScriptManager-aware)
                 if (ScriptManager.GetCurrent(this.Page) != null)
                 {
                     ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "showSuccess", "showUploadSuccess();", true);
@@ -232,6 +273,7 @@ namespace vaultx
             }
             catch (Exception ex)
             {
+                // Keep UX responsive: show an alert with the error.
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error uploading photo: {ex.Message}');", true);
             }
         }

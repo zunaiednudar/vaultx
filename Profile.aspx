@@ -1,6 +1,12 @@
 ﻿<%@ Page Title="Profile" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Profile.aspx.cs" Inherits="vaultx.Profile" %>
 
 <asp:Content ID="ProfileHead" ContentPlaceHolderID="SiteHead" runat="server">
+    <!--
+        Profile.aspx
+        Purpose: Shows the current user's profile information and allows uploading a profile photo.
+        Notes: Styles and JS for the upload/preview behavior live inline here for simplicity.
+        Added extra comment lines to make maintenance notes visible to future readers.
+    -->
     <link rel="stylesheet" href="styles/profile.css" />
     <meta name="description" content="VaultX Bank — User Profile Information" />
     <style>
@@ -162,6 +168,20 @@
             flex-wrap: wrap;
         }
 
+        /* Hover effect on profile name - newly added */
+        .profile-name {
+            transition: color 0.25s ease, transform 0.25s ease;
+            cursor: default;
+            display: inline-block; /* allow transform without affecting flow */
+        }
+
+        .profile-name:hover {
+            color: #007bff;
+            transform: translateY(-3px) scale(1.03);
+/*            text-decoration: underline;*/
+            cursor: pointer; /* indicates interactiveness */
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .photo-upload-overlay {
@@ -189,9 +209,18 @@
 </asp:Content>
 
 <asp:Content ID="ProfileMainContent" ContentPlaceHolderID="SiteMainContent" runat="server">
+    <!--
+        Main profile markup.
+        Extra comments have been added to clarify sections for future edits:
+        - Header (image + name + profession)
+        - Photo upload controls (preview, save, cancel)
+        - Profile details sections (Personal, Contact, Location, Financial)
+        These comments are intentionally verbose to help future maintainers.
+    -->
     <div class="profile-container">
         <!-- Profile Header -->
         <div class="profile-header">
+            <!-- Profile picture - click to open file picker -->
             <asp:Image ID="imgProfile" runat="server" CssClass="profile-image" AlternateText="Profile Picture" onclick="triggerPhotoUpload()" />
             
             <!-- Profile Photo Upload Section -->
@@ -202,7 +231,7 @@
                 
                 <!-- Custom File Upload -->
                 <div class="file-upload-wrapper">
-                    <!-- Hidden FileUpload -->
+                    <!-- Hidden FileUpload control. Kept server-side for compatibility with existing code-behind. -->
                     <asp:FileUpload ID="fuProfilePhoto" runat="server" CssClass="hidden-file" accept="image/*" />
 
                     <!-- Photo Preview (Hidden by default) -->
@@ -228,6 +257,7 @@
                 </div>
             </div>
             
+            <!-- Profile name and profession -->
             <h1 class="profile-name">
                 <asp:Label ID="lblFullName" runat="server" Text=""></asp:Label>
             </h1>
@@ -322,6 +352,7 @@
     <!-- JS Scripts for Profile Photo Upload -->
     <script type="text/javascript">
         // Global variables
+        // NOTE: we use server controls; the ClientID values are resolved on server render.
         var profileFileInput = document.getElementById("<%= fuProfilePhoto.ClientID %>");
         var profileFileNameLabel = document.getElementById("selectedProfileFileName");
         var uploadButton = document.getElementById("<%= btnUploadProfile.ClientID %>");
@@ -330,65 +361,70 @@
         var uploadControls = document.getElementById("uploadControls");
         var successMessage = document.getElementById("uploadSuccessMessage");
 
-        // Function to trigger file input
+        // Function to trigger file input (kept lightweight)
         function triggerPhotoUpload() {
-            profileFileInput.click();
+            // If control exists, open file picker
+            if (profileFileInput) profileFileInput.click();
         }
 
         // Function to cancel photo upload
         function cancelPhotoUpload() {
             // Reset file input
-            profileFileInput.value = '';
+            if (profileFileInput) profileFileInput.value = '';
             
             // Hide preview and controls
-            photoPreviewContainer.classList.remove("show");
-            uploadControls.classList.remove("show");
+            if (photoPreviewContainer) photoPreviewContainer.classList.remove("show");
+            if (uploadControls) uploadControls.classList.remove("show");
             
             // Clear file name
-            profileFileNameLabel.textContent = "";
+            if (profileFileNameLabel) profileFileNameLabel.textContent = "";
             
             // Hide success message if visible
-            successMessage.style.display = 'none';
+            if (successMessage) successMessage.style.display = 'none';
         }
 
-        // Handle file selection
-        profileFileInput.addEventListener("change", function () {
-            if (profileFileInput.files.length > 0) {
-                var file = profileFileInput.files[0];
-                
-                // Validate file type
-                if (!file.type.startsWith('image/')) {
-                    alert('Please select a valid image file.');
-                    profileFileInput.value = '';
-                    return;
-                }
+        // Handle file selection (guard added for safety)
+        if (profileFileInput) {
+            profileFileInput.addEventListener("change", function () {
+                if (profileFileInput.files.length > 0) {
+                    var file = profileFileInput.files[0];
+                    
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file.');
+                        profileFileInput.value = '';
+                        return;
+                    }
 
-                // Validate file size (5MB limit)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('File size must be less than 5MB.');
-                    profileFileInput.value = '';
-                    return;
-                }
+                    // Validate file size (5MB limit)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB.');
+                        profileFileInput.value = '';
+                        return;
+                    }
 
-                // Display file name
-                profileFileNameLabel.textContent = file.name;
-                
-                // Show preview
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    photoPreview.src = e.target.result;
-                    photoPreviewContainer.classList.add("show");
-                    uploadControls.classList.add("show");
-                };
-                reader.readAsDataURL(file);
-                
-                // Hide success message if visible
-                successMessage.style.display = 'none';
-            } else {
-                // Hide preview and controls if no file selected
-                cancelPhotoUpload();
-            }
-        });
+                    // Display file name
+                    if (profileFileNameLabel) profileFileNameLabel.textContent = file.name;
+                    
+                    // Show preview
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        if (photoPreview) {
+                            photoPreview.src = e.target.result;
+                            photoPreviewContainer.classList.add("show");
+                            uploadControls.classList.add("show");
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Hide success message if visible
+                    if (successMessage) successMessage.style.display = 'none';
+                } else {
+                    // Hide preview and controls if no file selected
+                    cancelPhotoUpload();
+                }
+            });
+        }
 
         // Initialize on page load
         window.addEventListener('load', function() {
@@ -400,22 +436,22 @@
             }
 
             // Ensure controls are hidden initially
-            photoPreviewContainer.classList.remove("show");
-            uploadControls.classList.remove("show");
+            if (photoPreviewContainer) photoPreviewContainer.classList.remove("show");
+            if (uploadControls) uploadControls.classList.remove("show");
         });
 
         // Show success message after upload (called from code-behind)
         // Made it a global function to ensure it can be called
         window.showUploadSuccess = function () {
             // Show success message with animation
-            successMessage.style.display = 'block';
+            if (successMessage) successMessage.style.display = 'block';
 
             // Hide preview and controls
             cancelPhotoUpload();
 
             // Hide success message after 4 seconds
             setTimeout(function () {
-                successMessage.style.display = 'none';
+                if (successMessage) successMessage.style.display = 'none';
             }, 4000);
         };
     </script>
