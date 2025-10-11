@@ -1,7 +1,9 @@
 ﻿
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('.terms__list a');
-
+    
     links.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();

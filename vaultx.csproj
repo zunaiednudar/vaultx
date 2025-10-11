@@ -70,7 +70,6 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FAQ.aspx" />
     <Content Include="Admin.aspx" />
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
       <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
@@ -103,7 +102,6 @@
     <Content Include="styles\Register.css" />
     <Content Include="styles\sidebar.css" />
     <Content Include="styles\terms.css" />
-    <Content Include="Test.aspx" />
     <Content Include="Web.config" />
     <Content Include="Sidebar.ascx" />
     <Content Include="Terms.aspx" />
@@ -148,6 +146,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+        
+    <Compile Include="helper-dipta\InputValidator.cs" />
+    <Compile Include="helper-dipta\PasswordHelper.cs" />
     <Compile Include="helper\InputValidator.cs" />
     <Compile Include="helper\PasswordHelper.cs" />
     <Compile Include="Home.aspx.cs">
@@ -166,7 +167,6 @@
     </Compile>
     <Compile Include="Profile.aspx.cs">
       <DependentUpon>Profile.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Profile.aspx.designer.cs">
       <DependentUpon>Profile.aspx</DependentUpon>
@@ -193,6 +193,12 @@
     <Compile Include="Sidebar.ascx.designer.cs">
       <DependentUpon>Sidebar.ascx</DependentUpon>
     </Compile>
+    <Compile Include="helper-zunaied\AccountRepository.cs" />
+    <Compile Include="helper-zunaied\DatabaseConnection.cs" />
+    <Compile Include="helper-zunaied\IAccountRepository.cs" />
+    <Compile Include="helper-zunaied\ITransactionRepository.cs" />
+    <Compile Include="helper-zunaied\RepositoryFactory.cs" />
+    <Compile Include="helper-zunaied\TransactionRepository.cs" />
     <Compile Include="Terms.aspx.cs">
       <DependentUpon>Terms.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -206,13 +212,6 @@
     </Compile>
     <Compile Include="Logout.aspx.designer.cs">
       <DependentUpon>Logout.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Test.aspx.cs">
-      <DependentUpon>Test.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Test.aspx.designer.cs">
-      <DependentUpon>Test.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin.aspx.cs">
       <DependentUpon>Admin.aspx</DependentUpon>

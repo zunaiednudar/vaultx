@@ -3,11 +3,11 @@
 <asp:Content ID="FAQHead" ContentPlaceHolderID="SiteHead" runat="server">
     <link rel="stylesheet" href="styles/global.css?v=<%= DateTime.Now.Ticks %>" />
     <link rel="stylesheet" href="styles/faq.css?v=<%= DateTime.Now.Ticks %>" />
-    <!-- Font Awesome (for search icon) -->
+   
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
     <style>
-        /* FAQ Search Bar */
+    
         .faq-search {
             max-width: 600px;
             margin: 0 auto 30px;
@@ -16,7 +16,7 @@
 
         .faq-search input {
             width: 100%;
-            padding: 12px 45px 12px 15px; /* Extra right padding for icon */
+            padding: 12px 45px 12px 15px; 
             font-size: 1.1rem;
             border: 2px solid #ccc;
             border-radius: 8px;
@@ -28,7 +28,7 @@
             box-shadow: 0 0 5px rgba(0, 119, 204, 0.4);
         }
 
-        /* Search Icon */
+       
         .faq-search .search-icon {
             position: absolute;
             right: 15px;
@@ -36,13 +36,13 @@
             transform: translateY(-50%);
             color: #666;
             font-size: 1.2rem;
-            pointer-events: none; /* prevent click on icon */
+            pointer-events: none; 
         }
     </style>
 </asp:Content>
 
 <asp:Content ID="FAQContent" ContentPlaceHolderID="SiteMainContent" runat="server">
-    <!-- Banner -->
+   
     <section class="faq-banner">
         <img src="images/FAQ-banner.jpg" alt="VaultX Bank FAQ Banner" class="faq-banner__image" />
         <div class="faq-banner__overlay" aria-hidden="true"></div>
@@ -52,13 +52,13 @@
         </div>
     </section>
 
-    <!-- FAQ Search -->
+ 
     <div class="faq-search">
         <input type="text" id="faqSearch" placeholder="Search for a question...">
         <i class="fas fa-search search-icon"></i>
     </div>
 
-    <!-- FAQ Content -->
+ 
     <div class="faq-content container">
         <p>Here are some of the most frequently asked questions about VaultX Bank. Click on each question to reveal the answer.</p>
 
@@ -97,7 +97,7 @@
             </div>
         </div>
 
-        <!-- Added More FAQs -->
+      
         <div class="faq-item">
             <button type="button" class="faq-question">What types of accounts can I open?</button>
             <div class="faq-answer">
@@ -132,7 +132,7 @@
             const faqItems = document.querySelectorAll('.faq-item');
             const searchInput = document.getElementById('faqSearch');
 
-            // Accordion toggle
+           
             faqItems.forEach(item => {
                 const question = item.querySelector('.faq-question');
                 question.addEventListener('click', () => {
@@ -142,7 +142,7 @@
                 });
             });
 
-            // Search filter
+      
             searchInput.addEventListener("keyup", () => {
                 const term = searchInput.value.toLowerCase();
                 faqItems.forEach(item => {

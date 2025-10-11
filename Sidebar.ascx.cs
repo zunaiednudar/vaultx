@@ -5,6 +5,8 @@ namespace vaultx
 {
     public partial class Sidebar : UserControl
     {
+
+
         protected void Page_Load(object sender, EventArgs e)
         {
             bool isLoggedIn = Session["UID"] != null;
