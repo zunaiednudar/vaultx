@@ -26,10 +26,10 @@ namespace vaultx
                 context.Response.Cookies.Add(cookie);
             }
 
-            // Clear JS sessionStorage login flag
+          
             context.Response.Write("<script>sessionStorage.removeItem('VaultXLoggedIn');</script>");
 
-            // Redirect to home page
+          
             context.Response.Redirect("Home.aspx");
         }
     }
@@ -46,14 +46,14 @@ namespace vaultx
 
         public void Execute(HttpContext context)
         {
-            // Only allow logout if "confirm=true" is passed
+            
             if (context.Request.QueryString["confirm"] == "true")
             {
                 _realLogout.Execute(context);
             }
             else
             {
-                // Redirect to home if logout not confirmed
+                
                 context.Response.Redirect("Home.aspx");
             }
         }

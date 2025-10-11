@@ -166,7 +166,6 @@
     </Compile>
     <Compile Include="Profile.aspx.cs">
       <DependentUpon>Profile.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Profile.aspx.designer.cs">
       <DependentUpon>Profile.aspx</DependentUpon>
@@ -193,6 +192,12 @@
     <Compile Include="Sidebar.ascx.designer.cs">
       <DependentUpon>Sidebar.ascx</DependentUpon>
     </Compile>
+    <Compile Include="AccountRepository.cs" />
+    <Compile Include="DatabaseConnection.cs" />
+    <Compile Include="IAccountRepository.cs" />
+    <Compile Include="ITransactionRepository.cs" />
+    <Compile Include="RepositoryFactoryZ.cs" />
+    <Compile Include="TransactionRepository.cs" />
     <Compile Include="Terms.aspx.cs">
       <DependentUpon>Terms.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

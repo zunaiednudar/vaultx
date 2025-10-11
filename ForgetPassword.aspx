@@ -37,7 +37,7 @@
                     </div>
                 </asp:Panel>
 
-                <!-- STEP 2: OTP input -->
+              
                 <asp:Panel ID="pnlOtp" runat="server" CssClass="form-container-lg" Visible="false">
                     <h2>Verify OTP</h2>
                     <p style="text-align:center;">We sent a 6-digit OTP to your email.</p>
@@ -50,7 +50,7 @@
                     </div>
                 </asp:Panel>
 
-      <!-- STEP 3: reset password -->
+ 
 <asp:Panel ID="pnlReset" runat="server" CssClass="form-container-lg" Visible="false">
     <h2>Reset Password</h2>
 
@@ -64,7 +64,7 @@
             placeholder="New Password">
         </asp:TextBox>
 
-        <!-- Required -->
+       
         <asp:RequiredFieldValidator 
             ID="rfvNewPassword" 
             runat="server" 
@@ -73,7 +73,6 @@
             ForeColor="Red" 
             Display="Dynamic" />
 
-        <!-- Regex for strong password -->
         <asp:RegularExpressionValidator 
             ID="revNewPassword" 
             runat="server" 
@@ -95,7 +94,7 @@
             placeholder="Confirm Password">
         </asp:TextBox>
 
-        <!-- Compare validator -->
+  
         <asp:CompareValidator 
             ID="cvConfirmPassword" 
             runat="server" 
@@ -121,7 +120,7 @@
   </asp:Panel>
 
 
-                <!-- STEP 4: success -->
+              
                 <asp:Panel ID="pnlSuccess" runat="server" CssClass="form-container-lg" Visible="false">
                     <div style="text-align:center; font-size:2rem; font-weight:bold; color:#4ECDC4;">
                         ✅ Password Reset Successfully!

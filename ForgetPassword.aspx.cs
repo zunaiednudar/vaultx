@@ -30,17 +30,17 @@ namespace vaultx
             string email = txtEmail.Text.Trim();
             if (IsEmailRegistered(email))
             {
-                // generate OTP and store in ViewState
+                
                 GeneratedOtp = new Random().Next(100000, 999999).ToString();
                 UserEmail = email;
 
-                // send OTP email
+               
                 SendOtpEmail(email, GeneratedOtp);
 
-                // for development, also write to debug console
+          
                 System.Diagnostics.Debug.WriteLine("OTP for " + email + ": " + GeneratedOtp);
 
-                // switch to OTP panel
+             
                 pnlEmail.Visible = false;
                 pnlOtp.Visible = true;
             }
@@ -72,7 +72,7 @@ namespace vaultx
                 pnlReset.Visible = false;
                 pnlSuccess.Visible = true;
             }
-            
+
         }
 
         private bool IsEmailRegistered(string email)
@@ -96,7 +96,7 @@ namespace vaultx
             {
                 string query = "UPDATE dbo.Users SET Password=@Password WHERE Email=@Email";
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Password", newPassword); // hash in production
+                cmd.Parameters.AddWithValue("@Password", newPassword); 
                 cmd.Parameters.AddWithValue("@Email", email);
                 conn.Open();
                 cmd.ExecuteNonQuery();
@@ -108,7 +108,7 @@ namespace vaultx
             try
             {
                 MailMessage mail = new MailMessage();
-                mail.From = new MailAddress("your-email@gmail.com"); // your email
+                mail.From = new MailAddress("your-email@gmail.com"); 
                 mail.To.Add(toEmail);
                 mail.Subject = "VaultX Account Verification – Your One-Time Password (OTP)";
                 mail.Body = $@"
@@ -123,10 +123,10 @@ namespace vaultx
   </body>
 </html>
 ";
-                mail.IsBodyHtml = true;  
+                mail.IsBodyHtml = true;
 
                 SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs"); // app password
+                smtp.Credentials = new NetworkCredential("diptochy430@gmail.com", "xvlrzedqehmtrzbs"); 
                 smtp.EnableSsl = true;
 
                 smtp.Send(mail);

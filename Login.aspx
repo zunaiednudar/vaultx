@@ -19,7 +19,7 @@
     <form id="form1" runat="server">
         <asp:HiddenField ID="hfEmail" runat="server" />
 
-
+        <!--sidebar-->
             <uc:Sidebar ID="Sidebar1" runat="server" />
 
    <!-- Hamburger button -->
