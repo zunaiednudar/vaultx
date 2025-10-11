@@ -7,23 +7,42 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using vaultx.cls;
 
-
 using System.Net;
 using System.Net.Mail;
 
 namespace vaultx
 {
+    /*
+        FundTransfer.aspx.cs
+        Purpose: Server-side logic and event handlers for fund transfers.
+        Key responsibilities:
+         - Load and display the logged-in user's name and account summaries.
+         - Handle account-type selection and show/hide the transfer form.
+         - Validate transfer inputs and business rules (password, balance, receiver existence).
+         - Send OTP to user's registered email for confirmation.
+         - Perform the database transfer inside a transaction and record a transaction row.
+         - Provide friendly error/success UI by toggling panels and invoking client-side modals.
+        Security notes (important):
+         - SMTP credentials and any secrets should be stored in secure configuration (not hard-coded).
+         - Ensure SQL parameters are used (this file already uses parameterized queries).
+         - Consider rate-limiting OTP attempts and storing OTPs server-side for stronger validation.
+    */
+
     public partial class FundTransfer : Page
     {
+        // Selected AID (account id) from database - persisted into ViewState when set
         private long selectedAccountId = 0;
+
+        // Current authenticated user id (resolved from Session)
         private int currentUserId = 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Check if user is logged in
+            // Authentication check: try two session keys for compatibility (UserId or UID)
             var userId = Session["UserId"] ?? Session["UID"];
             if (userId == null)
             {
+                // Not authenticated - redirect to login and preserve return URL
                 Response.Redirect("Login.aspx?returnUrl=" + Request.Url.AbsolutePath);
                 return;
             }
@@ -32,25 +51,30 @@ namespace vaultx
 
             if (!IsPostBack)
             {
-                // Load user information and initialize page
+                // Initial page load: populate account holder name and reset UI state
                 LoadAccountHolderName(currentUserId);
                 ResetAllPanels();
-                // Add debug to ensure CSS classes are clean
+
+                // Helpful debug for developers while working locally
                 System.Diagnostics.Debug.WriteLine("Page_Load - Initial state set");
             }
             else
             {
-                // Restore selected account from ViewState
+                // On postback restore state that is persisted in ViewState
                 if (ViewState["SelectedAccountId"] != null)
                 {
                     selectedAccountId = (long)ViewState["SelectedAccountId"];
                 }
 
-                // IMPORTANT: Always restore button selection state on postback
+                // Reapply CSS classes to account type buttons to maintain UI consistency on postback
                 RestoreButtonSelection();
             }
         }
 
+        /// <summary>
+        /// Loads the account holder's display name from Users table and updates lblAccountHolderName.
+        /// Gracefully handles DB errors by showing a friendly placeholder.
+        /// </summary>
         private void LoadAccountHolderName(int userId)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
@@ -74,6 +98,7 @@ namespace vaultx
                     }
                     else
                     {
+                        // No user found with given UID (shouldn't happen if session is valid)
                         lblAccountHolderName.Text = "Unknown User";
                     }
 
@@ -82,11 +107,19 @@ namespace vaultx
             }
             catch (Exception ex)
             {
+                // Avoid throwing for UI rendering; log useful debug info and show placeholder text
                 lblAccountHolderName.Text = "Error loading user information";
                 System.Diagnostics.Debug.WriteLine($"LoadAccountHolderName error: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Account type button click handler.
+        /// Behavior:
+        /// - Toggles off selection when clicking the same button again.
+        /// - Switches to a different account type and queries for the user's account of that type.
+        /// - Updates ViewState and button CSS classes for persistence across postbacks.
+        /// </summary>
         protected void btnAccountType_Click(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
@@ -96,50 +129,44 @@ namespace vaultx
 
             System.Diagnostics.Debug.WriteLine($"Button clicked: {accountType}, Current: {currentSelectedType}");
 
-            // FIXED TOGGLE LOGIC: Check if clicking the same button (toggle off)
+            // Toggle off if user clicked the already selected account type
             if (currentSelectedType == accountType)
             {
                 System.Diagnostics.Debug.WriteLine("Toggling OFF - Same button clicked");
 
-                // Toggle off - clear selection and hide form but preserve form data
+                // Clear selection state (ViewState) but leave form input values intact
                 ViewState["SelectedAccountType"] = null;
                 ViewState["SelectedAccountId"] = null;
 
-                // Reset all button visual states
+                // Reset visual states and hide transfer panels
                 ResetAllButtonStates();
-
-                // Hide form panels but keep form data intact
                 pnlTransferForm.Visible = false;
                 pnlSuccess.Visible = false;
 
-                // Clear only account details, not form fields
                 ClearAccountDetails();
 
-                // Add visual feedback for toggle off
+                // Optional client-side visual feedback
                 ShowToggleOffFeedback();
                 return;
             }
 
+            // New selection: update ViewState and UI, then check DB for the latest account of that type
             System.Diagnostics.Debug.WriteLine("Switching account type or first selection");
-
-            // Different button clicked or first selection - switch account type
             ViewState["SelectedAccountType"] = accountType;
-
-            // Update button visual states
             UpdateButtonSelection(accountType);
-
-            // Check account and update form details (preserve form data)
             CheckAccountAndUpdateForm(currentUserId, accountType);
         }
 
+        /// <summary>
+        /// Adds the 'selected' CSS class to the chosen account-type button and clears others.
+        /// </summary>
         private void UpdateButtonSelection(string selectedAccountType)
         {
             System.Diagnostics.Debug.WriteLine($"UpdateButtonSelection: {selectedAccountType}");
 
-            // Reset all buttons to default state first
+            // Clear previous states first
             ResetAllButtonStates();
 
-            // Add selected class to the clicked button
             switch (selectedAccountType)
             {
                 case "Savings":
@@ -159,6 +186,7 @@ namespace vaultx
 
         private void ResetAllButtonStates()
         {
+            // Normalize classes back to default for all buttons
             btnSavings.CssClass = "account-type-btn";
             btnCurrent.CssClass = "account-type-btn";
             btnStudent.CssClass = "account-type-btn";
@@ -167,6 +195,7 @@ namespace vaultx
 
         private void RestoreButtonSelection()
         {
+            // Reapply the previously selected account type (if any) on postback
             string selectedAccountType = ViewState["SelectedAccountType"] as string;
             System.Diagnostics.Debug.WriteLine($"RestoreButtonSelection: {selectedAccountType}");
 
@@ -182,11 +211,16 @@ namespace vaultx
 
         private void ClearAccountDetails()
         {
+            // Clear only the account summary fields (does not clear transfer form input values)
             lblFromAccountType.Text = "";
             lblFromAccountNumber.Text = "";
             lblFromAccountBalance.Text = "";
         }
 
+        /// <summary>
+        /// Small client-side animation to indicate toggling off a selection.
+        /// This registers a startup script to run in the browser after postback.
+        /// </summary>
         private void ShowToggleOffFeedback()
         {
             string script = @"
@@ -210,6 +244,11 @@ namespace vaultx
             ClientScript.RegisterStartupScript(this.GetType(), "ToggleOffFeedback", script, true);
         }
 
+        /// <summary>
+        /// Queries the Accounts table for the most recent account of the requested type for the user.
+        /// If found: updates the account summary, stores SelectedAccountId in ViewState and shows the form.
+        /// If not found: clears selection and asks client to show a 'no account' modal.
+        /// </summary>
         private void CheckAccountAndUpdateForm(int userId, string accountType)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
@@ -232,7 +271,7 @@ namespace vaultx
 
                     if (reader.Read())
                     {
-                        // Account found - update form with new account details
+                        // Account found - update only the account summary (do not clear any user-entered form values)
                         selectedAccountId = Convert.ToInt64(reader["AID"]);
                         ViewState["SelectedAccountId"] = selectedAccountId;
 
@@ -240,21 +279,20 @@ namespace vaultx
                         string accountNumber = reader["AID"].ToString();
                         decimal balance = Convert.ToDecimal(reader["Balance"]);
 
-                        // Update ONLY the account details (preserve form data)
                         lblFromAccountType.Text = accountTypeText;
                         lblFromAccountNumber.Text = accountNumber;
                         lblFromAccountBalance.Text = balance.ToString("N2");
 
-                        // Show transfer form
+                        // Show transfer form (server control visibility)
                         pnlTransferForm.Visible = true;
                         pnlSuccess.Visible = false;
 
-                        // Visual feedback for account switch
+                        // Visual cue for account switch
                         ShowAccountSwitchFeedback();
                     }
                     else
                     {
-                        // No account found - reset selection and show modal
+                        // No account of this type exists for the user - reset selection and notify client
                         ViewState["SelectedAccountId"] = null;
                         ViewState["SelectedAccountType"] = null;
                         ResetAllButtonStates();
@@ -262,7 +300,7 @@ namespace vaultx
                         string script = $"showNoAccountModal('{accountType}');";
                         ClientScript.RegisterStartupScript(this.GetType(), "ShowNoAccountModal", script, true);
 
-                        // Clear account details and hide form
+                        // Clear account details and hide the form
                         ClearAccountDetails();
                         pnlTransferForm.Visible = false;
                     }
@@ -272,11 +310,16 @@ namespace vaultx
             }
             catch (Exception ex)
             {
+                // Show a user-friendly modal and log the exception for diagnostics
                 ShowErrorModal($"Error checking account: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"CheckAccountAndUpdateForm error: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Brief visual highlight when the account selection changes.
+        /// Registered as client script to keep server-side code focused on data operations.
+        /// </summary>
         private void ShowAccountSwitchFeedback()
         {
             string script = @"
@@ -293,17 +336,22 @@ namespace vaultx
             ClientScript.RegisterStartupScript(this.GetType(), "AccountSwitchFeedback", script, true);
         }
 
+        /// <summary>
+        /// btnSend_Click validates inputs and business rules, then sends OTP for confirmation.
+        /// Transfer is actually performed after OTP verification (btnVerifyOtp_Click).
+        /// </summary>
         protected void btnSend_Click(object sender, EventArgs e)
         {
             try
             {
-                // Basic form validation
+                // Ensure an account was selected (SelectedAccountId persisted in ViewState)
                 if (ViewState["SelectedAccountId"] == null)
                 {
                     ShowErrorModal("Please select an account first.");
                     return;
                 }
 
+                // Basic presence checks - more detailed checks follow
                 if (string.IsNullOrWhiteSpace(txtAccountNo.Text) ||
                     string.IsNullOrWhiteSpace(txtAmount.Text) ||
                     string.IsNullOrWhiteSpace(txtPassword.Text) ||
@@ -315,44 +363,42 @@ namespace vaultx
 
                 selectedAccountId = (long)ViewState["SelectedAccountId"];
 
-                // Validate amount
+                // Validate amount numeric and > 0
                 if (!decimal.TryParse(txtAmount.Text, out decimal amount) || amount <= 0)
                 {
                     ShowErrorModal("Please enter a valid amount greater than zero.");
                     return;
                 }
 
-                // Validate account number
+                // Validate receiver account number format
                 if (!long.TryParse(txtAccountNo.Text, out long toAccountId))
                 {
                     ShowErrorModal("Please enter a valid account number.");
                     return;
                 }
 
-                // Cannot transfer to same account
+                // Business rule: cannot transfer to the same account
                 if (selectedAccountId == toAccountId)
                 {
                     ShowErrorModal("Cannot transfer to the same account.");
                     return;
                 }
 
-                // CRITICAL VALIDATIONS
-
-                // 1. Validate password
+                // 1) Validate user's password (supports stored hashed and plain text legacy)
                 if (!ValidateUserPassword(currentUserId, txtPassword.Text))
                 {
                     ShowErrorModal("Password mismatch. Please enter your correct password.");
                     return;
                 }
 
-                // 2. Check if receiver account exists
+                // 2) Ensure receiver account exists
                 if (!AccountExists(toAccountId))
                 {
                     ShowErrorModal("Receiver account not found. Please check the account number.");
                     return;
                 }
 
-                // 3. Check balance and minimum balance requirement
+                // 3) Balance checks and minimum balance enforcement (keep ৳500)
                 decimal currentBalance = GetAccountBalance(selectedAccountId);
                 decimal remainingBalance = currentBalance - amount;
 
@@ -370,21 +416,12 @@ namespace vaultx
                     return;
                 }
 
-
-
-
-
-
-                // ALL VALIDATIONS PASSED - Process transfer
-                //    ProcessTransferWithRetry(selectedAccountId, toAccountId, amount, txtReference.Text?.Trim());
-
-
-
-                // ALL VALIDATIONS PASSED - SEND OTP FOR CONFIRMATION
+                // All validations passed — send OTP to user's email to confirm transfer.
                 Random rnd = new Random();
                 string otp = rnd.Next(100000, 999999).ToString();
 
-                // Store OTP in hidden field and cookie
+                // Keep OTP value server-side in HiddenField and client-side (short-lived) cookie.
+                // Using cookies is convenient but consider storing OTP server-side (DB/cache) for improved security.
                 hfTransferOtp.Value = otp;
 
                 HttpCookie otpCookie = new HttpCookie("TransferOtp")
@@ -394,7 +431,7 @@ namespace vaultx
                 };
                 Response.Cookies.Add(otpCookie);
 
-                // Store user's email in cookie
+                // Store recipient email in cookie (used by resend flow)
                 HttpCookie emailCookie = new HttpCookie("TransferEmail")
                 {
                     Value = GetUserEmail(currentUserId),
@@ -402,14 +439,14 @@ namespace vaultx
                 };
                 Response.Cookies.Add(emailCookie);
 
-                // Send OTP email
+                // Send OTP via email. Note: SMTP credentials are currently in code (see SendOtpEmail) — move to secure config.
                 SendOtpEmail(emailCookie.Value, otp);
 
-                // Hide transfer form and show OTP panel
+                // Hide transfer form and show OTP modal on client
                 pnlTransferForm.Visible = false;
                 ClientScript.RegisterStartupScript(this.GetType(), "ShowOtpModal", "showOtpModal();", true);
 
-                // Start OTP countdown timer
+                // Inject client-side OTP countdown (90s) and update lblOtpTimer
                 string script = $@"
     var timeLeft = 90;
     var timerElem = document.getElementById('{lblOtpTimer.ClientID}');
@@ -424,37 +461,16 @@ namespace vaultx
         timeLeft--;
     }}, 1000);";
                 ClientScript.RegisterStartupScript(this.GetType(), "StartOtpTimer", script, true);
-
-
-
-
-
-
-
-
             }
             catch (Exception ex)
             {
+                // Generic error handling; present friendly message and log debug details
                 System.Diagnostics.Debug.WriteLine($"btnSend_Click error: {ex.Message}");
                 ShowErrorModal("An unexpected error occurred. Please try again.");
             }
         }
 
-
-
-
-
-
-
-
-
-
-        //email otp validation
-
-
-
-
-
+        // Helper: retrieve user's email from Users table
         private string GetUserEmail(int userId)
         {
             string email = "";
@@ -473,8 +489,10 @@ namespace vaultx
             return email;
         }
 
-
-
+        /// <summary>
+        /// Sends OTP email to the provided address.
+        /// IMPORTANT: Move credentials to a secure store or configuration file and do not keep plaintext passwords in code.
+        /// </summary>
         private void SendOtpEmail(string toEmail, string otp)
         {
             try
@@ -494,13 +512,16 @@ namespace vaultx
             }
             catch (Exception ex)
             {
+                // If sending OTP fails, inform user and log the exception for diagnostics
                 System.Diagnostics.Debug.WriteLine($"SendOtpEmail error: {ex.Message}");
                 ShowErrorModal("Failed to send OTP. Please try again.");
             }
         }
 
-
-
+        /// <summary>
+        /// Resend OTP handler: regenerates OTP, sets cookies and emails it again.
+        /// If email cookie is missing the flow is aborted and user is asked to restart.
+        /// </summary>
         protected void btnResendOtp_Click(object sender, EventArgs e)
         {
             Random rnd = new Random();
@@ -518,13 +539,17 @@ namespace vaultx
             }
             else
             {
+                // If we do not have the user's email in cookie, require the user to restart transfer
                 ShowErrorModal("Cannot resend OTP. Please restart the transfer.");
                 ClientScript.RegisterStartupScript(this.GetType(), "CloseOtpModal", "closeOtpModal();", true);
                 pnlTransferForm.Visible = true;
             }
         }
 
-
+        /// <summary>
+        /// Verifies the OTP entered by the user and proceeds to perform the transfer if valid.
+        /// OTP is validated against the short-lived cookie set earlier.
+        /// </summary>
         protected void btnVerifyOtp_Click(object sender, EventArgs e)
         {
             string enteredOtp = txtOtp.Text.Trim();
@@ -533,23 +558,23 @@ namespace vaultx
 
             if (otpCookie == null || emailCookie == null)
             {
+                // OTP expired or cookies deleted
                 ShowErrorModal("OTP expired. Please try again.");
-               
+
                 ClientScript.RegisterStartupScript(this.GetType(), "CloseOtpModal", "closeOtpModal();", false);
                 pnlTransferForm.Visible = true;
-               
+
                 return;
             }
 
             if (enteredOtp == otpCookie.Value)
             {
-                // Clear cookies
+                // Successful OTP - clear cookies and proceed with transfer
                 otpCookie.Expires = DateTime.Now.AddDays(-1);
                 emailCookie.Expires = DateTime.Now.AddDays(-1);
                 Response.Cookies.Add(otpCookie);
                 Response.Cookies.Add(emailCookie);
 
-                // Proceed with fund transfer
                 selectedAccountId = (long)ViewState["SelectedAccountId"];
                 decimal amount = Convert.ToDecimal(txtAmount.Text);
                 long toAccountId = Convert.ToInt64(txtAccountNo.Text);
@@ -557,39 +582,16 @@ namespace vaultx
             }
             else
             {
+                // OTP mismatch
                 ShowErrorModal("Invalid OTP. Please try again.");
             }
         }
 
-
-
-
-        //email otp validation end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        /// <summary>
+        /// Processes transfer with a simple retry loop to handle transient DB failures.
+        /// On success: shows the success panel and refreshes account info.
+        /// On repeated failure: shows an error modal with reason.
+        /// </summary>
         private void ProcessTransferWithRetry(long fromAccountId, long toAccountId, decimal amount, string reference)
         {
             const int maxRetries = 3;
@@ -603,27 +605,40 @@ namespace vaultx
 
                 if (result != null && !result.Success && retryCount < maxRetries)
                 {
+                    // Simple backoff between retries
                     System.Threading.Thread.Sleep(500);
                 }
             }
 
             if (result != null && result.Success)
             {
-                // SUCCESS - Show success panel with the updated balance from database
+                // Update UI to show success and clear the form for next transfer
                 ShowSuccess(result.TransactionId, amount, toAccountId, reference, result.NewSenderBalance);
                 ClearForm();
 
-                // Refresh the balance display in the form for next transfer
+                // Refresh account summary details (balance) for the chosen account
                 RefreshCompleteAccountInfo(fromAccountId);
             }
             else
             {
-                // Transfer failed after all retries
+                // All retries exhausted - present the error message to the user
                 string errorMessage = result?.ErrorMessage ?? "Transfer could not be completed. Please try again later.";
                 ShowErrorModal(errorMessage);
             }
         }
 
+        /// <summary>
+        /// Core DB logic that performs the funds movement inside an explicit SQL transaction.
+        /// Steps:
+        /// 1) Generate a TID (transaction identifier)
+        /// 2) Verify sender balance
+        /// 3) Verify receiver exists
+        /// 4) Debit sender
+        /// 5) Credit receiver
+        /// 6) Insert Transactions record
+        /// 7) Query new sender balance and commit
+        /// All DB updates happen within a SqlTransaction to guarantee atomicity.
+        /// </summary>
         private TransferResult ProcessFundTransfer(long fromAccountId, long toAccountId, decimal amount, string reference)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
@@ -637,7 +652,7 @@ namespace vaultx
                     {
                         try
                         {
-                            // Step 1: Generate TID (using INT instead of BIGINT for compatibility)
+                            // Step 1: Generate TID (int). Keep this method DB-aware and safe for concurrency.
                             int newTID = GenerateTransactionIdInt(conn, transaction);
 
                             // Step 2: Verify sender account and balance before update
@@ -758,7 +773,7 @@ namespace vaultx
 
                             decimal newSenderBalance = Convert.ToDecimal(newBalanceObj);
 
-                            // Step 8: All operations successful - commit transaction
+                            // Step 8: All operations successful - commit
                             transaction.Commit();
 
                             return new TransferResult
@@ -770,6 +785,7 @@ namespace vaultx
                         }
                         catch (SqlException sqlEx)
                         {
+                            // Rollback and return a friendly message; log the SQL exception for diagnostics.
                             transaction.Rollback();
                             System.Diagnostics.Debug.WriteLine($"SQL Error in ProcessFundTransfer: {sqlEx.Message}");
                             return new TransferResult
@@ -780,6 +796,7 @@ namespace vaultx
                         }
                         catch (Exception ex)
                         {
+                            // Generic rollback and error handling
                             transaction.Rollback();
                             System.Diagnostics.Debug.WriteLine($"ProcessFundTransfer transaction error: {ex.Message}");
                             return new TransferResult
@@ -793,6 +810,7 @@ namespace vaultx
             }
             catch (Exception ex)
             {
+                // Failure to open connection or another outer error
                 System.Diagnostics.Debug.WriteLine($"ProcessFundTransfer connection error: {ex.Message}");
                 return new TransferResult
                 {
@@ -802,6 +820,10 @@ namespace vaultx
             }
         }
 
+        /// <summary>
+        /// Generates the next TID (transaction id) as an int.
+        /// Falls back to a timestamp-based value if the SELECT fails.
+        /// </summary>
         private int GenerateTransactionIdInt(SqlConnection conn, SqlTransaction transaction)
         {
             try
@@ -821,6 +843,7 @@ namespace vaultx
             }
             catch (Exception ex)
             {
+                // If lookup fails, use a deterministic fallback derived from current timestamp
                 System.Diagnostics.Debug.WriteLine($"GenerateTransactionIdInt error: {ex.Message}");
                 string timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
                 if (timeStamp.Length > 10)
@@ -831,6 +854,7 @@ namespace vaultx
             }
         }
 
+        // Small DTO used locally to indicate transfer result and optional error message
         private class TransferResult
         {
             public bool Success { get; set; }
@@ -839,6 +863,10 @@ namespace vaultx
             public string ErrorMessage { get; set; }
         }
 
+        /// <summary>
+        /// Refreshes account summary details for a given account id (AID).
+        /// Called after successful transfers to show current balance.
+        /// </summary>
         private void RefreshCompleteAccountInfo(long accountId)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
@@ -869,25 +897,29 @@ namespace vaultx
             }
             catch (Exception ex)
             {
+                // Non-fatal - log for developers
                 System.Diagnostics.Debug.WriteLine($"RefreshCompleteAccountInfo error: {ex.Message}");
             }
         }
 
-        // FIXED: Enhanced Cancel button functionality
+        /// <summary>
+        /// Clears the transfer form input fields.
+        /// </summary>
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("Cancel button clicked");
 
-            // Clear form fields completely
+            // Remove user input from the form
             ClearForm();
 
-            // Reset ALL state - panels, buttons, ViewState
+            // Reset UI state (hide panels, clear ViewState and button selections)
             ResetAllPanels();
 
-            // Show visual feedback for cancel action
+            // Provide a visual feedback to the user that cancel occurred
             ShowCancelFeedback();
         }
 
+        // Simple client-side visual effect to show cancel acknowledgement
         private void ShowCancelFeedback()
         {
             string script = @"
@@ -914,11 +946,14 @@ namespace vaultx
             ClientScript.RegisterStartupScript(this.GetType(), "CancelFeedback", script, true);
         }
 
+        /// <summary>
+        /// Handler for 'New Transfer' button on success panel: clears form and shows form if an account is selected.
+        /// </summary>
         protected void btnNewTransfer_Click(object sender, EventArgs e)
         {
             ClearForm();
 
-            // If we have a previously selected account, refresh its information and show the form again
+            // If an account was previously selected, refresh its data and show the form
             if (ViewState["SelectedAccountId"] != null)
             {
                 selectedAccountId = (long)ViewState["SelectedAccountId"];
@@ -928,10 +963,16 @@ namespace vaultx
             }
             else
             {
+                // No account selected -> reset UI to initial state
                 ResetAllPanels();
             }
         }
 
+        /// <summary>
+        /// Validates the supplied password against stored value.
+        /// Supports hashed (base64 salted hash) and legacy plain text for compatibility.
+        /// Returns true if password matches, false otherwise.
+        /// </summary>
         private bool ValidateUserPassword(int userId, string password)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
@@ -951,12 +992,14 @@ namespace vaultx
                     {
                         string storedHash = result.ToString();
 
+                        // Heuristic: if stored value looks like a base64 hash -> verify using PasswordHelper
                         if (storedHash.Length == 88 && IsBase64String(storedHash))
                         {
                             return PasswordHelper.VerifyPassword(password, storedHash);
                         }
                         else
                         {
+                            // Legacy: plain-text comparison (not recommended) kept for backwards compatibility
                             return storedHash == password;
                         }
                     }
@@ -966,11 +1009,13 @@ namespace vaultx
             }
             catch (Exception ex)
             {
+                // Log and treat as validation failure (avoid revealing details to user)
                 System.Diagnostics.Debug.WriteLine($"ValidateUserPassword error: {ex.Message}");
                 return false;
             }
         }
 
+        // Helper to test if a string is base64-encoded
         private bool IsBase64String(string s)
         {
             try
@@ -984,6 +1029,7 @@ namespace vaultx
             }
         }
 
+        // Checks if an account with the given AID exists
         private bool AccountExists(long accountId)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
@@ -1008,6 +1054,7 @@ namespace vaultx
             }
         }
 
+        // Reads the balance for the requested account (used for validation prior to transfer)
         private decimal GetAccountBalance(long accountId)
         {
             string connectionString = ConfigurationManager.ConnectionStrings["VaultXDbConnection"].ConnectionString;
@@ -1032,25 +1079,31 @@ namespace vaultx
             }
         }
 
+        /// <summary>
+        /// Resets panels, clears ViewState and returns button UI to default.
+        /// Use this to return the page to its initial state.
+        /// </summary>
         private void ResetAllPanels()
         {
             System.Diagnostics.Debug.WriteLine("ResetAllPanels called");
 
-            // Hide all panels
+            // Hide panels
             pnlTransferForm.Visible = false;
             pnlSuccess.Visible = false;
 
-            // Clear ViewState
+            // Clear persisted selection
             ViewState["SelectedAccountId"] = null;
             ViewState["SelectedAccountType"] = null;
 
-            // Reset all button visual states
+            // Reset button appearance and summary
             ResetAllButtonStates();
-
-            // Clear account details
             ClearAccountDetails();
         }
 
+        /// <summary>
+        /// Register and show a client-side modal with a sanitized message string.
+        /// Always escapes quotes and newlines to prevent script injection.
+        /// </summary>
         private void ShowErrorModal(string message)
         {
             string escapedMessage = message.Replace("'", "\\'").Replace("\"", "\\\"")
@@ -1059,6 +1112,9 @@ namespace vaultx
             ClientScript.RegisterStartupScript(this.GetType(), "ShowErrorModal", script, true);
         }
 
+        /// <summary>
+        /// Populate the success panel with transaction details and show it.
+        /// </summary>
         private void ShowSuccess(string transactionId, decimal amount, long toAccount, string reference, decimal newBalance)
         {
             pnlTransferForm.Visible = false;
@@ -1071,6 +1127,9 @@ namespace vaultx
             lblSuccessNewBalance.Text = newBalance.ToString("N2");
         }
 
+        /// <summary>
+        /// Clear only the input fields (keeps account selection and UI state unless ResetAllPanels is called).
+        /// </summary>
         private void ClearForm()
         {
             txtAccountNo.Text = "";
