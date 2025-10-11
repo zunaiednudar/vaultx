@@ -30,17 +30,17 @@ namespace vaultx
             string email = txtEmail.Text.Trim();
             if (IsEmailRegistered(email))
             {
-                // generate OTP and store in ViewState
+                
                 GeneratedOtp = new Random().Next(100000, 999999).ToString();
                 UserEmail = email;
 
-                // send OTP email
+               
                 SendOtpEmail(email, GeneratedOtp);
 
-                // for development, also write to debug console
+              
                 System.Diagnostics.Debug.WriteLine("OTP for " + email + ": " + GeneratedOtp);
 
-                // switch to OTP panel
+            
                 pnlEmail.Visible = false;
                 pnlOtp.Visible = true;
             }

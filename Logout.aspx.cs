@@ -14,7 +14,7 @@ namespace vaultx
     {
         public void Execute(HttpContext context)
         {
-            // Clear session
+            
             context.Session.Clear();
             context.Session.Abandon();
 

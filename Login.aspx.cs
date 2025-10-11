@@ -60,7 +60,7 @@ namespace vaultx
                 Session["Email"] = email;
                 Session["UID"] = uid;
                 Session["UserId"] = uid;
-                //cookie
+            
                 if (chkRememberMe.Checked)
                 {
                     HttpCookie cookie = new HttpCookie("VaultXUser");
