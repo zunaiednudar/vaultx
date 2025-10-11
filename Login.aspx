@@ -22,7 +22,7 @@
 
             <uc:Sidebar ID="Sidebar1" runat="server" />
 
-   <!-- Hamburger button -->
+   
    <button type="button" class="hamburger" onclick="toggleSidebar(event)" aria-label="Toggle sidebar">
        <span class="bar bar1"></span>
        <span class="bar bar2"></span>

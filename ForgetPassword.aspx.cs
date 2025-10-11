@@ -108,7 +108,7 @@ namespace vaultx
             try
             {
                 MailMessage mail = new MailMessage();
-                mail.From = new MailAddress("your-email@gmail.com"); // your email
+                mail.From = new MailAddress("your-email@gmail.com"); 
                 mail.To.Add(toEmail);
                 mail.Subject = "VaultX Account Verification – Your One-Time Password (OTP)";
                 mail.Body = $@"

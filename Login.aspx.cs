@@ -30,8 +30,7 @@ namespace vaultx
                             Session["Email"] = email;
                             Session["UID"] = uid;
                             Session["UserId"] = uid;
-                            //Response.Redirect("Home.aspx");
-                            //Context.ApplicationInstance.CompleteRequest();
+                    
 
                         }
                     }
@@ -57,7 +56,7 @@ namespace vaultx
             int uid = GetUserID(email, password);
             if (uid > 0)
             {
-                // Save session
+            
                 Session["Email"] = email;
                 Session["UID"] = uid;
                 Session["UserId"] = uid;

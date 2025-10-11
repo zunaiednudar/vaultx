@@ -18,7 +18,7 @@ namespace vaultx
             context.Session.Clear();
             context.Session.Abandon();
 
-            // Clear cookie if exists
+          
             if (context.Request.Cookies["VaultXUser"] != null)
             {
                 HttpCookie cookie = new HttpCookie("VaultXUser");
@@ -26,10 +26,10 @@ namespace vaultx
                 context.Response.Cookies.Add(cookie);
             }
 
-            // Clear JS sessionStorage login flag
+           
             context.Response.Write("<script>sessionStorage.removeItem('VaultXLoggedIn');</script>");
 
-            // Redirect to home page
+          
             context.Response.Redirect("Home.aspx");
         }
     }
@@ -53,13 +53,13 @@ namespace vaultx
             }
             else
             {
-                // Redirect to home if logout not confirmed
+               
                 context.Response.Redirect("Home.aspx");
             }
         }
     }
 
-    // Page code-behind
+   
     public partial class Logout : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)

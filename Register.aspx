@@ -117,13 +117,13 @@
 
                         <div class="form-group">
     <i class="fa fa-map-marker-alt"></i>
-    <asp:DropDownList ID="ddlDivision" runat="server" CssClass="form-control" AutoPostBack="false" OnChange="populateDistricts()" >
+    <asp:DropDownList ID="ddlDivision" runat="server" CssClass="form-control" AutoPostBack="false" >
         <asp:ListItem Text="Select Division" Value=""></asp:ListItem>
         <asp:ListItem Text="Dhaka" Value="Dhaka"></asp:ListItem>
         <asp:ListItem Text="Chattogram" Value="Chattogram"></asp:ListItem>
         <asp:ListItem Text="Khulna" Value="Khulna"></asp:ListItem>
        <asp:ListItem Text="Rajshahi" Value="Rajshahi"></asp:ListItem>
-         <asp:ListItem Text="Barishal" Value="Barisal"></asp:ListItem>
+         <asp:ListItem Text="Barishal" Value="Barishal"></asp:ListItem>
          <asp:ListItem Text="Sylhet" Value="Sylhet"></asp:ListItem>
          <asp:ListItem Text="Rangpur" Value="Rangpur"></asp:ListItem>
          <asp:ListItem Text="Mymensingh" Value="Mymensingh"></asp:ListItem>

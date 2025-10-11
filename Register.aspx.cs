@@ -216,7 +216,7 @@ VALUES
                     conn.Close();
                 }
 
-                // Clear OTP cookies
+                
                 otpCookie.Expires = DateTime.Now.AddDays(-1);
                 emailCookie.Expires = DateTime.Now.AddDays(-1);
                 Response.Cookies.Add(otpCookie);
