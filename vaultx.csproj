@@ -16,7 +16,8 @@
     <AssemblyName>vaultx</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>
+    </Use64BitIISExpress>
     <IISExpressSSLPort>44387</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -153,9 +154,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-        
-    <Compile Include="helper-dipta\InputValidator.cs" />
-    <Compile Include="helper-dipta\PasswordHelper.cs" />
     <Compile Include="helper\InputValidator.cs" />
     <Compile Include="helper\PasswordHelper.cs" />
     <Compile Include="Home.aspx.cs">
